@@ -79,7 +79,7 @@ if [ ! -d ${addme_dir} ]; then
   echo "installing ${addme_name}"
   env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
   cp ./zsh-custom/${addme_name}.custom.zsh "${zshcustom}"
-  set_variable_in_file "$zshrc" "ZSH_THEME" "${addme_name}"
+  set_variable_in_file "$zshrc" "ZSH_THEME" "${addme_name}/${addme_name}"
 fi 
 
 # install history preferences
