@@ -48,10 +48,7 @@ function set_variable_in_file {
 ###
 
 # set login shell to zsh
-user=$(whoami)
-shell_path=$(getent passwd | grep "${user}" | cut -d: -f7)
-shell_name=$(basename "${shell_path}")
-if [ "x$shell_name" != "xzsh" ]; then
+if [[ "$SHELL" != *zsh ]]; then
   echo "changing login shell to zsh"
   chsh -s $(which zsh)
 fi
