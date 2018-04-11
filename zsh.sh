@@ -69,6 +69,16 @@ if [ ! -d ${addme_dir} ]; then
   cp "${addme_dir}/templates/zshrc.zsh-template" "${zshrc}"
 fi
 
+# install zsh-nvm
+addme_name="zsh-nvm"
+addme_dir="${zshcustom}/plugins/${addme_name}"
+addme_url="https://github.com/lukechilds/${addme_name}"
+if [ ! -d "${addme_dir}" ]; then
+  echo "installing ${addme_name}"
+  env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
+  $sedcmd --in-place='' "/^plugins=(/a \  ${addme_name}" "${zshrc}"
+fi 
+
 # install zsh-autosuggestions
 addme_name="zsh-autosuggestions"
 addme_dir="${zshcustom}/plugins/${addme_name}"
@@ -99,7 +109,8 @@ if [ ! -f "${zshcustom}/${addme_file}" ]; then
 fi
 
 # populate oh-my-zshrc plugins
-addme_plugins=( nvm )
+addme_plugins=( )
+# addme_plugins=( nvm )
 for addme_name in "${addme_plugins[@]}"
 do
   if [ "0" -eq $(grep --count "${addme_name}" "${zshrc}") ]; then
