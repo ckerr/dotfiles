@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 
+if [ "" != "$(command -v gsed)" ]; then
+  sedcmd=gsed
+else
+  sedcmd=sed
+fi
+
 # check for required tools
 packages=( git grep sed chsh )
+if [ "Darwin" == "$(uname -s)" ]; then
+  packages+=(gsed)
+fi
 for var in "${packages[@]}"
 do
   if ! [ -x "$(command -v ${var})" ]; then
@@ -23,11 +32,11 @@ function set_variable_in_file {
   key=$2
   val=$3
   if [ "$(grep --count "^$key=" "$filename")" -eq "1" ]; then
-    sed -i "s/^$key=.*/$key=\"$val\"/" "${filename}"
+    $sedcmd --in-place='' "s/^$key=.*/$key=\"$val\"/" "${filename}"
     return
   fi
   if [ "$(grep --count "^# $key=" "$filename")" -eq "1" ]; then
-    sed -i "/^# $key=.*/a \\$key=\"$val\"" "${filename}"
+    $sedcmd --in-place='' "/^# $key=.*/a \\$key=\"$val\"" "${filename}"
     return
   fi
   echo not found in $filename: $key
@@ -44,7 +53,7 @@ shell_path=$(getent passwd | grep "${user}" | cut -d: -f7)
 shell_name=$(basename "${shell_path}")
 if [ "x$shell_name" != "xzsh" ]; then
   echo "changing login shell to zsh"
-  chsh --shell /usr/bin/zsh
+  chsh -s $(which zsh)
 fi
 zshrc="${ZDOTDIR:-$HOME}/.zshrc"
 
@@ -68,7 +77,7 @@ if [ ! -d "${addme_dir}" ]; then
   echo "installing ${addme_name}"
   env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
   cp ./zsh-custom/${addme_name}.custom.zsh "${zshcustom}"
-  sed -i "/^plugins=(/a \  ${addme_name}" "${zshrc}"
+  $sedcmd --in-place='' "/^plugins=(/a \  ${addme_name}" "${zshrc}"
 fi 
 
 # install powerlevel9k
@@ -79,7 +88,7 @@ if [ ! -d ${addme_dir} ]; then
   echo "installing ${addme_name}"
   env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
   cp ./zsh-custom/${addme_name}.custom.zsh "${zshcustom}"
-  set_variable_in_file "$zshrc" "ZSH_THEME" "${addme_name}/${addme_name}"
+  set_variable_in_file "$zshrc" "ZSH_THEME" "${addme_name}\/${addme_name}"
 fi 
 
 # install history preferences
@@ -95,7 +104,7 @@ for addme_name in "${addme_plugins[@]}"
 do
   if [ "0" -eq $(grep --count "${addme_name}" "${zshrc}") ]; then
     echo "adding ${addme_name} to oh-my-zsh plugin list"
-    sed -i "/^plugins=(/a \  ${addme_name}" "${zshrc}"
+    $sedcmd --in-place='' "/^plugins=(/a \  ${addme_name}" "${zshrc}"
   fi
 done
 
