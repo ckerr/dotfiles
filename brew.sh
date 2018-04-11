@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BREW_APPS=( syncthing mpv vim macvim xz )
+BREW_APPS=( coreutils syncthing mpv vim macvim xz )
 
 CASK_APPS=( atom font-awesome-terminal-fonts keepassxc meld vagrant vagrant-manager virtualbox virtualbox-extension-pack )
 
@@ -19,9 +19,10 @@ if [ "Darwin" == "$(uname -s)" ]; then
   fi
 
   # update brew
-  echo "updating $item"
-  $item doctor
-  $item update
+  echo "updating brew"
+  brew prune
+  brew doctor
+  brew update
 
   # install brew apps
   for app in "${BREW_APPS[@]}"
@@ -32,6 +33,7 @@ if [ "Darwin" == "$(uname -s)" ]; then
       exit -1
     fi
   done
+  brew services start syncthing
 
   # install cask
   brew tap caskroom/cask
