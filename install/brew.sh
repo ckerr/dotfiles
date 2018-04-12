@@ -7,6 +7,7 @@ BREW_APPS=(
   macvim
   mpv
   openssl
+  pianobar
   python3
   ripgrep
   rust
