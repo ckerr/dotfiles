@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo running zsh.sh in $PWD
-
 if [ "" != "$(command -v gsed)" ]; then
   sedcmd=gsed
 else
@@ -67,7 +65,8 @@ addme_url="https://github.com/robbyrussell/${addme_name}.git"
 if [ ! -d ${addme_dir} ]; then
   echo "installing ${addme_name}"
   env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
-  cp "${addme_dir}/templates/zshrc.zsh-template" "${zshrc}"
+  cp -f "${addme_dir}/templates/zshrc.zsh-template" "${zshrc}"
+  chmod 640 "${zshrc}"
 fi
 
 # install zsh-nvm
@@ -87,7 +86,8 @@ addme_url="https://github.com/zsh-users/${addme_name}"
 if [ ! -d "${addme_dir}" ]; then
   echo "installing ${addme_name}"
   env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
-  cp ${staging_dir}/${addme_name}.custom.zsh "${zshcustom}"
+  item_basename=${addme_name}.custom.zsh
+  install -m 0640 "${staging_dir}/${addme_name}.custom.zsh" "${zshcustom}"
   $sedcmd --in-place='' "/^plugins=(/a \  ${addme_name}" "${zshrc}"
 fi 
 
@@ -98,7 +98,7 @@ addme_url="https://github.com/bhilburn/${addme_name}.git"
 if [ ! -d ${addme_dir} ]; then
   echo "installing ${addme_name}"
   env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
-  cp ${staging_dir}/${addme_name}.custom.zsh "${zshcustom}"
+  install -m 0640 "${staging_dir}/${addme_name}.custom.zsh" "${zshcustom}"
   set_variable_in_file "$zshrc" "ZSH_THEME" "${addme_name}\/${addme_name}"
 fi 
 
@@ -106,7 +106,7 @@ fi
 addme_file="other.zsh"
 if [ ! -f "${zshcustom}/${addme_file}" ]; then
   echo "installing ${addme_file}"
-  cp ${staging_dir}/${addme_name}.custom.zsh "${zshcustom}"
+  install -m 0640 "${staging_dir}/${addme_file}" "${zshcustom}"
 fi
 
 # populate oh-my-zshrc plugins
