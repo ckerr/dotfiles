@@ -76,7 +76,7 @@ function cask_install()
 
 # ensure brew is installed
 item="brew"
-if [ "" == $(command -v ${item}) ]; then
+if [ "" == "$(command -v ${item})" ]; then
   echo "installing $item"
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   exit_if_error $item

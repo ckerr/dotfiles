@@ -12,7 +12,7 @@ SNAP_APPS=(
 ##
 
 # only run this on systems that have snappy
-if [ "" == $(command -v snap) ]; then
+if [ "" == "$(command -v snap)" ]; then
   exit 0
 fi
 
