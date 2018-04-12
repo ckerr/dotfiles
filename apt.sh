@@ -38,8 +38,9 @@ UBUNTU_APPS=(
 ##
 ##
 
-# we only need this file on mac
-if [ "Ubuntu" != "$(lsb_release --id -s)" ]; then
+
+# only for systems that have apt
+if [ "" == "$(command -v apt-get)" ]; then
   exit 0
 fi
 
