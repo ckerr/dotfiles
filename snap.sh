@@ -31,7 +31,7 @@ function snap_install()
 {
   item=$1
 
-  $(snap list "${item}")
+  snap list ${item} > /dev/null 2>&1
   if [[ $? == 0 ]]; then
     echo "already installed: ${item}"
   else
