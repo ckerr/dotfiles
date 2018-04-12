@@ -5,3 +5,4 @@
 ./brew.sh
 ./zsh.sh
 ./npm.sh
+./pip3.sh
