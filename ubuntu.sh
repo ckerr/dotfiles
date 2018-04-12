@@ -19,6 +19,7 @@ UBUNTU_APPS=(
   gconf-editor
   gnome-tweak-tool
   google-chrome-stable
+  htop
   meld
   ninja-build
   pngquant

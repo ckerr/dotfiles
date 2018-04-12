@@ -2,6 +2,7 @@
 
 BREW_APPS=(
   coreutils
+  htop
   macvim
   mpv
   rust
