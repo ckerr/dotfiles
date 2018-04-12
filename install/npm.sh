@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 NODE_PACKAGES=(
   dev-time-cli
@@ -24,7 +24,13 @@ function npm_install() {
   fi
 }
 
-# do it
+# install node
+zsh -ic "echo this interactive shell nudges zsh-nvm to bootstrap nvm"
+source ~/.nvm/nvm.sh
+nvm install --latest-npm
+nvm current
+
+# install node packages
 npm --global update
 for item in "${NODE_PACKAGES[@]}"
 do
