@@ -4,6 +4,7 @@ SNAP_APPS=(
   cppcheck
   gitkraken
   htop
+  keepassxc
   rg
 )
 
