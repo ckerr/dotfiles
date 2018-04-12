@@ -5,6 +5,7 @@ BREW_APPS=(
   golang
   git
   htop
+  kpcli
   macvim
   mpv
   openssl

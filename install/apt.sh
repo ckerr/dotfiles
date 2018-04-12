@@ -23,6 +23,7 @@ UBUNTU_APPS=(
   mpv
   ninja-build
   openssl
+  pianobar
   pngquant
   powerstat
   python3-pip

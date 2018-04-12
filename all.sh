@@ -11,3 +11,4 @@ install/zsh.sh
 install/npm.sh
 
 setup/stman.sh
+setup/pianobar.sh
