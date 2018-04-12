@@ -8,7 +8,6 @@ UBUNTU_APPS=(
   cargo
   clang-format
   cowsay
-  cppcheck
   cppreference-doc-en-html
   devhelp
   fdupes
@@ -19,8 +18,8 @@ UBUNTU_APPS=(
   gconf-editor
   gnome-tweak-tool
   google-chrome-stable
-  htop
   meld
+  mpv
   ninja-build
   pngquant
   powerstat
