@@ -2,6 +2,7 @@
 
 BREW_APPS=(
   coreutils
+  golang
   git
   htop
   macvim

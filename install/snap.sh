@@ -3,6 +3,7 @@
 SNAP_APPS=(
   cppcheck
   gitkraken
+  golang
   htop
   keepassxc
   rg
