@@ -14,10 +14,10 @@ NODE_PACKAGES=(
 ##
 
 function npm_install() {
-  echo "npm $*"
   item=$1
 
-  npm list --global --parseable ${item}
+  echo "npm $item"
+  npm list --global --parseable ${item} > /dev/null 2>&1
   if [[ $? != 0 ]]; then
     echo "npm install -g $*"
     npm install -g $@
