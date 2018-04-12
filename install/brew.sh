@@ -2,9 +2,11 @@
 
 BREW_APPS=(
   coreutils
+  git
   htop
   macvim
   mpv
+  openssl
   python3
   ripgrep
   rust

@@ -16,11 +16,13 @@ UBUNTU_APPS=(
   fonts-powerline
   fslint
   gconf-editor
+  git
   gnome-tweak-tool
   google-chrome-stable
   meld
   mpv
   ninja-build
+  openssl
   pngquant
   powerstat
   python3-pip
