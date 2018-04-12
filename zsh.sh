@@ -98,8 +98,8 @@ if [ ! -d ${addme_dir} ]; then
   set_variable_in_file "$zshrc" "ZSH_THEME" "${addme_name}\/${addme_name}"
 fi 
 
-# install history preferences
-addme_file="history.zsh"
+# install other zsh custom
+addme_file="other.zsh"
 if [ ! -f "${zshcustom}/${addme_file}" ]; then
   echo "installing ${addme_file}"
   cp ./zsh-custom/${addme_file} "${zshcustom}"
