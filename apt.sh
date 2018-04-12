@@ -23,6 +23,7 @@ UBUNTU_APPS=(
   ninja-build
   pngquant
   powerstat
+  python3-pip
   rename
   rustc
   tig
@@ -92,7 +93,7 @@ add_repo "https://dl-ssl.google.com/linux/linux_signing_key.pub" \
          "http://dl.google.com/linux/chrome/deb/" \
          "/etc/apt/sources.list.d/google-chrome.list"
 
-sudo add-apt-repository --yes ppa:transmissionbt/ppa
+sudo add-apt-repository --no-update --yes ppa:transmissionbt/ppa
 
 
 ## Install some packages
