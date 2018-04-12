@@ -4,7 +4,7 @@ BREW_APPS=(
   coreutils
   macvim
   mpv
-  ripgrep
+  rust
   vim
   xz
 )

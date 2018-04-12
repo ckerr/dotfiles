@@ -23,6 +23,7 @@ UBUNTU_APPS=(
   pngquant
   powerstat
   rename
+  rust
   tig
   transmission-cli
   transmission-daemon
