@@ -2,12 +2,12 @@
 
 NODE_PACKAGES=(
   dev-time-cli
+  empty-trash-cli
+  fkill-cli
+  gh-home
 )
 #npm_install http-server
-#npm_install empty-trash-cli
-#npm_install fkill-cli
 #npm_install speed-test
-#npm_install gh-home
 #require_npm pretty-error
 
 ##
