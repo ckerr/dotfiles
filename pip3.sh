@@ -3,6 +3,7 @@
 PIP3_PACKAGES=(
   cclint
   cpplint
+  syncthingmanager
 )
 
 ##
