@@ -5,6 +5,7 @@
 UBUNTU_APPS=(
   aptitude
   atom
+  cargo
   clang-format
   cowsay
   cppcheck
@@ -23,7 +24,7 @@ UBUNTU_APPS=(
   pngquant
   powerstat
   rename
-  rust
+  rustc
   tig
   transmission-cli
   transmission-daemon
@@ -90,7 +91,7 @@ add_repo "https://dl-ssl.google.com/linux/linux_signing_key.pub" \
          "http://dl.google.com/linux/chrome/deb/" \
          "/etc/apt/sources.list.d/google-chrome.list"
 
-sudo add-apt-repository ppa:transmissionbt/ppa
+sudo add-apt-repository --yes ppa:transmissionbt/ppa
 
 
 ## Install some packages
