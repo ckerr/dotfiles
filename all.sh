@@ -10,15 +10,4 @@ install/pip3.sh
 install/zsh.sh
 install/npm.sh
 
-#all.sh
-#popd
-#
-#pushd settings
-#  ./decrypt.sh
-#popd
-
-#pushd install
-#zsh.sh
-#popd
-
-#setup/all.sh
+setup/stman.sh
