@@ -5,6 +5,7 @@ BREW_APPS=(
   htop
   macvim
   mpv
+  python3
   ripgrep
   rust
   vim
