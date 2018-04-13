@@ -28,10 +28,10 @@ UBUNTU_APPS=(
   powerstat
   python3-pip
   rename
-  rustc
   tig
   transmission-cli
   transmission-daemon
+  valgrind
   vim
   vim-gtk3
   xclip

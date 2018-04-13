@@ -12,7 +12,7 @@ BREW_APPS=(
   pianobar
   python3
   ripgrep
-  rust
+  valgrind
   vim
   xz
 )
