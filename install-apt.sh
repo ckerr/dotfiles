@@ -43,7 +43,7 @@ UBUNTU_APPS=(
 ##
 
 
-# only for systems that have apt
+# this script is for systems that have apt
 if [ "" == "$(command -v apt-get)" ]; then
   exit 0
 fi
