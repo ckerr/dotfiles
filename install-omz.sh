@@ -19,6 +19,10 @@ do
   fi
 done
 
+zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
+zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
+zshrc="${ZDOTDIR:-$HOME}/.zshrc"
+
 
 ###
 ###  Helpers
@@ -31,15 +35,61 @@ function set_variable_in_file {
   filename=$1
   key=$2
   val=$3
+
+  # if there's a line starting with "KEY=", replace it
   if [ "$(grep --count "^$key=" "$filename")" -eq "1" ]; then
-    $sedcmd --in-place='' "s/^$key=.*/$key=\"$val\"/" "${filename}"
+    ${sedcmd} --in-place='' "s/^${key}=.*/${key}=\"${val}\"/" "${filename}"
     return
   fi
+
+  # if there's a line starting with "# KEY=", add our keyval there
   if [ "$(grep --count "^# $key=" "$filename")" -eq "1" ]; then
-    $sedcmd --in-place='' "/^# $key=.*/a \\$key=\"$val\"" "${filename}"
+    ${sedcmd} --in-place='' "/^# ${key}=.*/a \\${key}=\"${val}\"" "${filename}"
     return
   fi
+
   echo not found in $filename: $key
+}
+
+function get_repo {
+  name=$1
+  repo_url=$2
+  destination=$3
+
+  if [ -d "${destination}" ]; then
+    echo "updating ${name}"
+    pushd "${destination}"
+    git pull
+    popd
+  else
+    # ensure the parent directory exists
+    parent=$(dirname "${destination}")
+    if [ ! -d "${parent}" ]; then
+      mkdir -p "${parent}"
+      chmod 750 "${parent}"
+    fi
+
+    echo "installing ${name}"
+    env git clone -q --depth=1 "${repo_url}" "${destination}"
+    chmod 750 "${destination}"
+  fi
+}
+
+function add_to_omz_plugin_list {
+  name=$1
+
+  $sedcmd --in-place='' "/^plugins=(/a \  ${name}" "${zshrc}"
+}
+
+function add_custom_plugin_from_repo {
+  name=$1
+  repo_url=$2
+
+  destination="$zshcustom/plugins/$name"
+  if [ ! -d "$destination" ]; then
+    get_repo "${name}" "${repo_url}" "${destination}"
+    add_to_omz_plugin_list "${name}"
+  fi
 }
 
 
@@ -54,53 +104,33 @@ if [[ "$SHELL" != *zsh ]]; then
   echo "changing login shell to zsh"
   chsh -s $(which zsh)
 fi
-zshrc="${ZDOTDIR:-$HOME}/.zshrc"
 
-# install oh-my-zsh
-zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
-zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
+# install omz
 addme_name="oh-my-zsh"
 addme_dir="${zshdir}"
-addme_url="https://github.com/robbyrussell/${addme_name}.git"
-if [ ! -d ${addme_dir} ]; then
-  echo "installing ${addme_name}"
-  env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
-  cp -f "${addme_dir}/templates/zshrc.zsh-template" "${zshrc}"
-  chmod 640 "${zshrc}"
-fi
+get_repo "${addme_name}" \
+         "https://github.com/robbyrussell/${addme_name}.git" \
+         "${addme_dir}"
+cp -f "${addme_dir}/templates/zshrc.zsh-template" "${zshrc}"
+chmod 640 "${zshrc}"
 
-# install zsh-nvm
-addme_name="zsh-nvm"
-addme_dir="${zshcustom}/plugins/${addme_name}"
-addme_url="https://github.com/lukechilds/${addme_name}"
-if [ ! -d "${addme_dir}" ]; then
-  echo "installing ${addme_name}"
-  env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
-  $sedcmd --in-place='' "/^plugins=(/a \  ${addme_name}" "${zshrc}"
-fi 
+# install custom plugin: zsh-nvm
+add_custom_plugin_from_repo "zsh-nvm" \
+                            "https://github.com/lukechilds/zsh-nvm"
 
-# install zsh-autosuggestions
-addme_name="zsh-autosuggestions"
-addme_dir="${zshcustom}/plugins/${addme_name}"
-addme_url="https://github.com/zsh-users/${addme_name}"
-if [ ! -d "${addme_dir}" ]; then
-  echo "installing ${addme_name}"
-  env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
-  item_basename=${addme_name}.custom.zsh
-  install -m 0640 "${staging_dir}/${addme_name}.custom.zsh" "${zshcustom}"
-  $sedcmd --in-place='' "/^plugins=(/a \  ${addme_name}" "${zshrc}"
-fi 
+# install custom plugin: zsh-autosuggestions
+name="zsh-autosuggestions"
+add_custom_plugin_from_repo "zsh-autosuggestions" \
+                            "https://github.com/zsh-users/${name}"
+install -m 0640 "${staging_dir}/${name}.custom.zsh" "${zshcustom}"
 
 # install powerlevel9k
-addme_name="powerlevel9k"
-addme_dir="${zshcustom}/themes/${addme_name}"
-addme_url="https://github.com/bhilburn/${addme_name}.git"
-if [ ! -d ${addme_dir} ]; then
-  echo "installing ${addme_name}"
-  env git clone -q --depth=1 "${addme_url}" "${addme_dir}"
-  install -m 0640 "${staging_dir}/${addme_name}.custom.zsh" "${zshcustom}"
-  set_variable_in_file "$zshrc" "ZSH_THEME" "${addme_name}\/${addme_name}"
-fi 
+name="powerlevel9k"
+get_repo "${name}" \
+         "https://github.com/bhilburn/${name}.git" \
+         "${zshcustom}/themes/${name}"
+install -m 0640 "${staging_dir}/${name}.custom.zsh" "${zshcustom}"
+set_variable_in_file "${zshrc}" "ZSH_THEME" "${name}\/${name}"
 
 # install other zsh custom
 addme_file="other.zsh"
@@ -109,9 +139,8 @@ if [ ! -f "${zshcustom}/${addme_file}" ]; then
   install -m 0640 "${staging_dir}/${addme_file}" "${zshcustom}"
 fi
 
-# populate oh-my-zshrc plugins
+# select supported omz plugins
 addme_plugins=( )
-# addme_plugins=( nvm )
 for addme_name in "${addme_plugins[@]}"
 do
   if [ "0" -eq $(grep --count "${addme_name}" "${zshrc}") ]; then
