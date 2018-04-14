@@ -2,6 +2,8 @@
 
 BREW_APPS=(
   coreutils
+  font-fira-code
+  font-fira-mono-for-powerline
   golang
   git
   htop

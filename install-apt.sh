@@ -12,6 +12,7 @@ UBUNTU_APPS=(
   devhelp
   fdupes
   flake8
+  fonts-firacode
   fonts-inconsolata
   fonts-powerline
   fslint
