@@ -140,7 +140,9 @@ if [ ! -f "${zshcustom}/${addme_file}" ]; then
 fi
 
 # select supported omz plugins
-addme_plugins=( )
+addme_plugins=(
+  dircycle
+)
 for addme_name in "${addme_plugins[@]}"
 do
   if [ "0" -eq $(grep --count "${addme_name}" "${zshrc}") ]; then
