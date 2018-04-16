@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 BREW_APPS=(
+  a2ps
   coreutils
   golang
   git

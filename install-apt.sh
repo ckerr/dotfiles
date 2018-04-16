@@ -3,6 +3,7 @@
 # cpplint
 
 UBUNTU_APPS=(
+  a2ps
   aptitude
   atom
   cargo
