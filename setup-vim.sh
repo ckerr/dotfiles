@@ -10,18 +10,25 @@ COLORSCHEME=afterglow
 viminit="${VIMINIT:-${HOME}/.vimrc}"
 vimruntime="${VIMRUNTIME:-${HOME}/.vim}"
 
-##
-# install colorschemes
-tmpdir=$(mktemp -d -t 'setup-vim.XXXXXXXX')
+tmpdir=$(mktemp -d -t "setup-vim.XXXXXXXX")
 trap "{ rm -rf "${tmpdir}"; }" EXIT
-color_staging_dir="${tmpdir}/colorschemes"
-get_repo "awesome-vim-colorschemes" \
-         "https://github.com/rafi/awesome-vim-colorschemes.git" \
-         "${color_staging_dir}"
-cp -R "${color_staging_dir}/colors" "${vimruntime}"
 
 ##
-# set variables
+# install colorschemes
+name="awesome-vim-colorschemes"
+staging_dir="${tmpdir}/${name}"
+get_repo "${name}" "https://github.com/rafi/${name}.git" "${staging_dir}"
+cp -R --verbose "${staging_dir}/colors" "${vimruntime}"
+
+##
+# install improved C++ syntax highlighting
+name="vim-cpp-enhanced-highlight"
+staging_dir="${tmpdir}/${name}"
+get_repo "${name}" "https://github.com/octol/${name}.git" "${staging_dir}"
+cp -R --verbose "${staging_dir}/after" "${vimruntime}"
+
+##
+# set some vim variables
 touch "${viminit}"
 set_variable_in_file "${viminit}" ":set\ shiftwidth=" ":set shiftwidth=2"
 set_variable_in_file "${viminit}" ":set\ expandtab" ":set expandtab"
