@@ -2,12 +2,6 @@
 
 . ./common.sh
 
-if [ "" != "$(command -v gsed)" ]; then
-  sedcmd=gsed
-else
-  sedcmd=sed
-fi
-
 # check for required tools
 packages=( git grep sed chsh )
 if [ "Darwin" == "$(uname -s)" ]; then
@@ -85,7 +79,8 @@ get_repo "${name}" \
          "https://github.com/bhilburn/${name}.git" \
          "${zshcustom}/themes/${name}"
 install -m 0640 "${staging_dir}/${name}.custom.zsh" "${zshcustom}"
-set_variable_in_file "${zshrc}" "ZSH_THEME" "${name}\/${name}"
+set_variable_in_shell_script "${zshrc}" "ZSH_THEME" "${name}\/${name}"
+
 
 # install other zsh custom
 addme_file="other.zsh"
@@ -106,6 +101,6 @@ do
   fi
 done
 
-set_variable_in_file "$zshrc" "HIST_STAMPS" "yyyy-mm-dd"
-set_variable_in_file "$zshrc" "HYPHEN_INSENSITIVE" "true"
+set_variable_in_shell_script "$zshrc" "HIST_STAMPS" "yyyy-mm-dd"
+set_variable_in_shell_script "$zshrc" "HYPHEN_INSENSITIVE" "true"
 echo $0 done
