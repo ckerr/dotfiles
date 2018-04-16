@@ -2,8 +2,6 @@
 
 BREW_APPS=(
   coreutils
-  font-fira-code
-  font-fira-mono-for-powerline
   golang
   git
   htop
@@ -14,10 +12,10 @@ BREW_APPS=(
   pianobar
   python3
   ripgrep
-  valgrind
   vim
   xz
 )
+  #valgrind
 
 BREW_SERVICES=(
   syncthing
@@ -27,6 +25,8 @@ CASK_APPS=(
   atom
   beyond-compare
   font-awesome-terminal-fonts
+  font-fira-code
+  font-fira-mono-for-powerline
   keepassxc
   meld
   vagrant
