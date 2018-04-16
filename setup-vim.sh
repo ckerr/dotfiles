@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COLORSCHEME=PaperColor
+COLORSCHEME=afterglow
 
 ##
 ##
@@ -23,6 +23,7 @@ cp -R "${color_staging_dir}/colors" "${vimruntime}"
 ##
 # set variables
 touch "${viminit}"
-set_variable_in_file "${viminit}" "colorscheme\ " "colorscheme ${COLORSCHEME}"
 set_variable_in_file "${viminit}" ":set\ shiftwidth=" ":set shiftwidth=2"
 set_variable_in_file "${viminit}" ":set\ expandtab" ":set expandtab"
+set_variable_in_file "${viminit}" ":syntax" ":syntax on"
+set_variable_in_file "${viminit}" ":colorscheme\ " ":colorscheme ${COLORSCHEME}"
