@@ -91,6 +91,7 @@ fi
 
 # select supported omz plugins
 addme_plugins=(
+  command-not-found
   dircycle
 )
 for addme_name in "${addme_plugins[@]}"
