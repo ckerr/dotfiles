@@ -93,6 +93,7 @@ fi
 addme_plugins=(
   command-not-found
   dircycle
+  zsh-nvm
 )
 for addme_name in "${addme_plugins[@]}"
 do
