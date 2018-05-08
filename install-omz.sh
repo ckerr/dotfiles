@@ -26,7 +26,7 @@ zshrc="${ZDOTDIR:-$HOME}/.zshrc"
 
 function add_to_omz_plugin_list {
   name=$1
-
+  echo "adding ${name} to oh-my-zsh plugin list"
   $sedcmd --in-place='' "/^plugins=(/a \  ${name}" "${zshrc}"
 }
 
@@ -93,13 +93,11 @@ fi
 addme_plugins=(
   command-not-found
   dircycle
-  zsh-nvm
 )
 for addme_name in "${addme_plugins[@]}"
 do
   if [ "0" -eq $(grep --count "${addme_name}" "${zshrc}") ]; then
-    echo "adding ${addme_name} to oh-my-zsh plugin list"
-    $sedcmd --in-place='' "/^plugins=(/a \  ${addme_name}" "${zshrc}"
+    add_to_omz_plugin_list "${addme_name}"
   fi
 done
 
