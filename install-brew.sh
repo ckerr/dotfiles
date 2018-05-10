@@ -14,6 +14,7 @@ BREW_APPS=(
   python3
   ripgrep
   vim
+  wget
   xz
 )
   #valgrind
