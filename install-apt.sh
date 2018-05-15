@@ -11,6 +11,7 @@ UBUNTU_APPS=(
   cowsay
   cppreference-doc-en-html
   devhelp
+  execstack
   fdupes
   flake8
   fonts-firacode
