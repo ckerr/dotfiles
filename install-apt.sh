@@ -8,6 +8,7 @@ UBUNTU_APPS=(
   atom
   cargo
   clang-format
+  cmake
   cowsay
   cppreference-doc-en-html
   devhelp
