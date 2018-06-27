@@ -64,5 +64,11 @@ done
 sudo apt autoremove
 sudo apt-get clean
 
+staging_dir=${PWD}/assets/zsh-custom
+sudo install -m 0600 -o root "${staging_dir}/ddclient.conf" "/etc"
+
+install
+sudo cp assets/
+
 # https://askubuntu.com/questions/940283/run-ddclient-as-a-service-in-16-04
 sudo update-rc.d ddclient enable
