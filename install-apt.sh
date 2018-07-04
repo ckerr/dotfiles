@@ -19,6 +19,7 @@ UBUNTU_APPS=(
   fonts-inconsolata
   fonts-powerline
   fslint
+  fzy
   gconf-editor
   git
   gnome-tweak-tool

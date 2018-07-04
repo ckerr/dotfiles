@@ -34,7 +34,7 @@ function add_custom_plugin_from_repo {
   name=$1
   repo_url=$2
 
-  destination="$zshcustom/plugins/$name"
+  destination="${zshcustom}/plugins/$name"
   if [ ! -d "$destination" ]; then
     get_repo "${name}" "${repo_url}" "${destination}"
     add_to_omz_plugin_list "${name}"
@@ -69,8 +69,12 @@ add_custom_plugin_from_repo "zsh-nvm" \
 
 # install custom plugin: zsh-autosuggestions
 name="zsh-autosuggestions"
-add_custom_plugin_from_repo "zsh-autosuggestions" \
-                            "https://github.com/zsh-users/${name}"
+add_custom_plugin_from_repo "${name}" "https://github.com/zsh-users/${name}"
+install -m 0640 "${staging_dir}/${name}.custom.zsh" "${zshcustom}"
+
+# install custom plugin: zsh-fzy
+name="zsh-fzy"
+add_custom_plugin_from_repo "${name}" "https://github.com/aperezdc/${name}"
 install -m 0640 "${staging_dir}/${name}.custom.zsh" "${zshcustom}"
 
 # install powerlevel9k
