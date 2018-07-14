@@ -5,6 +5,7 @@ NODE_PACKAGES=(
   empty-trash-cli
   fkill-cli
   gh-home
+  npmrc
 )
 #npm_install http-server
 #npm_install speed-test
