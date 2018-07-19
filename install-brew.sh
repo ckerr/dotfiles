@@ -3,6 +3,7 @@
 BREW_APPS=(
   a2ps
   coreutils
+  fzy
   golang
   git
   htop
