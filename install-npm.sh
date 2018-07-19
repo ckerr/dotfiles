@@ -6,6 +6,7 @@ NODE_PACKAGES=(
   fkill-cli
   gh-home
   npmrc
+  vmd
 )
 #npm_install http-server
 #npm_install speed-test
