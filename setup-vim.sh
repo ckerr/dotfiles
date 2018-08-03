@@ -18,14 +18,14 @@ trap "{ rm -rf "${tmpdir}"; }" EXIT
 name="awesome-vim-colorschemes"
 staging_dir="${tmpdir}/${name}"
 get_repo "${name}" "https://github.com/rafi/${name}.git" "${staging_dir}"
-cp -R --verbose "${staging_dir}/colors" "${vimruntime}"
+cp -R -v "${staging_dir}/colors" "${vimruntime}"
 
 ##
 # install improved C++ syntax highlighting
 name="vim-cpp-enhanced-highlight"
 staging_dir="${tmpdir}/${name}"
 get_repo "${name}" "https://github.com/octol/${name}.git" "${staging_dir}"
-cp -R --verbose "${staging_dir}/after" "${vimruntime}"
+cp -R -v "${staging_dir}/after" "${vimruntime}"
 
 ##
 # set some vim variables
