@@ -14,6 +14,7 @@ UBUNTU_APPS=(
   devhelp
   execstack
   fdupes
+  flac
   flake8
   fonts-firacode
   fonts-inconsolata
@@ -28,11 +29,13 @@ UBUNTU_APPS=(
   mpv
   ninja-build
   openssl
+  opus-tools
   pianobar
   pngquant
   powerstat
   python3-pip
   rename
+  sox
   tig
   transmission-cli
   transmission-daemon
