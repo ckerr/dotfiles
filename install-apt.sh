@@ -43,6 +43,7 @@ UBUNTU_APPS=(
   vim
   vim-gtk3
   xclip
+  yarn
   zsh
   zsh-doc
 )

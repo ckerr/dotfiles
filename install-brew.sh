@@ -17,6 +17,7 @@ BREW_APPS=(
   vim
   wget
   xz
+  yarn
 )
   #valgrind
 
