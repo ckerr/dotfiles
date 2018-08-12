@@ -3,7 +3,7 @@ function gcha {
   git status
 }
 
-function gpob {
+function gpo {
   branch_name=`git rev-parse --abbrev-ref HEAD`
   git push --verbose origin "${branch_name}"
 }
