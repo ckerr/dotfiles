@@ -1,6 +1,6 @@
 #/usr/bin/env bash
 
-. assets/env.sh
+. assets/private/stman-env.sh
 
 # create the config file so that stman can run
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}

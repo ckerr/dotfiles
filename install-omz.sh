@@ -46,7 +46,7 @@ function add_custom_plugin_from_repo {
 ###  ZSH
 ###
 
-staging_dir=${PWD}/assets/zsh-custom
+staging_dir=${PWD}/assets/public/zsh-custom
 
 # set login shell to zsh
 if [[ "$SHELL" != *zsh ]]; then
@@ -87,11 +87,19 @@ set_variable_in_shell_script "${zshrc}" "ZSH_THEME" "${name}\/${name}"
 
 
 # install other zsh custom
-addme_file="other.zsh"
-if [ ! -f "${zshcustom}/${addme_file}" ]; then
-  echo "installing ${addme_file}"
-  install -m 0640 "${staging_dir}/${addme_file}" "${zshcustom}"
-fi
+OTHER_ZSH_FILES=(
+  "electron.zsh"
+  "git.zsh"
+  "other.zsh"
+)
+for addme_file in "${OTHER_ZSH_FILES[@]}"
+do
+  if [ ! -f "${zshcustom}/${addme_file}" ]; then
+    echo "installing ${addme_file}"
+    install -m 0640 "${staging_dir}/${addme_file}" "${zshcustom}"
+  fi
+done
+
 
 # select supported omz plugins
 addme_plugins=(

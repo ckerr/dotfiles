@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ./assets/env.sh
+. ./assets/private/stman-env.sh
 
 pkg_config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/pianobar"
 pkg_config_file="${pkg_config_dir}/config"
