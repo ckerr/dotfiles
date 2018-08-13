@@ -15,6 +15,16 @@ function electron_root {
   return 1
 }
 
+function electron_run_tests {
+  pushd "$(electron_root)"
+  if [ $# -eq 0 ]
+  then
+    MOCHA_REPORTER=spec npm run test -- --ci
+  else
+    MOCHA_REPORTER=spec npm run test -- --ci -g "$1"
+  fi
+}
+
 function electron_distclean {
   pushd "$(electron_root)"
   python ./script/clean.py
@@ -37,6 +47,8 @@ alias er=electron_root
 alias eclean=electron_distclean
 alias eboot=electron_bootstrap_dev
 alias ebuild=electron_build_debug
+alias etest=electron_run_tests
+alias etests=etest
 
 ##
 ##
