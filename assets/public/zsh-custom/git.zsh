@@ -7,3 +7,5 @@ function gpo {
   branch_name=`git rev-parse --abbrev-ref HEAD`
   git push --verbose origin "${branch_name}"
 }
+
+alias gumbo="git stash"
