@@ -1,19 +1,4 @@
-function electron_root {
-  dir=`pwd`
-  while [ "${dir}" != "/" ]; do
-    file="${dir}/package.json"
-    if [ -f "${file}" ]; then
-      lines=`grep '"name": "electron"' "${file}" | wc --lines`
-      if [ "${lines}" -eq "1" ]; then
-        echo "$dir"
-        return 0
-      fi
-    fi
-    dir=`dirname "${dir}"`
-  done
-  echo "electron root not found"
-  return 1
-}
+alias electron_root=git_repo_root
 
 function electron_run_tests {
   pushd "$(electron_root)"
