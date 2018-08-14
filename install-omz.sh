@@ -87,17 +87,11 @@ set_variable_in_shell_script "${zshrc}" "ZSH_THEME" "${name}\/${name}"
 
 
 # install other zsh custom
-OTHER_ZSH_FILES=(
-  "electron.zsh"
-  "git.zsh"
-  "other.zsh"
-)
-for addme_file in "${OTHER_ZSH_FILES[@]}"
+for addme_file in "${staging_dir}"/*.zsh;
 do
-  if [ ! -f "${zshcustom}/${addme_file}" ]; then
-    echo "installing ${addme_file}"
-    install -m 0640 "${staging_dir}/${addme_file}" "${zshcustom}"
-  fi
+  base=`basename "${addme_file}"`
+  echo "installing ${base}"
+  install -m 0640 "${addme_file}" "${zshcustom}"
 done
 
 
