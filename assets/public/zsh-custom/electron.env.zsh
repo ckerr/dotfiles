@@ -1,4 +1,5 @@
 export PATH="${PATH}:${HOME}/src/depot_tools"
 
-export ELECTRON_GCLIENT_CACHE_DIR="${HOME}/src/electron/gclient-cache"
-mkdir -p "${ELECTRON_GCLIENT_CACHE_DIR}"
+# used by depot tools
+export GIT_CACHE_PATH="${HOME}/.git_cache"
+mkdir "${GIT_CACHE_DIR}"
