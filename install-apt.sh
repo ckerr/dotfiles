@@ -10,6 +10,7 @@ UBUNTU_APPS=(
   clang-format
   cmake
   cowsay
+  cppcheck
   cppreference-doc-en-html
   devhelp
   execstack

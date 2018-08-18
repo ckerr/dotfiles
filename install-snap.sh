@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 SNAP_APPS=(
-  cppcheck
   gitkraken
   golang
   htop
