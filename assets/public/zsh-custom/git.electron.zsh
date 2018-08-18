@@ -1,7 +1,5 @@
-alias electron_root=git_repo_root
-
 function electron_run_tests {
-  pushd "$(electron_root)"
+  pushd "$(git_repo_root)"
   if [ $# -eq 0 ]
   then
     MOCHA_REPORTER=spec npm run test -- --ci
@@ -11,24 +9,24 @@ function electron_run_tests {
 }
 
 function electron_distclean {
-  pushd "$(electron_root)"
+  pushd "$(git_repo_root)"
   python ./script/clean.py
   popd
 }
 
 function electron_bootstrap_dev {
-  pushd "$(electron_root)"
+  pushd "$(git_repo_root)"
   ./script/bootstrap.py --dev --verbose
   popd
 }
 
 function electron_build_debug {
-  pushd "$(electron_root)"
+  pushd "$(git_repo_root)"
   ./script/build.py -c Debug
   popd
 }
 
-alias er=electron_root
+alias eroot='cd $(git_repo_root)'
 alias eclean=electron_distclean
 alias eboot=electron_bootstrap_dev
 alias ebuild=electron_build_debug
