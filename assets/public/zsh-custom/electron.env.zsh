@@ -1,11 +1,14 @@
+# pick up depot_tools
 export PATH="${PATH}:${HOME}/src/depot_tools"
 
-# used by depot tools
-export GIT_CACHE_PATH="${HOME}/.git_cache"
-if [ ! -d "${GIT_CACHE_PATH}" ]; then
-  mkdir "${GIT_CACHE_PATH}"
-fi
+# used by depot_tools/gclient
+export GIT_CACHE_PATH="${HOME}/.electron-cache/git_cache"
+mkdir -p "${GIT_CACHE_PATH}"
 
-# used by electron's sccache to share cache data with CI
+# used by sccache
+export SCCACHE_DIR="${HOME}/.electron-cache/sccache"
+mkdir -p "${GIT_CACHE_PATH}"
+
+# used by electron's branch of sccache to share with CI
 export SCCACHE_BUCKET="electronjs-sccache"
 export SCCACHE_TWO_TIER=true
