@@ -2,7 +2,7 @@
 export PATH="${PATH}:${HOME}/src/depot_tools"
 
 # used by depot_tools/gclient
-export GIT_CACHE_PATH="${HOME}/.electron-cache/git_cache"
+export GIT_CACHE_PATH="${HOME}/.electron-cache/git-cache"
 mkdir -p "${GIT_CACHE_PATH}"
 
 # used by sccache

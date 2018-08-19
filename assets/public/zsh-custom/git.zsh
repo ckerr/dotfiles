@@ -26,18 +26,6 @@ function git_repo_root {
 #function gpullsub
 #function gpullsub {
 # ~/src/electron/electron/master/script  master ●  git submodule sync --recursive              1 ↵  2018-08-14 07:32:36 PDT wk33
-#Synchronizing submodule url for '../vendor/boto'
-#Synchronizing submodule url for '../vendor/breakpad'
-#Synchronizing submodule url for '../vendor/crashpad'
-#Synchronizing submodule url for '../vendor/depot_tools'
-#Synchronizing submodule url for '../vendor/gyp'
-#Synchronizing submodule url for '../vendor/libchromiumcontent'
-#Synchronizing submodule url for '../vendor/libchromiumcontent/vendor/boto'
-#Synchronizing submodule url for '../vendor/libchromiumcontent/vendor/depot_tools'
-#Synchronizing submodule url for '../vendor/libchromiumcontent/vendor/pyyaml'
-#Synchronizing submodule url for '../vendor/node'
-#Synchronizing submodule url for '../vendor/pdf_viewer'
-#Synchronizing submodule url for '../vendor/pdf_viewer/vendor/grit'
 #Synchronizing submodule url for '../vendor/requests'
 # ~/src/electron/electron/master/script  master ●  git submodule update --init --recursive       ✔  2018-08-14 07:32:40 PDT wk33
 
