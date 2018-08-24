@@ -1,0 +1,170 @@
+[user]
+	name = Charles Kerr
+	email = ckerr@github.com
+
+[url "git+ssh://charlesk@git.launchpad.net/"]
+	insteadof = lp:
+
+[url "git+ssh://charlek@git.launchpad.net/~charlesk/+git/"]
+	insteadof = lpme:
+
+[push]
+	default = simple
+
+[diff]
+	tool = meld
+
+[core]
+        editor = vi
+	excludesfile = ~/.gitignore
+	quotepath = false
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol, space-before-tab
+
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = auto
+
+[color "branch"]
+	current = blue bold
+	local = green bold
+	remote = cyan bold
+
+[color "diff"]
+	meta = blue bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+
+[color "status"]
+	added = green bold
+	changed = blue bold
+	untracked = red bold
+
+[alias]
+
+        # haacked aliases from
+        # https://haacked.com/archive/2014/07/28/github-flow-aliases/
+        co = checkout
+        ec = config --global -e
+        up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+        cob = checkout -b
+        cm = !git add --all && git commit -m
+        save = !git add -A && git commit -m 'SAVEPOINT'
+        wip  = !git add -u && git commit -m "WIP"
+        undo = reset HEAD~1 --mixed
+        amend = commit -a --amend
+        wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+        bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs git branch -d; }; f"
+        bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
+
+        # codebytere aliases from
+        # https://github.com/codebytere/dotfiles/blob/master/config_files/.gitconfig
+	#############
+	aliases = config --get-regexp alias
+	a = add --all
+	ai = add -i
+	#############
+	ap = apply
+	as = apply --stat
+	ac = apply --check
+	#############
+	ama = am --abort
+	amr = am --resolved
+	ams = am --skip
+	#############
+	b = branch
+	ba = branch -a
+	bd = branch -d
+	br = branch -r
+	bv = branch -v
+	#############
+	c = commit
+	ca = commit -a
+	cam = commit -am
+	#cd = commit --amend
+	#############
+	cp = cherry-pick
+	cpa = cherry-pick --abort
+	cpc = cherry-pick --continue
+	#############
+	d = diff
+	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+	#############
+	f = fetch
+	fo = fetch origin
+	fu = fetch upstream
+	fp = format-patch
+	#############
+	g = grep -p
+	#############
+	ls = ls-files
+	lsf = "!git ls-files | grep -i"
+	lo = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	#############
+	m = merge
+	ma = merge --abort
+	mc = merge --continue
+	ms = merge --skip
+	#############
+	com = checkout master
+	#############
+	cl = clone
+	#############
+	pr = prune -v
+	pa = "!curl -L $1.patch | git am -3 -S --whitespace=fix #"
+	#############
+	ps = push
+	psf = push -f
+	psu = push -u
+	pso = push origin
+	psao = push --all origin
+	psfo = push -f origin
+	psuo = push -u origin
+	psom = push origin master
+	psuom = push -u origin master
+	#############
+	pl = pull
+	plu = pull -u
+	plo = pull origin
+	plp = pull upstream
+	plom = pull origin master
+	#############
+	pb = pull --rebase
+	pbo = pull --rebase origin
+	pbp = pull --rebase upstream
+	pbom = pull --rebase origin master
+	pbpm = pull --rebase upstream master
+	#############
+	rb = rebase
+	rba = rebase --abort
+	rbc = rebase --continue
+	rbi = rebase --interactive
+	rbs = rebase --skip
+	#############
+	re = reset
+	rh = reset HEAD
+	reh = reset --hard
+	res = reset --soft
+	resh = reset --soft HEAD
+	#############
+	r = remote
+	ra = remote add
+	rr = remote rm
+	rv = remote -v
+	rm = remote rename
+	rs = remote show
+	rao = remote add origin
+	rso = remote show origin
+	#############
+	s = status
+	sb = status -s -b
+	sh = show
+	st = stash
+	sa = stash apply
+	standup = !git log --since yesterday --author $(git config user.email) --pretty=short
+
+[credential]
+	helper = cache --timeout=900
