@@ -12,3 +12,7 @@ export PATH="${cargo_home}/bin:${PATH}"
 function figar0 {
   find ./ -type f -print0 | xargs -0 grep --color=always $1 | less -R
 }
+
+# disable single-quoting of files in ls
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=877582
+export QUOTING_STYLE=literal
