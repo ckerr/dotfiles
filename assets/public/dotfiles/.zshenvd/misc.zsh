@@ -1,7 +1,8 @@
-export PAGER=less
 export EDITOR=vim
+export PAGER=less
 export TMPDIR=/tmp
 
-if [[ -d /snap/bin ]]; then
+# on Ubuntu, add Snappy to our path
+if [ "Ubuntu" == "$(lsb_release --id --short)" ]; then
   export PATH="$PATH:/snap/bin"
 fi
