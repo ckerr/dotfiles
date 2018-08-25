@@ -29,9 +29,7 @@ fi
 zshrc="${ZDOTDIR:-$HOME}/.zshrc"
 rm -rf "${zshrc}"
 zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
-rm -rf "${zshdir}"
 zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
-rm -rf "${zshcustom}"
 
 ## Install new versions
 

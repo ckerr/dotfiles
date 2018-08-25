@@ -49,9 +49,7 @@ function get_repo {
 
   if [ -d "${destination}" ]; then
     echo "updating ${name}"
-    pushd "${destination}"
-    git pull
-    popd
+    env git -C "${destination}" pull --quiet --rebase --prune && git submodule update --quiet --init --recursive
   else
     # ensure the parent directory exists
     parent=$(dirname "${destination}")
@@ -61,7 +59,7 @@ function get_repo {
     fi
 
     echo "installing ${name}"
-    env git clone -q --depth=1 "${repo_url}" "${destination}"
+    env git clone -q "${repo_url}" "${destination}"
     chmod 750 "${destination}"
   fi
 }
