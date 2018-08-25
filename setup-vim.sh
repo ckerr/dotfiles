@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-COLORSCHEME=afterglow
-
-
-# Prerequisites
-
 . ./common.sh
 
+COLORSCHEME=afterglow
 viminit="${VIMINIT:-${HOME}/.vimrc}"
 vimplugindir="${VIMRUNTIME:-${HOME}/.vim}/pack/plugins/start"
 
