@@ -1,8 +1,7 @@
 # load per-topic rc files
 
-files=( $HOME/.zshrcd/**/*sh $HOME/.zshrcd/*sh )
+files=( $HOME/.zshrcd/**/*sh )
 for file in "${files[@]}"; do
-  echo "${file}"
   source "${file}"
 done
 
