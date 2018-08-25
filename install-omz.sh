@@ -49,11 +49,11 @@ get_repo "${name}" "https://github.com/bhilburn/${name}" "${zshcustom}/themes/${
 ## install dotfiles
 
 (cd assets/public/dotfiles \
-  && find -name ".[^.]*"      -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
-  && find -path ".[^.]*/**/*" -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
+  && find -name ".[^.]*"    -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
+  && find -path ".[^.]*/**" -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
 
 (cd assets/private/dotfiles \
-  && find -name ".[^.]*"      -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
-  && find -path ".[^.]*/**/*" -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
+  && find -name ".[^.]*"    -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
+  && find -path ".[^.]*/**" -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
 
 echo $0 done
