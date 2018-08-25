@@ -49,11 +49,11 @@ get_repo "${name}" "https://github.com/bhilburn/${name}" "${zshcustom}/themes/${
 ## install dotfiles
 
 (cd assets/public/dotfiles \
-  && find -name ".[^.]*"    -type f -exec install -v -Dm 644 "{}" "${HOME}/{}" \; \
-  && find -path ".[^.]*/**" -type f -exec install -v -Dm 644 "{}" "${HOME}/{}" \;)
+  && find -name ".[^.]*"    -type f -exec install -Dm 644 "{}" "${HOME}/{}" \; -print \
+  && find -path ".[^.]*/**" -type f -exec install -Dm 644 "{}" "${HOME}/{}" \; -print )
 
 (cd assets/private/dotfiles \
-  && find -name ".[^.]*"    -type f -exec install -v -Dm 600 "{}" "${HOME}/{}" \; \
-  && find -path ".[^.]*/**" -type f -exec install -v -Dm 600 "{}" "${HOME}/{}" \;)
+  && find -name ".[^.]*"    -type f -exec install -Dm 600 "{}" "${HOME}/{}" \; -print \
+  && find -path ".[^.]*/**" -type f -exec install -Dm 600 "{}" "${HOME}/{}" \; -print )
 
 echo $0 done
