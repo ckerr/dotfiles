@@ -12,28 +12,8 @@ do
   fi
 done
 
-zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
-zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
-zshrc="${ZDOTDIR:-$HOME}/.zshrc"
-
-
 ###
-###  Helpers
-###
-
-function add_custom_plugin_from_repo {
-  name=$1
-  repo_url=$2
-
-  destination="${zshcustom}/plugins/$name"
-  if [ ! -d "$destination" ]; then
-    get_repo "${name}" "${repo_url}" "${destination}"
-  fi
-}
-
-
-###
-###  ZSH
+###  Set the shell
 ###
 
 # set login shell to zsh
@@ -42,40 +22,38 @@ if [[ "$SHELL" != *zsh ]]; then
   chsh -s $(which zsh)
 fi
 
-# remove old files
+# Install OMZ and plugins
+
+## Remove the old versions
+
+zshrc="${ZDOTDIR:-$HOME}/.zshrc"
 rm -rf "${zshrc}"
+zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
 rm -rf "${zshdir}"
+zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
+rm -rf "${zshcustom}"
 
-# install omz
-addme_name="oh-my-zsh"
-addme_dir="${zshdir}"
-get_repo "${addme_name}" \
-         "https://github.com/robbyrussell/${addme_name}.git" \
-         "${addme_dir}"
+## Install new versions
 
-# install custom plugin: zsh-nvm
-add_custom_plugin_from_repo "zsh-nvm" \
-                            "https://github.com/lukechilds/zsh-nvm"
-
-# install custom plugin: zsh-autosuggestions
+name="oh-my-zsh"
+get_repo "${name}" "https://github.com/robbyrussell/${name}.git" "${zshdir}"
+name="zsh-nvm"
+get_repo "${name}" "https://github.com/lukechilds/${name}" "${zshcustom}/plugins/${name}"
 name="zsh-autosuggestions"
-add_custom_plugin_from_repo "${name}" "https://github.com/zsh-users/${name}"
-
-# install custom plugin: zsh-fzy
+get_repo "${name}" "https://github.com/zsh-users/${name}" "${zshcustom}/plugins/${name}"
 name="zsh-fzy"
-add_custom_plugin_from_repo "${name}" "https://github.com/aperezdc/${name}"
-
-# install powerlevel9k
+get_repo "${name}" "https://github.com/aperezdc/${name}" "${zshcustom}/plugins/${name}"
 name="powerlevel9k"
-get_repo "${name}" \
-         "https://github.com/bhilburn/${name}.git" \
-         "${zshcustom}/themes/${name}"
+get_repo "${name}" "https://github.com/bhilburn/${name}" "${zshcustom}/themes/${name}"
 
+## install dotfiles
 
-# install dotfiles
-(cd assets/public/dotfiles  && find -name ".[^.]*"      -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
-(cd assets/public/dotfiles  && find -path ".[^.]*/**/*" -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
-(cd assets/private/dotfiles && find -name ".[^.]*"      -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
-(cd assets/private/dotfiles && find -path ".[^.]*/**/*" -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
+(cd assets/public/dotfiles \
+  && find -name ".[^.]*"      -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
+  && find -path ".[^.]*/**/*" -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
+
+(cd assets/private/dotfiles \
+  && find -name ".[^.]*"      -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
+  && find -path ".[^.]*/**/*" -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
 
 echo $0 done
