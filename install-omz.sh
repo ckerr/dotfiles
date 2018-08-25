@@ -3,7 +3,7 @@
 . ./common.sh
 
 # check for required tools
-packages=( git grep chsh )
+packages=( git chsh )
 for var in "${packages[@]}"
 do
   if ! [ -x "$(command -v ${var})" ]; then
