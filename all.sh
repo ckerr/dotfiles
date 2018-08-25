@@ -7,7 +7,7 @@
 
 # need to install oh-my-zsh for nvm before installing npm packages
 ./decrypt.sh
-./install-omz.sh
+./setup-zsh.sh
 ./install-npm.sh
 
 ./setup-stman.sh
