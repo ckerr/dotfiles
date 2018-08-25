@@ -25,7 +25,10 @@ UBUNTU_APPS=(
   gconf-editor
   git
   gnome-tweak-tool
+  golang
   google-chrome-stable
+  htop
+  keepassxc
   meld
   mpv
   ninja-build
