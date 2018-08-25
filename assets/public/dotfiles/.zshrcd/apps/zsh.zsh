@@ -1,0 +1,1 @@
+setopt hist_ignore_space
