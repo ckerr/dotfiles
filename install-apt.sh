@@ -31,7 +31,6 @@ UBUNTU_APPS=(
   ninja-build
   openssl
   opus-tools
-  pianobar
   pngquant
   powerstat
   python3-pip
