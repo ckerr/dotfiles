@@ -1,5 +1,10 @@
 # load per-topic env files
-for env_file ($PWD/.zshenvd/**/*(.N)); do
-  source "$env_file"
+
+files=( $HOME/.zshenvd/**/*sh $HOME/.zshenvd/*sh )
+for file in "${files[@]}"; do
+  echo "${file}"
+  source "${file}"
 done
-unset env_file
+
+unset file
+unset files

@@ -1,5 +1,11 @@
 # load per-topic rc files
-for rc_file ($PWD/.zshrcd/**/*(.N)); do
-  source "$rc_file"
+
+files=( $HOME/.zshrcd/**/*sh $HOME/.zshrcd/*sh )
+for file in "${files[@]}"; do
+  echo "${file}"
+  source "${file}"
 done
-unset rc_file
+
+unset file
+unset files
+
