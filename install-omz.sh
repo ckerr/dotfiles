@@ -43,8 +43,8 @@ if [[ "$SHELL" != *zsh ]]; then
 fi
 
 # remove old files
-rm -rvf "${zshrc}"
-rm -rvf "${zshdir}"
+rm -rf "${zshrc}"
+rm -rf "${zshdir}"
 
 # install omz
 addme_name="oh-my-zsh"
