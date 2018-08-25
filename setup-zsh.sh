@@ -26,7 +26,6 @@ fi
 
 ## Remove the old versions
 
-zshrc="${ZDOTDIR:-$HOME}/.zshrc"
 zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
 zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
 
@@ -50,11 +49,11 @@ get_repo "${name}" "https://github.com/bhilburn/${name}" "${zshcustom}/themes/${
 ## install dotfiles
 
 (cd assets/public/dotfiles \
-  && find -name ".[^.]*"    -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
-  && find -path ".[^.]*/**" -type f -exec install -v -Dm 644 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
+  && find -name ".[^.]*"    -type f -exec install -v -Dm 644 "{}" "${HOME}/{}" \; \
+  && find -path ".[^.]*/**" -type f -exec install -v -Dm 644 "{}" "${HOME}/{}" \;)
 
 (cd assets/private/dotfiles \
-  && find -name ".[^.]*"    -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \; \
-  && find -path ".[^.]*/**" -type f -exec install -v -Dm 600 "{}" "${ZDOTDIR:-$HOME}/{}" \;)
+  && find -name ".[^.]*"    -type f -exec install -v -Dm 600 "{}" "${HOME}/{}" \; \
+  && find -path ".[^.]*/**" -type f -exec install -v -Dm 600 "{}" "${HOME}/{}" \;)
 
 echo $0 done
