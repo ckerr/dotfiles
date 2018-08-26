@@ -40,6 +40,7 @@ UBUNTU_APPS=(
   rename
   sox
   tig
+  tmux
   transmission-cli
   transmission-daemon
   valgrind
