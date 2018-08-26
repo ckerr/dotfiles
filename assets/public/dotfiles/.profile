@@ -1,22 +1,9 @@
-# ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
+# load per-topic env files
 
-# the default umask is set in /etc/profile; for setting the umask
-# for ssh logins, install and configure the libpam-umask package.
-#umask 022
+files=( $HOME/.zshenv.d/*sh )
+for file in "${files[@]}"; do
+  source "${file}"
+done
 
-# if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
-    fi
-fi
-
-# ensure that apps run from the launcher pick up my zshenv
-# https://unix.stackexchange.com/questions/360134/why-gnome-display-manager-always-read-profile
-. "$HOME/.zshenv"
-
+unset file
+unset files
