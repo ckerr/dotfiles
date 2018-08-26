@@ -1,5 +1,9 @@
 # pick up depot_tools
-export PATH="${PATH}:${HOME}/src/depot_tools"
+
+dir="${HOME}/src/depot_tools"
+if [[ ":$PATH:" != *"$dir"* ]]; then
+  export PATH="${PATH}:${dir}"
+fi
 
 # used by depot_tools/gclient
 export GIT_CACHE_PATH="${HOME}/.electron-cache/git-cache"

@@ -20,22 +20,17 @@ export XDG_CACHE_HOME
 
 # PATH building
 
-## Snappy
-
-if [ "Ubuntu" = "$(lsb_release --id --short)" ]; then
-  export PATH="$PATH:/snap/bin"
-fi
-
-## Personal bindirs
-
-personal_bindirs=(
+bindirs=(
+  /snap/bin
   "${HOME}"/opt/bin
   "${HOME}"/.local/bin
   "${HOME}"/bin
 )
-for bindir in "${personal_bindirs[@]}"
+for bindir in "${bindirs[@]}"
 do
-  if [ -d "${bindir}" ]; then
-    export PATH="${bindir}:${PATH}"
+  if [[ ":$PATH:" != *"$bindir"* ]]; then
+    if [ -d "${bindir}" ]; then
+      export PATH="${bindir}:${PATH}"
+    fi
   fi
 done

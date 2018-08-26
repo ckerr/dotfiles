@@ -1,3 +1,5 @@
 # rust's cargo
 cargo_home="${CARGO_HOME:-${HOME}/.cargo}"
-export PATH="${cargo_home}/bin:${PATH}"
+if [[ ":$PATH:" != *"$cargo_home"* ]]; then
+  export PATH="${cargo_home}/bin:${PATH}"
+fi
