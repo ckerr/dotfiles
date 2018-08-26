@@ -13,7 +13,7 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=1
 
 XDG_CACHE_HOME="${TMPDIR}/charles-cache"
 if [ ! -d ${XDG_CACHE_HOME} ]; then
-  mkdir --mode=750 "${XDG_CACHE_HOME}"
+  mkdir --mode=700 "${XDG_CACHE_HOME}"
 fi
 export XDG_CACHE_HOME
 
