@@ -28,7 +28,7 @@ bindirs=(
 )
 for bindir in "${bindirs[@]}"
 do
-  if [[ ":$PATH:" != *"$bindir"* ]]; then
+  if [[ ":$PATH:" != *":$bindir:"* ]]; then
     if [ -d "${bindir}" ]; then
       export PATH="${bindir}:${PATH}"
     fi

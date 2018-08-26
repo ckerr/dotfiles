@@ -1,7 +1,7 @@
 # pick up depot_tools
 
 dir="${HOME}/src/depot_tools"
-if [[ ":$PATH:" != *"$dir"* ]]; then
+if [[ ":$PATH:" != *":$dir:"* ]]; then
   export PATH="${PATH}:${dir}"
 fi
 
