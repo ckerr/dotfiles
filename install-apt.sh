@@ -48,6 +48,7 @@ UBUNTU_APPS=(
   vim-gtk3
   xclip
   yarn
+  zeal
   zsh
   zsh-doc
 )
