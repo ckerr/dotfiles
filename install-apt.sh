@@ -36,6 +36,7 @@ UBUNTU_APPS=(
   opus-tools
   pngquant
   powerstat
+  powertop
   python3-pip
   rename
   sox
