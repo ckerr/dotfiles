@@ -37,6 +37,7 @@ UBUNTU_APPS=(
   pngquant
   powerstat
   powertop
+  python-dbusmock
   python3-pip
   rename
   sox
