@@ -20,7 +20,6 @@ export SCCACHE_TWO_TIER=true
 
 # if we can find depot tools, make sure it's in our path
 dir="${DEPOT_TOOLS-$HOME/src/depot_tools}"
-echo $dir
 if [ -d ${dir} ]; then
   if [[ ":$PATH:" != *":$dir:"* ]]; then
     export PATH="${PATH}:${dir}"
@@ -105,24 +104,22 @@ eltest () {
   dbusenv=''
   have_dbusmock=`pip list --format=legacy | grep dbusmock | wc --lines`
   if [ "x${have_dbusmock}" == 'x1' ]; then
-    dbusenv="${TMPDIR-/tmp}/dbus.env"
-    rm -f "${dbusenv}"
+    dbusenv=`mktemp -t electron.dbus.XXXXXXXXXX`
+    echo "starting dbus @ ${dbusenv}"
     dbus-launch --sh-syntax > "${dbusenv}"
     cat "${dbusenv}" | sed "s/SESSION/SYSTEM/" >> "${dbusenv}"
-    cat "${dbusenv}"
     source "${dbusenv}"
     python -m dbusmock --template logind &
     python -m dbusmock --template notification_daemon &
     env | grep DBUS
   fi
 
-  cd "${ELECTRON_GN_HOME}/src"
   $(elfindexec "${config}") "${electron_spec_dir}" ${@:2}
 
   # ensure that this function cleans up after itself
   TRAPEXIT() {
     if [ -f "${dbusenv}" ]; then
-      kill `grep DBUS_SESSION_BUS_PID /tmp/dbus.env | sed "s/[^0-9]*//g"`
+      kill `grep DBUS_SESSION_BUS_PID "${dbusenv}" | sed "s/[^0-9]*//g"`
       rm "${dbusenv}"
     fi
   }
