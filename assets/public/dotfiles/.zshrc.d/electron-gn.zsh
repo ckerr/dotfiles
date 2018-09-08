@@ -51,6 +51,10 @@ elsync () {
 
 # Generates the build configuration
 # First optional arg is the build config, e.g. "debug", "release", or "testing"
+#
+# Examples:
+#  eltest
+#  eltest testing
 elgen () {
   config="${1-debug}"
 
@@ -100,7 +104,18 @@ eltest () {
     touch "${node_headers_dir}"
   fi
 
-  # if dbusmock is insalled, start a mock dbus session for it
+  electron=$(elfindexec "${config}")
+  eltestrun "${electron}" "${electron_spec_dir}" ${@:2}
+}
+
+# Test runner utility.
+# You probably want to use eltest() instead.
+# This is useful iff you want to plug in arbitrary builds or specs.
+eltestrun () {
+  electron="$1"
+  electron_spec_dir="$2"
+
+  # if dbusmock is installed, start a mock dbus session for it
   dbusenv=''
   python -c "import dbusmock"
   if [ "$?" -eq "0" ]; then
@@ -113,7 +128,6 @@ eltest () {
     (python -m dbusmock --template notification_daemon &)
   fi
 
-  electron=$(elfindexec "${config}")
   echo "starting ${electron}"
   "${electron}" "${electron_spec_dir}" ${@:2}
 
@@ -126,6 +140,8 @@ eltest () {
   }
 }
 
+# find the Electron executable for a given configuration.
+# First optional arg is the build config, e.g. "debug", "release", or "testing"
 elfindexec () {
   config="${1-debug}"
 
