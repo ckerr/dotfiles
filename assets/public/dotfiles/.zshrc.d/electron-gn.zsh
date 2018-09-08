@@ -1,31 +1,40 @@
 #!/usr/bin/zsh
 
+# Quick summary:
+# elsync     : gets the source files and sets up the GN directory
+# elmake     : builds Electron
+# eltest     : runs the tests
+# elfindexec : returns the path to Electron's executable
+# elrg       : prettified grep in current directory
+# elrgall    : prettified grep in all repos
 
+ 
 ##
 ##  Environment varibles
 ##
 
 
-# arbitrary locations; can be whatever you like
-export ELECTRON_GN_HOME="${HOME}/electron/electron-gn"
-export ELECTRON_CACHE_HOME="${HOME}/.electron-cache"
+# arbitrary locations; can be wherever you like
+export ELECTRON_GN_PATH="${HOME}/electron/electron-gn"
+export ELECTRON_CACHE_PATH="${HOME}/.electron-cache"
+export DEPOT_TOOLS_PATH="${HOME}/src/depot_tools"
 
 # used by depot_tools/gclient
-export GIT_CACHE_PATH="${ELECTRON_CACHE_HOME}/git-cache"
+export GIT_CACHE_PATH="${ELECTRON_CACHE_PATH}/git-cache"
 # used by sccache
-export SCCACHE_DIR="${ELECTRON_CACHE_HOME}/sccache"
+export SCCACHE_DIR="${ELECTRON_CACHE_PATH}/sccache"
 # used by electron's branch of sccache to share with CI
 export SCCACHE_BUCKET="electronjs-sccache"
 export SCCACHE_TWO_TIER=true
 # used by chromium buildtools e.g. gn
-export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_HOME}/src/buildtools"
+export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}/src/buildtools"
 
-# if we can find depot tools, make sure it's in our path
-dir="${DEPOT_TOOLS-$HOME/src/depot_tools}"
-if [ -d ${dir} ]; then
-  if [[ ":$PATH:" != *":$dir:"* ]]; then
-    export PATH="${PATH}:${dir}"
-  fi
+# depot tools needs to be in the path
+if [ ! -d "${DEPOT_TOOLS_PATH}" ]; then
+  echo "depot tools not found!"
+  echo "see installation insructions @ http://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up"
+elif [[ ":$PATH:" != *":$dir:"* ]]; then
+  export PATH="${PATH}:${dir}"
 fi
 
 
@@ -37,7 +46,7 @@ fi
 ## ensure the directories exist
 mkdir -p "${GIT_CACHE_PATH}"
 mkdir -p "${SCCACHE_DIR}"
-mkdir -p "${ELECTRON_GN_HOME}"
+mkdir -p "${ELECTRON_GN_PATH}"
 
 
 ##
@@ -46,7 +55,7 @@ mkdir -p "${ELECTRON_GN_HOME}"
 
 # Gets the source and sets up the GN directory
 elsync () {
-  cd "${ELECTRON_GN_HOME}"
+  cd "${ELECTRON_GN_PATH}"
   gclient config --name "src/electron" --unmanaged https://github.com/electron/electron --verbose
   gclient sync --with_branch_heads --with_tags --verbose
 }
@@ -61,12 +70,12 @@ elsync () {
 elmake () {
   config="${1-debug}"
 
-  ninja_dir="${ELECTRON_GN_HOME}/src/out/${config}"
-  sccache="${ELECTRON_GN_HOME}/src/electron/external_binaries/sccache"
+  ninja_dir="${ELECTRON_GN_PATH}/src/out/${config}"
+  sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
 
   # if the build configuration doesn't already exist, create it now
   if [ ! -d "${ninja_dir}" ]; then
-    pushd "${ELECTRON_GN_HOME}/src"
+    pushd "${ELECTRON_GN_PATH}/src"
     gn gen "${ninja_dir}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"${sccache}\""
     popd
   fi
@@ -92,8 +101,8 @@ eltest () {
   # to run the tests, you'll first need to build the test modules
   # against the same version of Node.js that was built as part of
   # the build process.
-  node_headers_dir="${ELECTRON_GN_HOME}/src/out/${config}/gen/node_headers"
-  electron_spec_dir="${ELECTRON_GN_HOME}/src/electron/spec"
+  node_headers_dir="${ELECTRON_GN_PATH}/src/out/${config}/gen/node_headers"
+  electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
   node_headers_need_rebuild='no'
   if [ ! -d "${node_headers_dir}" ]; then
     node_headers_need_rebuild='yes'
@@ -148,7 +157,7 @@ eltestrun () {
 elfindexec () {
   config="${1-debug}"
 
-  top="${ELECTRON_GN_HOME}/src/out/${config}"
+  top="${ELECTRON_GN_PATH}/src/out/${config}"
   dirs=("${top}/Electron.app/Contents/MacOS/Electron" \
         "${top}/electron.exe" \
         "${top}/electron")
@@ -169,6 +178,6 @@ elrg () {
 }
 
 elrgall () {
-  rg -t cpp -t js -t c -t objcpp -t md --unrestricted --pretty $@ "${ELECTRON_GN_HOME}/src" | \
+  rg -t cpp -t js -t c -t objcpp -t md --unrestricted --pretty $@ "${ELECTRON_GN_PATH}/src" | \
   less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS
 }
