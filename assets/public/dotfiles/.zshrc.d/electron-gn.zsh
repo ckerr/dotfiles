@@ -117,7 +117,7 @@ eltest () {
   echo "starting ${electron}"
   "${electron}" "${electron_spec_dir}" ${@:2}
 
-  # ensure that this function cleans up after itself
+  # ensure this function cleans up after itself
   TRAPEXIT() {
     if [ -f "${dbusenv}" ]; then
       kill `grep DBUS_SESSION_BUS_PID "${dbusenv}" | sed "s/[^0-9]*//g"`
@@ -142,4 +142,14 @@ elfindexec () {
   done
   echo /dev/null
   return 1
+}
+
+elrg () {
+  rg -t cpp -t objcpp -t js -t md --unrestricted --pretty $@ | \
+  less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS
+}
+
+elrgall () {
+  rg -t cpp -t objcpp -t js -t md --unrestricted --pretty $@ "${ELECTRON_GN_HOME}/src" | \
+  less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS
 }
