@@ -109,12 +109,13 @@ eltest () {
     dbus-launch --sh-syntax > "${dbusenv}"
     cat "${dbusenv}" | sed "s/SESSION/SYSTEM/" >> "${dbusenv}"
     source "${dbusenv}"
-    python -m dbusmock --template logind &
-    python -m dbusmock --template notification_daemon &
-    env | grep DBUS
+    (python -m dbusmock --template logind &)
+    (python -m dbusmock --template notification_daemon &)
   fi
 
-  $(elfindexec "${config}") "${electron_spec_dir}" ${@:2}
+  electron=$(elfindexec "${config}")
+  echo "starting ${electron}"
+  "${electron}" "${electron_spec_dir}" ${@:2}
 
   # ensure that this function cleans up after itself
   TRAPEXIT() {
