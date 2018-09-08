@@ -164,11 +164,11 @@ elfindexec () {
 }
 
 elrg () {
-  rg -t cpp -t objcpp -t js -t md --unrestricted --pretty $@ | \
+  rg -t cpp -t js -t c -t objcpp -t md --unrestricted --pretty $@ | \
   less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS
 }
 
 elrgall () {
-  rg -t cpp -t objcpp -t js -t md --unrestricted --pretty $@ "${ELECTRON_GN_HOME}/src" | \
+  rg -t cpp -t js -t c -t objcpp -t md --unrestricted --pretty $@ "${ELECTRON_GN_HOME}/src" | \
   less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS
 }
