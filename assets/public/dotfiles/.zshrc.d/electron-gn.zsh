@@ -102,9 +102,9 @@ eltest () {
 
   # if dbusmock is insalled, start a mock dbus session for it
   dbusenv=''
-  have_dbusmock=`pip list --format=legacy | grep dbusmock | wc --lines`
-  if [ "x${have_dbusmock}" == 'x1' ]; then
-    dbusenv=`mktemp -t electron.dbus.XXXXXXXXXX`
+  python -c "import dbusmock"
+  if [ "$?" -eq "0" ]; then
+    dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
     echo "starting dbus @ ${dbusenv}"
     dbus-launch --sh-syntax > "${dbusenv}"
     cat "${dbusenv}" | sed "s/SESSION/SYSTEM/" >> "${dbusenv}"
