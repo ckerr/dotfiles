@@ -55,11 +55,39 @@ mkdir -p "${ELECTRON_GN_PATH}"
 ##  Utilities
 ##
 
-# Gets the source and sets up the GN directory
+# Gets the source and submodules.
+# Use this to boostrap the first time and also after changing branches
 elsync () {
   cd "${ELECTRON_GN_PATH}"
-  gclient config --name "src/electron" --unmanaged https://github.com/electron/electron --verbose
-  gclient sync --with_branch_heads --with_tags --verbose
+
+  # if the .gclient file doesn't exist, then create it
+  if [ ! -f "${ELECTRON_GN_PATH}/.gclient" ]; then
+    gclient config --name "src/electron" --unmanaged https://github.com/electron/electron
+  fi
+
+  # Get the code.
+  # More reading:
+  # https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
+
+  # FIXME: not sure if this fetch is necessary?
+  gclient fetch
+  gclient sync --with_branch_heads --with_tags
+
+  # Ensure a 'gh' remote exists for electron and libchromiumcontent.
+  # This is useful for pushing branches up to github
+  # because `origin` is inside the git cache.
+
+  dir="${ELECTRON_GN_PATH}/src/electron"
+  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == "x0" ]; then
+    git -C "${dir}" remote add gh git@github.com:electron/electron.git
+  fi
+  git -C "${dir}" fetch --all --prune
+
+  dir="${ELECTRON_GN_PATH}/src/libchromiumcontent"
+  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == "x0" ]; then
+    git -C "${dir}" remote add gh git@github.com:electron/libchromiumcontent.git
+  fi
+  git -C "${dir}" fetch --all --prune
 }
 
 # Builds Electron.
@@ -88,8 +116,9 @@ elmake () {
 }
 
 # Runs the tests.
-# First optional arg is the build config, e.g. "debug", "release", or "testing"
-# Remaining args are passed to the spec
+# First optional arg is the build config, e.g. "debug", "release", or "testing".
+# See https://github.com/electron/electron/tree/master/build/args for full list.
+# Remaining args are passed to the spec.
 #
 # Examples:
 #  eltest
