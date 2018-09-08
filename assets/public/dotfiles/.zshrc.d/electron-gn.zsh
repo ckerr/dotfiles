@@ -71,7 +71,7 @@ elsync () {
 
   # FIXME: not sure if this fetch is necessary?
   gclient fetch
-  gclient sync --with_branch_heads --with_tags
+  gclient sync --with_branch_heads --with_tags --delete_unversioned_trees
 
   # Ensure a 'gh' remote exists for electron and libchromiumcontent.
   # This is useful for pushing branches up to github
