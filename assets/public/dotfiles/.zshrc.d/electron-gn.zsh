@@ -55,7 +55,7 @@ elgen () {
   config="${1-debug}"
 
   cd "${ELECTRON_GN_HOME}/src"
-  export CHROMIUM_BUILDTOOLS_PATH="`pwd`/buildtools"
+  export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_HOME}/src/buildtools"
   gn gen "out/${config}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"`pwd`/electron/external_binaries/sccache\""
 }
 
@@ -87,13 +87,13 @@ eltest () {
   # the build process.
   node_headers_dir="${ELECTRON_GN_HOME}/src/out/${config}/gen/node_headers"
   electron_spec_dir="${ELECTRON_GN_HOME}/src/electron/spec"
-  need_rebuild='no'
+  node_headers_need_rebuild='no'
   if [ ! -d "${node_headers_dir}" ]; then
-    need_rebuild='yes'
+    node_headers_need_rebuild='yes'
   elif [ "${electron_spec_dir}/package.json" -nt "${node_headers_dir}" ]; then
-    need_rebuild='yes'
+    node_headers_need_rebuild='yes'
   fi
-  if [ "x$need_rebuild" != 'xno' ]; then
+  if [ "x$node_headers_need_rebuild" != 'xno' ]; then
     ninja -C "out/${config}" third_party/electron_node:headers
     # Install the test modules with the generated headers
     (cd "${electron_spec_dir}" && npm i --nodedir="${node_headers_dir}")
