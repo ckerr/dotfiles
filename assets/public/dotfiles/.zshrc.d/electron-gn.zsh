@@ -17,6 +17,8 @@ export SCCACHE_DIR="${ELECTRON_CACHE_HOME}/sccache"
 # used by electron's branch of sccache to share with CI
 export SCCACHE_BUCKET="electronjs-sccache"
 export SCCACHE_TWO_TIER=true
+# used by chromium buildtools e.g. gn
+export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_HOME}/src/buildtools"
 
 # if we can find depot tools, make sure it's in our path
 dir="${DEPOT_TOOLS-$HOME/src/depot_tools}"
@@ -49,28 +51,29 @@ elsync () {
   gclient sync --with_branch_heads --with_tags --verbose
 }
 
-# Generates the build configuration
-# First optional arg is the build config, e.g. "debug", "release", or "testing"
+# Builds Electron.
+# First optional arg is the build config, e.g. "debug", "release", or "testing".
+# See https://github.com/electron/electron/tree/master/build/args for full list.
 #
 # Examples:
-#  eltest
-#  eltest testing
-elgen () {
-  config="${1-debug}"
-
-  cd "${ELECTRON_GN_HOME}/src"
-  export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_HOME}/src/buildtools"
-  gn gen "out/${config}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"`pwd`/electron/external_binaries/sccache\""
-}
-
-# Builds Electron.
-# First optional arg is the build config, e.g. "debug", "release", or "testing"
+#  elmake
+#  elmake testing
 elmake () {
   config="${1-debug}"
 
-  cd "${ELECTRON_GN_HOME}/src"
-  ninja -C "out/${config}" electron:electron_app
-  "${ELECTRON_GN_HOME}/src/electron/external_binaries/sccache" -s 
+  ninja_dir="${ELECTRON_GN_HOME}/src/out/${config}"
+  sccache="${ELECTRON_GN_HOME}/src/electron/external_binaries/sccache"
+
+  # if the build configuration doesn't already exist, create it now
+  if [ ! -d "${ninja_dir}" ]; then
+    pushd "${ELECTRON_GN_HOME}/src"
+    gn gen "${ninja_dir}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"${sccache}\""
+    popd
+  fi
+
+  ninja -C "${ninja_dir}" electron:electron_app
+  "${sccache}" --show-stats
+
 }
 
 # Runs the tests.
