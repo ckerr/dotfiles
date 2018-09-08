@@ -31,8 +31,8 @@ export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}/src/buildtools"
 
 # depot tools needs to be in the path
 if [ ! -d "${DEPOT_TOOLS_PATH}" ]; then
-  echo "depot tools not found!"
-  echo "see installation insructions @ http://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up"
+  echo 'depot tools not found!'
+  echo 'how to install: http://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up'
 elif [[ ":$PATH:" != *":$dir:"* ]]; then
   export PATH="${PATH}:${dir}"
   # see depot_tools/zsh-goodies/README
@@ -78,13 +78,13 @@ elsync () {
   # because `origin` is inside the git cache.
 
   dir="${ELECTRON_GN_PATH}/src/electron"
-  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == "x0" ]; then
+  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == 'x0' ]; then
     git -C "${dir}" remote add gh git@github.com:electron/electron.git
   fi
   git -C "${dir}" fetch --all --prune
 
   dir="${ELECTRON_GN_PATH}/src/libchromiumcontent"
-  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == "x0" ]; then
+  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == 'x0' ]; then
     git -C "${dir}" remote add gh git@github.com:electron/libchromiumcontent.git
   fi
   git -C "${dir}" fetch --all --prune
@@ -161,11 +161,11 @@ eltestrun () {
   # if dbusmock is installed, start a mock dbus session for it
   dbusenv=''
   python -c "import dbusmock"
-  if [ "$?" -eq "0" ]; then
+  if [ "$?" -eq '0' ]; then
     dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
     echo "starting dbus @ ${dbusenv}"
     dbus-launch --sh-syntax > "${dbusenv}"
-    cat "${dbusenv}" | sed "s/SESSION/SYSTEM/" >> "${dbusenv}"
+    cat "${dbusenv}" | sed 's/SESSION/SYSTEM/' >> "${dbusenv}"
     source "${dbusenv}"
     (python -m dbusmock --template logind &)
     (python -m dbusmock --template notification_daemon &)
@@ -177,7 +177,7 @@ eltestrun () {
   # ensure this function cleans up after itself
   TRAPEXIT() {
     if [ -f "${dbusenv}" ]; then
-      kill `grep DBUS_SESSION_BUS_PID "${dbusenv}" | sed "s/[^0-9]*//g"`
+      kill `grep DBUS_SESSION_BUS_PID "${dbusenv}" | sed 's/[^0-9]*//g'`
       rm "${dbusenv}"
     fi
   }
