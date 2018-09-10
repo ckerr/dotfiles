@@ -45,6 +45,8 @@
 
 [alias]
 
+        unlock = !git checkout HEAD -- "`git rev-parse --show-toplevel`/package-lock.json"
+
         # haacked aliases from
         # https://haacked.com/archive/2014/07/28/github-flow-aliases/
         co = checkout
