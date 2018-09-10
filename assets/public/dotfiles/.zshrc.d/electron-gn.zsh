@@ -100,17 +100,15 @@ elsync () {
 elmake () {
   config="${1-debug}"
 
-  ninja_dir="${ELECTRON_GN_PATH}/src/out/${config}"
+  build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
   sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
 
   # if the build configuration doesn't already exist, create it now
-  if [ ! -d "${ninja_dir}" ]; then
-    pushd "${ELECTRON_GN_PATH}/src"
-    gn gen "${ninja_dir}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"${sccache}\""
-    popd
+  if [ ! -d "${build_dir}" ]; then
+    (cd "${ELECTRON_GN_PATH}/src" && gn gen "${build_dir}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"${sccache}\"")
   fi
 
-  ninja -C "${ninja_dir}" electron:electron_app
+  ninja -C "${build_dir}" electron:electron_app
   "${sccache}" --show-stats
 
 }
@@ -132,7 +130,8 @@ eltest () {
   # to run the tests, you'll first need to build the test modules
   # against the same version of Node.js that was built as part of
   # the build process.
-  node_headers_dir="${ELECTRON_GN_PATH}/src/out/${config}/gen/node_headers"
+  build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
+  node_headers_dir="${build_dir}/gen/node_headers"
   electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
   node_headers_need_rebuild='no'
   if [ ! -d "${node_headers_dir}" ]; then
@@ -141,7 +140,7 @@ eltest () {
     node_headers_need_rebuild='yes'
   fi
   if [ "x$node_headers_need_rebuild" != 'xno' ]; then
-    ninja -C "out/${config}" third_party/electron_node:headers
+    ninja -C "${build_dir}" third_party/electron_node:headers
     # Install the test modules with the generated headers
     (cd "${electron_spec_dir}" && npm i --nodedir="${node_headers_dir}")
     touch "${node_headers_dir}"
