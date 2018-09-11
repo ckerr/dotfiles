@@ -69,9 +69,9 @@ elsync () {
   # More reading:
   # https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
 
+  gclient sync --with_branch_heads --with_tags --delete_unversioned_trees
   # FIXME: not sure if this fetch is necessary?
   gclient fetch
-  gclient sync --with_branch_heads --with_tags --delete_unversioned_trees
 
   # Reparent electron s.t. origin points at github rather than $GIT_CACHE_PATH
   dir="${ELECTRON_GN_PATH}/src/electron"
