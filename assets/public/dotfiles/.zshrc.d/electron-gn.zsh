@@ -78,16 +78,18 @@ elsync () {
   # because `origin` is inside the git cache.
 
   dir="${ELECTRON_GN_PATH}/src/electron"
-  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == 'x0' ]; then
-    git -C "${dir}" remote add gh git@github.com:electron/electron.git
+  if [ "x`git -C "${dir}" remote get-url origin | grep "${GIT_CACHE_PATH}" | wc --lines`" != 'x0' ]; then
+    git -C "${dir}" remote set-url origin git@github.com:electron/electron
   fi
   git -C "${dir}" fetch --all --prune
+  git -C "${dir}" pull
 
   dir="${ELECTRON_GN_PATH}/src/libchromiumcontent"
-  if [ "x`git -C "${dir}" remote | grep gh | wc --lines`" == 'x0' ]; then
-    git -C "${dir}" remote add gh git@github.com:electron/libchromiumcontent.git
+  if [ "x`git -C "${dir}" remote get-url origin | grep "${GIT_CACHE_PATH}" | wc --lines`" != 'x0' ]; then
+    git -C "${dir}" remote set-url origin git@github.com:electron/libchromiumcontent
   fi
   git -C "${dir}" fetch --all --prune
+  git -C "${dir}" pull
 }
 
 # Builds Electron.
