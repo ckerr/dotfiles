@@ -73,10 +73,7 @@ elsync () {
   gclient fetch
   gclient sync --with_branch_heads --with_tags --delete_unversioned_trees
 
-  # Ensure a 'gh' remote exists for electron and libchromiumcontent.
-  # This is useful for pushing branches up to github
-  # because `origin` is inside the git cache.
-
+  # Reparent electron s.t. origin points at github rather than $GIT_CACHE_PATH
   dir="${ELECTRON_GN_PATH}/src/electron"
   if [ "x`git -C "${dir}" remote get-url origin | grep "${GIT_CACHE_PATH}" | wc --lines`" != 'x0' ]; then
     git -C "${dir}" remote set-url origin git@github.com:electron/electron
@@ -84,6 +81,7 @@ elsync () {
   git -C "${dir}" fetch --all --prune
   git -C "${dir}" pull
 
+  # Reparent libchromiumcontent s.t. origin points at github rather than $GIT_CACHE_PATH
   dir="${ELECTRON_GN_PATH}/src/libchromiumcontent"
   if [ "x`git -C "${dir}" remote get-url origin | grep "${GIT_CACHE_PATH}" | wc --lines`" != 'x0' ]; then
     git -C "${dir}" remote set-url origin git@github.com:electron/libchromiumcontent
