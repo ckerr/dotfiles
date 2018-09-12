@@ -73,7 +73,7 @@ elsync () {
 
   # ensure maintainer repos point to github instead of git-cache
   github_repos=( electron libchromiumcontent )
-  for repo in "${repos[@]}"
+  for repo in "${github_repos[@]}"
   do
     dir="${ELECTRON_GN_PATH}/src/${repo}"
     url=$(git -C "${dir}" remote get-url origin)
