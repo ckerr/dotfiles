@@ -58,11 +58,11 @@ mkdir -p "${ELECTRON_GN_PATH}"
 # Gets the source and submodules.
 # Use this to boostrap the first time and also after changing branches
 elsync () {
-  cd "${ELECTRON_GN_PATH}"
+  pushd "${ELECTRON_GN_PATH}"
 
   # if the .gclient file doesn't exist, then create it
   if [ ! -f "${ELECTRON_GN_PATH}/.gclient" ]; then
-    gclient config --name "src/electron" --unmanaged https://github.com/electron/electron
+    gclient config --name 'src/electron' --unmanaged https://github.com/electron/electron
   fi
 
   # Get the code.
@@ -70,24 +70,20 @@ elsync () {
   # https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
 
   gclient sync --with_branch_heads --with_tags --delete_unversioned_trees
-  # FIXME: not sure if this fetch is necessary?
-  gclient fetch
 
-  # Reparent electron s.t. origin points at github rather than $GIT_CACHE_PATH
-  dir="${ELECTRON_GN_PATH}/src/electron"
-  if [ "x`git -C "${dir}" remote get-url origin | grep "${GIT_CACHE_PATH}" | wc --lines`" != 'x0' ]; then
-    git -C "${dir}" remote set-url origin git@github.com:electron/electron
-  fi
-  git -C "${dir}" fetch --all --prune
-  git -C "${dir}" pull
+  # ensure maintainer repos point to github instead of git-cache
+  github_repos=( electron libchromiumcontent )
+  for repo in "${repos[@]}"
+  do
+    dir="${ELECTRON_GN_PATH}/src/${repo}"
+    url=$(git -C "${dir}" remote get-url origin)
+    if [[ $url = *"${GIT_CACHE_PATH}"* ]]; then
+      echo "setting github as origin for ${repo}"
+      git -C "${dir}" remote set-url origin "git@github.com:electron/${repo}"
+    fi
+  done
 
-  # Reparent libchromiumcontent s.t. origin points at github rather than $GIT_CACHE_PATH
-  dir="${ELECTRON_GN_PATH}/src/libchromiumcontent"
-  if [ "x`git -C "${dir}" remote get-url origin | grep "${GIT_CACHE_PATH}" | wc --lines`" != 'x0' ]; then
-    git -C "${dir}" remote set-url origin git@github.com:electron/libchromiumcontent
-  fi
-  git -C "${dir}" fetch --all --prune
-  git -C "${dir}" pull
+  popd
 }
 
 # Builds Electron.
