@@ -1,6 +1,3 @@
-function rgup() {
-  rg --unrestricted --pretty "$@" | less -RFX
-}
 
 if [[ -x "/snap/bin/ripgrep.rg" ]]
 then
@@ -11,4 +8,8 @@ fi
 
 function rg() {
   "$RG_PATH" $@
+}
+
+function rgup() {
+  rg -uu --pretty "$@" | less -RFX
 }
