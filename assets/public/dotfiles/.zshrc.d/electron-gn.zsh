@@ -29,6 +29,11 @@ export SCCACHE_TWO_TIER=true
 # used by chromium buildtools e.g. gn
 export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}/src/buildtools"
 
+# this is needed to run the specs on Linux
+if [ x`uname -s` == 'xLinux' ]; then
+  export ELECTRON_DISABLE_SECURITY_WARNINGS=1
+fi
+
 # depot tools needs to be in the path
 if [ ! -d "${DEPOT_TOOLS_PATH}" ]; then
   echo 'depot tools not found!'
@@ -72,16 +77,13 @@ elsync () {
   gclient sync --with_branch_heads --with_tags --delete_unversioned_trees
 
   # ensure maintainer repos point to github instead of git-cache
-  github_repos=( electron libchromiumcontent )
-  for repo in "${github_repos[@]}"
-  do
-    dir="${ELECTRON_GN_PATH}/src/${repo}"
-    url=$(git -C "${dir}" remote get-url origin)
-    if [[ $url = *"${GIT_CACHE_PATH}"* ]]; then
-      echo "setting github as origin for ${repo}"
-      git -C "${dir}" remote set-url origin "git@github.com:electron/${repo}"
-    fi
-  done
+  repo=electron
+  dir="${ELECTRON_GN_PATH}/src/${repo}"
+  url=$(git -C "${dir}" remote get-url origin)
+  if [[ $url = *"${GIT_CACHE_PATH}"* ]]; then
+    echo "setting github as origin for ${repo}"
+    git -C "${dir}" remote set-url origin "git@github.com:electron/${repo}"
+  fi
 
   popd
 }
