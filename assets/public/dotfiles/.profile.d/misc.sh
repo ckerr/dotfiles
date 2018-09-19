@@ -21,11 +21,19 @@ export XDG_CACHE_HOME
 # PATH building
 
 bindirs=(
-  /snap/bin
   "${HOME}"/opt/bin
   "${HOME}"/.local/bin
   "${HOME}"/bin
 )
+
+if [[ x`uname` == 'xLinux' ]]; then
+  bindirs+=(/snap/bin)
+fi
+
+if [[ x`uname` == 'xDarwin' ]]; then
+  bindirs+=(/usr/local/opt/findutils/libexec/gnubin)
+fi
+
 for bindir in "${bindirs[@]}"
 do
   if [[ ":$PATH:" != *":$bindir:"* ]]; then
@@ -34,3 +42,24 @@ do
     fi
   fi
 done
+
+
+# MANPATH building
+
+manpathdirs=(
+)
+
+if [[ x`uname` == 'xDarwin' ]]; then
+  manpathdirs+=(/usr/local/opt/findutils/libexec/gnuman)
+fi
+
+for manpathdir in "${manpathdirs[@]}"
+do
+  if [[ ":$MANPATH:" != *":$manpathdir:"* ]]; then
+    if [ -d "${manpathdir}" ]; then
+      export MANPATH="${manpathdir}:${PATH}"
+    fi
+  fi
+done
+
+
