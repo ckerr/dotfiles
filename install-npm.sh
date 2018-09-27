@@ -5,6 +5,7 @@ NODE_PACKAGES=(
   empty-trash-cli
   fkill-cli
   gh-home
+  json
   npmrc
   vmd
 )
