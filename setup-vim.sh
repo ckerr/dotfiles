@@ -17,6 +17,9 @@ get_repo "${name}" "https://github.com/rafi/${name}.git" "${vimplugindir}/${name
 name="vim-cpp-enhanced-highlight"
 get_repo "${name}" "https://github.com/octol/${name}.git" "${vimplugindir}/${name}"
 
+name="vim-javascript"
+get_repo "${name}" "https://github.com/pangloss/${name}.git" "${vimplugindir}/${name}"
+
 
 # Initialize .vimrc
 
