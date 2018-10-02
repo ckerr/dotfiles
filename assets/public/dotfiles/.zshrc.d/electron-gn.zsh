@@ -30,7 +30,7 @@ export SCCACHE_TWO_TIER=true
 export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}/src/buildtools"
 
 # this is needed to run the specs on Linux
-if [ x`uname -s` == 'xLinux' ]; then
+if [ x`uname -s` = 'xLinux' ]; then
   export ELECTRON_DISABLE_SECURITY_WARNINGS=1
 fi
 
