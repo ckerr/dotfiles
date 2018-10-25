@@ -38,8 +38,8 @@ fi
 if [ ! -d "${DEPOT_TOOLS_PATH}" ]; then
   echo 'depot tools not found!'
   echo 'how to install: http://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up'
-elif [[ ":$PATH:" != *":$dir:"* ]]; then
-  export PATH="${PATH}:${dir}"
+elif [[ ":$PATH:" != *":${DEPOT_TOOLS_PATH}:"* ]]; then
+  export PATH="${PATH}:${DEPOT_TOOLS_PATH}"
   # see depot_tools/zsh-goodies/README
   fpath=("${DEPOT_TOOLS_PATH}/zsh-goodies" ${fpath})
 fi
