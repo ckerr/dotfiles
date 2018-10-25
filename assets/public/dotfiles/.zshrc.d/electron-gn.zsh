@@ -49,11 +49,17 @@ fi
 ##  Directory setup
 ##
 
+whence gmkdir
+if [ $? -eq 0 ]; then
+  gmkdir=gmkdir
+else
+  gmkdir=mkdir
+fi
 
 ## ensure the directories exist
-mkdir -p "${GIT_CACHE_PATH}"
-mkdir -p "${SCCACHE_DIR}"
-mkdir -p "${ELECTRON_GN_PATH}"
+"${gmkdir}" -p "${GIT_CACHE_PATH}"
+"${gmkdir}" -p "${SCCACHE_DIR}"
+"${gmkdir}" -p "${ELECTRON_GN_PATH}"
 
 
 ##

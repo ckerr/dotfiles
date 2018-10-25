@@ -48,12 +48,21 @@ get_repo "${name}" "https://github.com/bhilburn/${name}" "${zshcustom}/themes/${
 
 ## install dotfiles
 
+whence gfind
+if [ $? -eq 0 ]; then
+  gfind=gfind
+  ginstall=ginstall
+else
+  gfind=find
+  ginstall=install
+fi
+
 (cd assets/public/dotfiles \
-  && find -name ".[^.]*"    -type f -exec install -Dm 644 "{}" "${HOME}/{}" \; -print \
-  && find -path ".[^.]*/**" -type f -exec install -Dm 644 "{}" "${HOME}/{}" \; -print )
+  && ${gfind} -name ".[^.]*"    -type f -exec ${ginstall} -Dm 644 "{}" "${HOME}/{}" \; -print \
+  && ${gfind} -path ".[^.]*/**" -type f -exec ${ginstall} -Dm 644 "{}" "${HOME}/{}" \; -print )
 
 (cd assets/private/dotfiles \
-  && find -name ".[^.]*"    -type f -exec install -Dm 600 "{}" "${HOME}/{}" \; -print \
-  && find -path ".[^.]*/**" -type f -exec install -Dm 600 "{}" "${HOME}/{}" \; -print )
+  && ${gfind} -name ".[^.]*"    -type f -exec ${ginstall} -Dm 600 "{}" "${HOME}/{}" \; -print \
+  && ${gfind} -path ".[^.]*/**" -type f -exec ${ginstall} -Dm 600 "{}" "${HOME}/{}" \; -print )
 
 echo $0 done
