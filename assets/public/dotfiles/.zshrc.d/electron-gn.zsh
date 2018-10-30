@@ -213,3 +213,5 @@ elrg () {
 elrgall () {
   rg -t cpp -t js -t c -t objcpp -t md -uu --pretty $@ "${ELECTRON_GN_PATH}/src" | less -RFX
 }
+
+alias elhome='cd "${ELECTRON_GN_PATH}/src/electron"'
