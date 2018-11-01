@@ -46,23 +46,4 @@ get_repo "${name}" "https://github.com/aperezdc/${name}" "${zshcustom}/plugins/$
 name="powerlevel9k"
 get_repo "${name}" "https://github.com/bhilburn/${name}" "${zshcustom}/themes/${name}"
 
-## install dotfiles
-
-whence gfind
-if [ $? -eq 0 ]; then
-  gfind=gfind
-  ginstall=ginstall
-else
-  gfind=find
-  ginstall=install
-fi
-
-(cd assets/public/dotfiles \
-  && ${gfind} -name ".[^.]*"    -type f -exec ${ginstall} -Dm 644 "{}" "${HOME}/{}" \; -print \
-  && ${gfind} -path ".[^.]*/**" -type f -exec ${ginstall} -Dm 644 "{}" "${HOME}/{}" \; -print )
-
-(cd assets/private/dotfiles \
-  && ${gfind} -name ".[^.]*"    -type f -exec ${ginstall} -Dm 600 "{}" "${HOME}/{}" \; -print \
-  && ${gfind} -path ".[^.]*/**" -type f -exec ${ginstall} -Dm 600 "{}" "${HOME}/{}" \; -print )
-
 echo $0 done
