@@ -5,6 +5,7 @@ NODE_PACKAGES=(
   empty-trash-cli
   fkill-cli
   gh-home
+  http-echo-server
   json
   npmrc
   vmd
@@ -31,6 +32,7 @@ function npm_install() {
 zsh -ic "echo this interactive shell nudges zsh-nvm to bootstrap nvm"
 source ~/.nvm/nvm.sh
 nvm install --latest-npm
+nvm use default
 nvm current
 
 # install node packages
