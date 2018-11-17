@@ -112,9 +112,20 @@ elmake () {
     (cd "${ELECTRON_GN_PATH}/src" && gn gen "${build_dir}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"${sccache}\"")
   fi
 
-  ninja -C "${build_dir}" electron:electron_app
-  "${sccache}" --show-stats
+  # if there's nothing to do, exit without showing sccache stats
+  target='electron:electron_app'
+  ninja -C "${build_dir}" -n "${target}" | grep --color=never 'no work to do'
+  if [[ $? -eq 0 ]]; then
+    return 0
+  fi
 
+  # if the build fails, return the error
+  ninja -C "${build_dir}" "${target}"
+  if [[ $? -ne 0 ]]; then
+    return $?
+  fi
+
+  "${sccache}" --show-stats
 }
 
 # Runs the tests.
@@ -215,3 +226,64 @@ elrgall () {
 }
 
 alias elhome='cd "${ELECTRON_GN_PATH}/src/electron"'
+
+elrun () {
+  config="${1-debug}"
+  dir="${2-.}"
+
+  electron=$(elfindexec "${config}")
+  "${electron}" "${dir}"
+}
+
+eldebug () {
+  config="${1-debug}"
+  dir="${2-.}"
+
+  electron=$(elfindexec "${config}")
+  gdb "${electron}" -ex "r '${dir}'"
+}
+
+eldebugmain () {
+  config="${1-debug}"
+  dir="${2-.}"
+
+  electron=$(elfindexec "${config}")
+  gdb "${electron}" -ex 'set breakpoint pending on' -ex 'break main' -ex "r '${dir}'"
+}
+ 
+
+elmakerun () {
+  config="${1-debug}"
+  dir="${2-.}"
+
+  elmake "${config}" && elrun "${config}" "${dir}"
+}
+
+elmakedebug () {
+  config="${1-debug}"
+  dir="${2-.}"
+
+  elmake "${config}" && eldebug "${config}" "${dir}"
+}
+
+elmakedebugmain () {
+  config="${1-debug}"
+  dir="${2-.}"
+
+  elmake "${config}" && eldebugmain "${config}" "${dir}"
+}
+
+elquick () {
+  target=${1-electron-quick-start}
+  git clone git@github.com:electron/electron-quick-start.git "${target}" && cd "${target}" && npm install
+}
+
+alias eld=eldebug
+alias eldma=eldebugmain
+alias elm=elmake
+alias elmd=elmakedebug
+alias elmdma=elmakedebugmain
+alias elmr=elmakerun
+alias elr=elrun
+
+
