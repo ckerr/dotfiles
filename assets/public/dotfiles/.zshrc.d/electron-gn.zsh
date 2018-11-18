@@ -121,8 +121,9 @@ elmake () {
 
   # if the build fails, return the error
   ninja -C "${build_dir}" "${target}"
-  if [[ $? -ne 0 ]]; then
-    return $?
+  code=$?
+  if [[ $code -ne 0 ]]; then
+    return $code
   fi
 
   "${sccache}" --show-stats
@@ -225,8 +226,16 @@ elrgall () {
   rg -t cpp -t js -t c -t objcpp -t md -uu --pretty $@ "${ELECTRON_GN_PATH}/src" | less -RFX
 }
 
-alias elhome='cd "${ELECTRON_GN_PATH}/src/electron"'
+# use: `elsrc` to cd to electron src directory
+# use: `elsrc $dir` to cd to electron src sibling directory e.g. `elsrc base`
+elsrc () {
+  dir=${1-electron}
+  cd "${ELECTRON_GN_PATH}/src/${dir}"
+}
 
+# run electron
+# @param config (default:debug)
+# @param path (default:.)
 elrun () {
   config="${1-debug}"
   dir="${2-.}"
@@ -235,6 +244,9 @@ elrun () {
   "${electron}" "${dir}"
 }
 
+# run electron inside a debugger in the specified directory
+# @param config (default:debug)
+# @param path (default:.)
 eldebug () {
   config="${1-debug}"
   dir="${2-.}"
@@ -243,6 +255,10 @@ eldebug () {
   gdb "${electron}" -ex "r '${dir}'"
 }
 
+# run electron inside a debugger in the specified directory
+# with a breakpoint set to `main()`
+# @param config (default:debug)
+# @param path (default:.)
 eldebugmain () {
   config="${1-debug}"
   dir="${2-.}"
@@ -251,7 +267,9 @@ eldebugmain () {
   gdb "${electron}" -ex 'set breakpoint pending on' -ex 'break main' -ex "r '${dir}'"
 }
  
-
+# make a fresh build, then run it in the specified directory
+# @param config (default:debug)
+# @param path (default:.)
 elmakerun () {
   config="${1-debug}"
   dir="${2-.}"
@@ -259,6 +277,9 @@ elmakerun () {
   elmake "${config}" && elrun "${config}" "${dir}"
 }
 
+# make a fresh build, then run it inside a debugger in the specified directory
+# @param config (default:debug)
+# @param path (default:.)
 elmakedebug () {
   config="${1-debug}"
   dir="${2-.}"
@@ -266,6 +287,10 @@ elmakedebug () {
   elmake "${config}" && eldebug "${config}" "${dir}"
 }
 
+# make a fresh build, then run it inside a debugger in the specified directory
+# with a breakpoint set for `main()`
+# @param config (default:debug)
+# @param path (default:.)
 elmakedebugmain () {
   config="${1-debug}"
   dir="${2-.}"
@@ -273,6 +298,7 @@ elmakedebugmain () {
   elmake "${config}" && eldebugmain "${config}" "${dir}"
 }
 
+# shortcut to get a clone of `electron-quick-start`
 elquick () {
   target=${1-electron-quick-start}
   git clone git@github.com:electron/electron-quick-start.git "${target}" && cd "${target}" && npm install
