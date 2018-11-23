@@ -6,6 +6,7 @@ UBUNTU_APPS=(
   a2ps
   aptitude
   atom
+  build-essential
   cargo
   clang-format
   cmake
@@ -39,6 +40,7 @@ UBUNTU_APPS=(
   powertop
   python-dbusmock
   python3-dbusmock
+  python3-dev
   python3-pip
   rename
   sox
