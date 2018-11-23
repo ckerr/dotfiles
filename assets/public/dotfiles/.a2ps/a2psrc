@@ -1,0 +1,10 @@
+# https://linuxcommando.blogspot.com/2014/01/print-text-files-with-multiples-pages.html
+# North American a2ps users need to modify the output paper size. a2ps was written in Europe, and uses A4 as the default paper size. North America uses a different standard, and a common paper size is called Letter - 8.5 x 11 inches. Printing A4 on Letter-sized paper results in text being cropped at the end of each line in the right column.
+#
+#To modify the paper size to Letter:
+#
+#$ a2ps -M Letter .emacs
+#
+#Instead of overriding the paper size in every single run, you can change the default locally (per user) or globally (system-wide). To specify the paper size for a user, add the following line to $HOME/.a2ps/a2psrc.
+Options: --medium=Letter
+
