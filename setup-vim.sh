@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 . ./common.sh
-
-vimplugindir="${VIMRUNTIME:-${HOME}/.vim}/pack/plugins/start"
+vimruntime="${VIMRUNTIME:-${HOME}/.vim}"
+vimplugindir="${vimruntime}/pack/plugins/start"
 
 mkdir -vp "${vimplugindir}"
 
@@ -14,5 +14,12 @@ get_repo "${name}" "https://github.com/octol/${name}.git" "${vimplugindir}/${nam
 
 name="vim-javascript"
 get_repo "${name}" "https://github.com/pangloss/${name}.git" "${vimplugindir}/${name}"
+
+name="YouCompleteMe"
+get_repo "${name}" "https://github.com/Valloric/${name}.git" "${vimplugindir}/${name}"
+pushd "${vimplugindir}/${name}"
+git submodule update --init --recursive
+./install.py
+popd
 
 echo $0 done
