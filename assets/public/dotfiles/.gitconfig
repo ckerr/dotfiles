@@ -44,7 +44,7 @@
 	untracked = red bold
 
 [alias]
-
+        unstage = reset
         unlock = !git checkout HEAD -- "`git rev-parse --show-toplevel`/package-lock.json"
 
         # haacked aliases from
