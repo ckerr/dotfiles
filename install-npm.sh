@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 NODE_PACKAGES=(
+  asar
   dev-time-cli
   empty-trash-cli
   fkill-cli
