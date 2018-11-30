@@ -6,5 +6,5 @@
 #$ a2ps -M Letter .emacs
 #
 #Instead of overriding the paper size in every single run, you can change the default locally (per user) or globally (system-wide). To specify the paper size for a user, add the following line to $HOME/.a2ps/a2psrc.
-Options: --medium=Letter
+Options: --medium=Letter --font-size=8
 
