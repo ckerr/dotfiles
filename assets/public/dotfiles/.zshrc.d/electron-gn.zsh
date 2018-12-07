@@ -49,7 +49,7 @@ fi
 ##  Directory setup
 ##
 
-whence gmkdir
+whence gmkdir > /dev/null
 if [ $? -eq 0 ]; then
   gmkdir=gmkdir
 else
