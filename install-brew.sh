@@ -5,8 +5,8 @@ BREW_APPS=(
   coreutils
   findutils
   fzy
-  golang
   git
+  golang
   htop
   kpcli
   macvim
