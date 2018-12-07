@@ -13,7 +13,7 @@ export TMPDIR=/tmp
 
 XDG_CACHE_HOME="${TMPDIR}/charles-cache"
 if [ ! -d ${XDG_CACHE_HOME} ]; then
-  mkdir --mode=700 "${XDG_CACHE_HOME}"
+  mkdir -m 700 "${XDG_CACHE_HOME}"
 fi
 export XDG_CACHE_HOME
 
