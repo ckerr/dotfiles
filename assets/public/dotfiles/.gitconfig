@@ -44,7 +44,7 @@
 	untracked = red bold
 
 [alias]
-        uncommit-unpushed = reset HEAD~1 --soft   
+        uncommit-unpushed = reset HEAD~1 --soft
         unstage = reset
         unlock = !git checkout HEAD -- "`git rev-parse --show-toplevel`/package-lock.json"
 
