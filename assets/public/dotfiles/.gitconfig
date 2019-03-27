@@ -2,11 +2,11 @@
 	name = Charles Kerr
 	email = ckerr@github.com
 
-[url "git+ssh://charlesk@git.launchpad.net/"]
-	insteadof = lp:
-
-[url "git+ssh://charlek@git.launchpad.net/~charlesk/+git/"]
-	insteadof = lpme:
+#[url "git+ssh://charlesk@git.launchpad.net/"]
+#	insteadof = lp:
+#
+#[url "git+ssh://charlek@git.launchpad.net/~charlesk/+git/"]
+#	insteadof = lpme:
 
 [push]
 	default = simple
