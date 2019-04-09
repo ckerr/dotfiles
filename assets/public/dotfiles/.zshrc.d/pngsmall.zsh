@@ -19,8 +19,6 @@ function pngsmall {
       eval "${commands[$step]}"
     done
 
-    ls -l "$source"
-    ls -l "$lossless"
-    ls -l "$lossy"
+    ls -lS "$source" "$lossless" "$lossy"
   done
 }
