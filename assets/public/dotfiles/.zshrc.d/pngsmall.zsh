@@ -1,35 +1,26 @@
 function pngsmall {
-  lossless=`basename --suffix='.png' "$1"`-lossless.png
-  lossy=`basename --suffix='.png' "$1"`-lossy.png
-  cp "$1" "$lossless"
+  for source in "$@"
+  do
+    lossless=`basename --suffix='.png' "$source"`-lossless.png
+    lossy=`basename --suffix='.png' "$source"`-lossy.png
 
-  step=0
-  steps=5
+    declare -a commands=(
+      "zopflipng -y \"$source\" \"$lossless\" 1>/dev/null"
+      "advpng -q --shrink-insane --recompress \"$lossless\""
+      "pngcrush -brute -reduce -ow -q \"$lossless\""
+      "optipng -clobber -preserve -quiet -o7 \"$lossless\""
+      "pngquant --output \"$lossy\" --force --skip-if-larger --speed=1 \"$lossless\""
+    )
 
-  # these are lossless tools
+    steps=${#commands[@]}
+    for (( step = 1; step <= steps; step++ ))
+    do
+      echo "${step}/${steps} ${commands[step]}"
+      eval "${commands[$step]}"
+    done
 
-  ((++step))
-  echo "${step}/${steps} advpng"
-  advpng --shrink-insane --recompress "$lossless"
-
-  ((++step))
-  echo "${step}/${steps} pngcrush"
-  pngcrush -brute -reduce -ow -q "$lossless"
-
-  ((++step))
-  echo "${step}/${steps} zopflipng"
-  zopflipng -y "$lossless" "$lossless"
-
-  ((++step))
-  echo "${step}/${steps} optipng"
-  optipng -clobber -preserve -quiet -o7 "$lossless"
-
-  # lossy tools
-  cp "$lossless" "$lossy"
-
-  ((++step))
-  echo "${step}/${steps} pngquant"
-  pngquant --output "$lossy" --force --skip-if-larger --speed=1 "$lossy"
+    ls -l "$source"
+    ls -l "$lossless"
+    ls -l "$lossy"
+  done
 }
-
-
