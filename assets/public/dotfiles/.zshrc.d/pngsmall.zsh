@@ -9,7 +9,7 @@ function pngsmall {
       "advpng -q --shrink-insane --recompress \"$lossless\""
       "pngcrush -brute -reduce -ow -q \"$lossless\""
       "optipng -clobber -preserve -quiet -o7 \"$lossless\""
-      "pngquant --output \"$lossy\" --force --skip-if-larger --speed=1 \"$lossless\""
+      "pngquant --output \"$lossy\" --force --speed=1 \"$lossless\""
     )
 
     steps=${#commands[@]}
