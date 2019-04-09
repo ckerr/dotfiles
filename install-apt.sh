@@ -4,6 +4,7 @@
 
 UBUNTU_APPS=(
   a2ps
+  advancecomp
   aptitude
   atom
   build-essential
@@ -35,6 +36,8 @@ UBUNTU_APPS=(
   ninja-build
   openssl
   opus-tools
+  pngcrush
+  pngout
   pngquant
   powerstat
   powertop
@@ -54,6 +57,7 @@ UBUNTU_APPS=(
   xclip
   yarn
   zeal
+  zopfli
   zsh
   zsh-doc
 )
