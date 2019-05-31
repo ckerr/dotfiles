@@ -252,7 +252,8 @@ eldebug () {
   dir="${2-.}"
 
   electron=$(elfindexec "${config}")
-  gdb "${electron}" -ex "r '${dir}'"
+  gdb "${electron}" -ex 'source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit' \
+                    -ex "r '${dir}'"
 }
 
 # run electron inside a debugger in the specified directory
@@ -264,7 +265,10 @@ eldebugmain () {
   dir="${2-.}"
 
   electron=$(elfindexec "${config}")
-  gdb "${electron}" -ex 'set breakpoint pending on' -ex 'break main' -ex "r '${dir}'"
+  gdb "${electron}" -ex 'source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit' \
+                    -ex 'set breakpoint pending on' \
+                    -ex 'break main' \
+                    -ex "r '${dir}'"
 }
  
 # make a fresh build, then run it in the specified directory
