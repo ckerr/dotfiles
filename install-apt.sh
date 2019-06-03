@@ -51,6 +51,7 @@ UBUNTU_APPS=(
   tmux
   transmission-cli
   transmission-daemon
+  unrar
   valgrind
   vim
   vim-gtk3
