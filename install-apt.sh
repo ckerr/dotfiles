@@ -55,6 +55,7 @@ UBUNTU_APPS=(
   valgrind
   vim
   vim-gtk3
+  vlc
   xclip
   yarn
   zeal
