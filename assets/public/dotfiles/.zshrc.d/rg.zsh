@@ -13,3 +13,14 @@ function rg() {
 function rgup() {
   rg -uu --pretty "$@" | less -RFX
 }
+
+# rgup matching most of the electron source types
+function rgel() {
+  rgup --type=cpp \
+       --type=gn \
+       --type=js \
+       --type=markdown \
+       --type=objcpp \
+       --type=py \
+       $@
+}
