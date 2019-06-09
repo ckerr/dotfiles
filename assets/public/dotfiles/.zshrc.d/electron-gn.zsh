@@ -252,7 +252,7 @@ eldebug () {
   dir="${2-.}"
 
   electron=$(elfindexec "${config}")
-  gdb "${electron}" -ex 'source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit' \
+  gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
                     -ex "r '${dir}'"
 }
 
@@ -265,7 +265,7 @@ eldebugmain () {
   dir="${2-.}"
 
   electron=$(elfindexec "${config}")
-  gdb "${electron}" -ex 'source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit' \
+  gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
                     -ex 'set breakpoint pending on' \
                     -ex 'break main' \
                     -ex "r '${dir}'"
