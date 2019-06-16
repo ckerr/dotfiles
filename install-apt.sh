@@ -37,7 +37,6 @@ UBUNTU_APPS=(
   openssl
   opus-tools
   pngcrush
-  pngout
   pngquant
   powerstat
   powertop
