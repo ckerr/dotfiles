@@ -121,6 +121,7 @@ add_repo "https://dl-ssl.google.com/linux/linux_signing_key.pub" \
          "http://dl.google.com/linux/chrome/deb/" \
          "/etc/apt/sources.list.d/google-chrome.list"
 
+sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 sudo add-apt-repository --no-update --yes ppa:transmissionbt/ppa
 
 
