@@ -4,4 +4,4 @@ sudo snap install           --edge   github-desktop
 sudo snap install           --stable gitkraken
 sudo snap install --classic --stable ripgrep
 sudo snap install           --stable telegram-desktop
-sudo snap install --classic --stable vscode
+sudo snap install --classic --stable code
