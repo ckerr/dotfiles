@@ -24,7 +24,7 @@ export GIT_CACHE_PATH="${ELECTRON_CACHE_PATH}/git-cache"
 # used by sccache
 export SCCACHE_DIR="${ELECTRON_CACHE_PATH}/sccache"
 # used by electron's branch of sccache to share with CI
-export SCCACHE_BUCKET="electronjs-sccache"
+export SCCACHE_BUCKET='electronjs-sccache'
 export SCCACHE_TWO_TIER=true
 # used by chromium buildtools e.g. gn
 export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}/src/buildtools"
@@ -95,25 +95,39 @@ elsync () {
 }
 
 # Builds Electron.
-# First optional arg is the build config, e.g. "debug", "release", or "testing".
+# First optional arg is the build config, e.g. 'debug', 'release', or 'testing'.
 # See https://github.com/electron/electron/tree/master/build/args for full list.
+# As a special case, a config of 'asan' will make an asan-enabled testing release
 #
 # Examples:
 #  elmake
 #  elmake testing
 elmake () {
-  config="${1-debug}"
+  local config="${1-debug}"
 
-  build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
-  sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
+  local build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
+  local sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
 
-  # if the build configuration doesn't already exist, create it now
+  local is_asan=false
+  if [ "${config}" = 'asan' ]; then
+    echo 'asan build'
+    is_asan=true
+    config='testing' # asan builds must use testing config
+  fi
+
+  # if the build dir hasn't been generated already, generate it now
   if [ ! -d "${build_dir}" ]; then
-    (cd "${ELECTRON_GN_PATH}/src" && gn gen "${build_dir}" --args="import(\"//electron/build/args/${config}.gn\") cc_wrapper=\"${sccache}\"")
+    local gn_args="import(\"//electron/build/args/${config}.gn\") "
+    gn_args+="cc_wrapper=\"${sccache}\" "
+    if [ is_asan ]; then
+      gn_args+='is_asan=true '
+    fi
+    echo "${gn_args}"
+    (cd "${ELECTRON_GN_PATH}/src" && gn gen "${build_dir}" --args="${gn_args}")
   fi
 
   # if there's nothing to do, exit without showing sccache stats
-  target='electron:electron_app'
+  local target='electron:electron_app'
   ninja -C "${build_dir}" -n "${target}" | grep --color=never 'no work to do'
   if [[ $? -eq 0 ]]; then
     return 0
@@ -121,7 +135,7 @@ elmake () {
 
   # if the build fails, return the error
   ninja -C "${build_dir}" "${target}"
-  code=$?
+  local code=$?
   if [[ $code -ne 0 ]]; then
     return $code
   fi
@@ -130,7 +144,7 @@ elmake () {
 }
 
 # Runs the tests.
-# First optional arg is the build config, e.g. "debug", "release", or "testing".
+# First optional arg is the build config, e.g. 'debug', 'release', or 'testing'.
 # See https://github.com/electron/electron/tree/master/build/args for full list.
 # Remaining args are passed to the spec.
 #
@@ -140,16 +154,15 @@ elmake () {
 #  eltest debug
 #  eltest debug --ci -g powerMonitor
 eltest () {
-
-  config="${1-debug}"
+  local config="${1-debug}"
 
   # to run the tests, you'll first need to build the test modules
   # against the same version of Node.js that was built as part of
   # the build process.
-  build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
-  node_headers_dir="${build_dir}/gen/node_headers"
-  electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
-  node_headers_need_rebuild='no'
+  local build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
+  local node_headers_dir="${build_dir}/gen/node_headers"
+  local electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
+  local node_headers_need_rebuild='no'
   if [ ! -d "${node_headers_dir}" ]; then
     node_headers_need_rebuild='yes'
   elif [ "${electron_spec_dir}/package.json" -nt "${node_headers_dir}" ]; then
@@ -170,12 +183,12 @@ eltest () {
 # You probably want to use eltest() instead.
 # This is useful iff you want to plug in arbitrary builds or specs.
 eltestrun () {
-  electron="$1"
-  electron_spec_dir="$2"
+  local electron="$1"
+  local electron_spec_dir="$2"
 
   # if dbusmock is installed, start a mock dbus session for it
   dbusenv=''
-  python -c "import dbusmock"
+  python -c 'import dbusmock'
   if [ "$?" -eq '0' ]; then
     dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
     echo "starting dbus @ ${dbusenv}"
@@ -199,14 +212,14 @@ eltestrun () {
 }
 
 # find the Electron executable for a given configuration.
-# First optional arg is the build config, e.g. "debug", "release", or "testing"
+# First optional arg is the build config, e.g. 'debug', 'release', or 'testing'
 elfindexec () {
-  config="${1-debug}"
+  local config="${1-debug}"
 
-  top="${ELECTRON_GN_PATH}/src/out/${config}"
-  dirs=("${top}/Electron.app/Contents/MacOS/Electron" \
-        "${top}/electron.exe" \
-        "${top}/electron")
+  local top="${ELECTRON_GN_PATH}/src/out/${config}"
+  local dirs=("${top}/Electron.app/Contents/MacOS/Electron" \
+              "${top}/electron.exe" \
+              "${top}/electron")
   for dir in "${dirs[@]}"
   do
     if [ -x "${dir}" ]; then
@@ -229,7 +242,8 @@ elrgall () {
 # use: `elsrc` to cd to electron src directory
 # use: `elsrc $dir` to cd to electron src sibling directory e.g. `elsrc base`
 elsrc () {
-  dir=${1-electron}
+  local dir=${1-electron}
+
   cd "${ELECTRON_GN_PATH}/src/${dir}"
 }
 
@@ -237,21 +251,34 @@ elsrc () {
 # @param config (default:debug)
 # @param path (default:.)
 elrun () {
-  config="${1-debug}"
-  dir="${2-.}"
+  local config="${1-debug}"
+  local dir="${2-.}"
 
-  electron=$(elfindexec "${config}")
-  "${electron}" "${dir}"
+  local electron=$(elfindexec "${config}")
+
+  $(nm -an "${electron}" | grep '__asan_init')
+  local is_asan=false
+  if [ $? -eq 0 ]; then
+    is_asan=true
+  fi
+
+  if [ "${is_asan}" ]; then
+    local symbolize="${ELECTRON_GN_PATH}/src/tools/valgrind/asan/asan_symbolize.py"
+    echo "piping output to ${symbolize}"
+    "${electron}" "${dir}" 2>&1 | "${symbolize}" --executable-path="${electron}"
+  else
+    "${electron}" "${dir}"
+  fi
 }
 
 # run electron inside a debugger in the specified directory
 # @param config (default:debug)
 # @param path (default:.)
 eldebug () {
-  config="${1-debug}"
-  dir="${2-.}"
+  local config="${1-debug}"
+  local dir="${2-.}"
 
-  electron=$(elfindexec "${config}")
+  local electron=$(elfindexec "${config}")
   gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
                     -ex "r '${dir}'"
 }
@@ -261,10 +288,10 @@ eldebug () {
 # @param config (default:debug)
 # @param path (default:.)
 eldebugmain () {
-  config="${1-debug}"
-  dir="${2-.}"
+  local config="${1-debug}"
+  local dir="${2-.}"
 
-  electron=$(elfindexec "${config}")
+  local electron=$(elfindexec "${config}")
   gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
                     -ex 'set breakpoint pending on' \
                     -ex 'break main' \
@@ -275,8 +302,8 @@ eldebugmain () {
 # @param config (default:debug)
 # @param path (default:.)
 elmakerun () {
-  config="${1-debug}"
-  dir="${2-.}"
+  local config="${1-debug}"
+  local dir="${2-.}"
 
   elmake "${config}" && elrun "${config}" "${dir}"
 }
@@ -285,8 +312,8 @@ elmakerun () {
 # @param config (default:debug)
 # @param path (default:.)
 elmakedebug () {
-  config="${1-debug}"
-  dir="${2-.}"
+  local config="${1-debug}"
+  local dir="${2-.}"
 
   elmake "${config}" && eldebug "${config}" "${dir}"
 }
@@ -296,15 +323,16 @@ elmakedebug () {
 # @param config (default:debug)
 # @param path (default:.)
 elmakedebugmain () {
-  config="${1-debug}"
-  dir="${2-.}"
+  local config="${1-debug}"
+  local dir="${2-.}"
 
   elmake "${config}" && eldebugmain "${config}" "${dir}"
 }
 
 # shortcut to get a clone of `electron-quick-start`
 elquick () {
-  target=${1-electron-quick-start}
+  local target=${1-electron-quick-start}
+
   git clone git@github.com:electron/electron-quick-start.git "${target}" && cd "${target}" && npm install
 }
 
