@@ -31,19 +31,24 @@ zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
 
 ## Install new versions
 
-name="oh-my-zsh"
-get_repo "${name}" "https://github.com/robbyrussell/${name}.git" "${zshdir}"
+user='robbyrussell'
+name='oh-my-zsh'
+get_repo "${name}" "https://github.com/${user}/${name}.git" "${zshdir}"
 
-name="zsh-nvm"
-get_repo "${name}" "https://github.com/lukechilds/${name}" "${zshcustom}/plugins/${name}"
+user='lukechilds'
+name='zsh-nvm'
+get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
 
-name="zsh-autosuggestions"
-get_repo "${name}" "https://github.com/zsh-users/${name}" "${zshcustom}/plugins/${name}"
+user='zsh-users'
+name='zsh-autosuggestions'
+get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
 
-name="zsh-fzy"
-get_repo "${name}" "https://github.com/aperezdc/${name}" "${zshcustom}/plugins/${name}"
+user='aperezdc'
+name='zsh-fzy'
+get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
 
-name="powerlevel9k"
-get_repo "${name}" "https://github.com/bhilburn/${name}" "${zshcustom}/themes/${name}"
+user='bhilburn'
+name='powerlevel9k'
+get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/themes/${name}"
 
 echo $0 done

@@ -31,10 +31,8 @@ function npm_install() {
 
 # install node
 zsh -ic "echo this interactive shell nudges zsh-nvm to bootstrap nvm"
-source ~/.nvm/nvm.sh
-nvm install --latest-npm
-nvm use default
-nvm current
+source ${NVM_DIR:~/.nvm}/nvm.sh
+nvm install node # 'node' is an alias for the latest version
 
 # install node packages
 npm --global update
