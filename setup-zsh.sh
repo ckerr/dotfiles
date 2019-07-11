@@ -36,6 +36,10 @@ name='oh-my-zsh'
 get_repo "${name}" "https://github.com/${user}/${name}.git" "${zshdir}"
 
 user='lukechilds'
+name='zsh-better-npm-completion'
+get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
+
+user='lukechilds'
 name='zsh-nvm'
 get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
 

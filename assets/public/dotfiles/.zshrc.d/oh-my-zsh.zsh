@@ -74,6 +74,7 @@ plugins=(
   zsh-fzy
   zsh-autosuggestions
   zsh-nvm
+  zsh-better-npm-completion
   git
 )
 
