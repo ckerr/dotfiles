@@ -30,7 +30,7 @@ function npm_install() {
 }
 
 # install node
-zsh -ic "echo this interactive shell nudges zsh-nvm to bootstrap nvm"
+zsh -ic 'echo this interactive shell nudges zsh-nvm to bootstrap nvm'
 source ${NVM_DIR:~/.nvm}/nvm.sh
 nvm install node # 'node' is an alias for the latest version
 

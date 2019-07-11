@@ -12,8 +12,8 @@ stman configure
 
 # configure the local system
 my_id=$(stman device list | grep "ID:" | head -n1 | cut -d: -f2 | tr -d "[:blank:]")
-echo "local syncthing id is $my_id"
-echo "please enter a name for this syncthing device:"
+echo "local syncthing id is ${my_id}"
+echo 'please enter a name for this syncthing device:'
 read name
 stman device edit --name "${name}" -io "${my_id}"
 

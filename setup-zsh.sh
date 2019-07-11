@@ -18,7 +18,7 @@ done
 
 # set login shell to zsh
 if [[ "$SHELL" != *zsh ]]; then
-  echo "changing login shell to zsh"
+  echo 'changing login shell to zsh'
   chsh -s $(which zsh)
 fi
 
