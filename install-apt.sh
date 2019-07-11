@@ -11,6 +11,7 @@ UBUNTU_APPS=(
   cargo
   clang-format
   cmake
+  code
   cowsay
   cppcheck
   cppreference-doc-en-html
@@ -85,19 +86,22 @@ function exit_if_error()
 
 function add_repo()
 {
-  key_url=$1
-  repo_url=$2
-  list_file=$3
+  local key_url="${1}"
+  local repo_url="${2}"
+  local list_file="${3}"
+  local suite="${4-stable}"
+  local component="${5-main}"
+  local arch=$(dpkg --print-architecture)
 
   if [ ! -f "${list_file}" ]; then
     wget -q -O - "${key_url}" | sudo apt-key add -
-    echo "deb [arch=amd64] ${repo_url} any main" | sudo tee "${list_file}"
+    echo "deb [arch=${arch}] ${repo_url} ${suite} ${component}" | sudo tee "${list_file}"
   fi
 }
 
 function apt_install()
 {
-  item=$1
+  local item="${1}"
   #echo $item
 
   dpkg -s "${item}" > /dev/null 2>&1
@@ -112,20 +116,22 @@ function apt_install()
 
 ## Add some repos
 
-add_repo 'https://packagecloud.io/AtomEditor/atom/gpgkey' \
-         'https://packagecloud.io/AtomEditor/atom/any/' \
-         '/etc/apt/sources.list.d/atom.list'
-
 add_repo 'https://dl-ssl.google.com/linux/linux_signing_key.pub' \
          'http://dl.google.com/linux/chrome/deb/' \
-         '/etc/apt/sources.list.d/google-chrome.list'
+         '/etc/apt/sources.list.d/google-chrome.list' \
+         'stable' 'main'
+
+# source: https://github.com/microsoft/vscode/issues/2973#issuecomment-280575841
+add_repo 'https://packages.microsoft.com/keys/microsoft.asc' \
+         'https://packages.microsoft.com/repos/vscode' \
+         '/etc/apt/sources.list.d/vscode.list' \
+         'stable' 'main'
 
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 
 # disabling 2019-07-11 because Disco not supported yet
 #sudo add-apt-repository --no-update --yes ppa:transmissionbt/ppa
-
 
 ## Install some packages
 
