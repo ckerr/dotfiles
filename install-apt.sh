@@ -120,8 +120,11 @@ add_repo 'https://dl-ssl.google.com/linux/linux_signing_key.pub' \
          'http://dl.google.com/linux/chrome/deb/' \
          '/etc/apt/sources.list.d/google-chrome.list'
 
+# https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
-sudo add-apt-repository --no-update --yes ppa:transmissionbt/ppa
+
+# disabling 2019-07-11 because Disco not supported yet
+#sudo add-apt-repository --no-update --yes ppa:transmissionbt/ppa
 
 
 ## Install some packages
