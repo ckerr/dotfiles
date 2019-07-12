@@ -80,7 +80,7 @@ elsync () {
   # More reading:
   # https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
 
-  gclient sync --with_branch_heads --with_tags --delete_unversioned_trees -v -v --break_repo_locks --lock_timeout=300
+  gclient sync --with_branch_heads --with_tags --delete_unversioned_trees -vvvv --break_repo_locks --lock_timeout=300
 
   # ensure maintainer repos point to github instead of git-cache
   repo=electron
