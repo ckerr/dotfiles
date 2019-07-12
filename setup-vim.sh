@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 . ./common.sh
-vimruntime="${VIMRUNTIME:-${HOME}/.vim}"
-vimplugindir="${vimruntime}/pack/plugins/start"
+declare -r vimruntime="${VIMRUNTIME:-${HOME}/.vim}"
+declare -r vimplugindir="${vimruntime}/pack/plugins/start"
 
-mkdir -vp "${vimplugindir}"
+"${gmkdir}" -vp "${vimplugindir}"
 
 user='rafi'
 name='awesome-vim-colorschemes'

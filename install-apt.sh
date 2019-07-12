@@ -2,7 +2,7 @@
 
 # cpplint
 
-UBUNTU_APPS=(
+declare -r UBUNTU_APPS=(
   a2ps
   advancecomp
   aptitude

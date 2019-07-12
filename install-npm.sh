@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-NODE_PACKAGES=(
+declare -r NODE_PACKAGES=(
   asar
   dev-time-cli
   empty-trash-cli
@@ -19,9 +19,9 @@ NODE_PACKAGES=(
 ##
 
 function npm_install() {
-  item=$1
+  local -r item="${1}"
 
-  echo "npm $item"
+  echo "npm ${item}"
   npm list --global --parseable ${item} > /dev/null 2>&1
   if [[ $? != 0 ]]; then
     echo "npm install -g $*"

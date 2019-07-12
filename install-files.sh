@@ -1,13 +1,6 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
-whence gfind
-if [ $? -eq 0 ]; then
-  gfind=gfind
-  ginstall=ginstall
-else
-  gfind=find
-  ginstall=install
-fi
+. ./common.sh
 
 (cd assets/public/dotfiles \
   && $gfind -name ".[^.]*"    -type f -exec $ginstall -Dm 644 "{}" "${HOME}/{}" \; -print \

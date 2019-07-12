@@ -2,7 +2,7 @@
 
 # apps that only need to be installed on nimbostratus
 
-NIMBOSTRATUS_APPS=(
+declare -r NIMBOSTRATUS_APPS=(
   ddclient
 )
 

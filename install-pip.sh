@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PIP3_PACKAGES=(
+declare -r PIP3_PACKAGES=(
   cclint
   cpplint
   syncthingmanager
@@ -10,7 +10,7 @@ PIP3_PACKAGES=(
 ##
 
 function pip3_install() {
-  item=$1
+  local -r item="${1}"
 
   echo "pip3 $item"
   pip3 show "${item}" > /dev/null 2>&1
