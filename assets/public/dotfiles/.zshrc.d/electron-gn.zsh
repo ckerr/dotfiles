@@ -108,18 +108,19 @@ elmake () {
   local build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
   local sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
 
-  local is_asan=false
-  if [ "${config}" = 'asan' ]; then
-    echo 'asan build'
-    is_asan=true
+  local is_asan
+  if [ "x${config}" = 'xasan' ]; then
     config='testing' # asan builds must use testing config
+    is_asan=yes
+  else
+    is_asan=no
   fi
 
   # if the build dir hasn't been generated already, generate it now
   if [ ! -d "${build_dir}" ]; then
     local gn_args="import(\"//electron/build/args/${config}.gn\") "
     gn_args+="cc_wrapper=\"${sccache}\" "
-    if [ is_asan ]; then
+    if [ "x${is_asan}" = 'xyes' ]; then
       gn_args+='is_asan=true '
     fi
     echo "${gn_args}"
@@ -256,13 +257,15 @@ elrun () {
 
   local electron=$(elfindexec "${config}")
 
-  $(nm -an "${electron}" | grep '__asan_init')
-  local is_asan=false
+  local is_asan
+  nm -an "${electron}" | grep --quiet '__asan_init$'
   if [ $? -eq 0 ]; then
-    is_asan=true
+    is_asan=yes
+  else
+    is_asan=no
   fi
 
-  if [ "${is_asan}" ]; then
+  if [ "x$is_asan" = 'xyes' ]; then
     local symbolize="${ELECTRON_GN_PATH}/src/tools/valgrind/asan/asan_symbolize.py"
     echo "piping output to ${symbolize}"
     "${electron}" "${dir}" 2>&1 | "${symbolize}" --executable-path="${electron}"
