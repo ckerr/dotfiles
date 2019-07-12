@@ -105,8 +105,8 @@ elsync () {
 elmake () {
   local config="${1-debug}"
 
-  local build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
-  local sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
+  local -r build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
+  local -r sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
 
   local is_asan
   if [ "x${config}" = 'xasan' ]; then
@@ -128,7 +128,7 @@ elmake () {
   fi
 
   # if there's nothing to do, exit without showing sccache stats
-  local target='electron:electron_app'
+  local -r target='electron:electron_app'
   ninja -C "${build_dir}" -n "${target}" | grep --color=never 'no work to do'
   if [[ $? -eq 0 ]]; then
     return 0
@@ -136,7 +136,7 @@ elmake () {
 
   # if the build fails, return the error
   ninja -C "${build_dir}" "${target}"
-  local code=$?
+  local -r code=$?
   if [[ $code -ne 0 ]]; then
     return $code
   fi
@@ -155,20 +155,22 @@ elmake () {
 #  eltest debug
 #  eltest debug --ci -g powerMonitor
 eltest () {
-  local config="${1-debug}"
+  local -r config="${1-debug}"
 
   # to run the tests, you'll first need to build the test modules
   # against the same version of Node.js that was built as part of
   # the build process.
-  local build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
-  local node_headers_dir="${build_dir}/gen/node_headers"
-  local electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
+  local -r build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
+  local -r node_headers_dir="${build_dir}/gen/node_headers"
+  local -r electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
+
   local node_headers_need_rebuild='no'
   if [ ! -d "${node_headers_dir}" ]; then
     node_headers_need_rebuild='yes'
   elif [ "${electron_spec_dir}/package.json" -nt "${node_headers_dir}" ]; then
     node_headers_need_rebuild='yes'
   fi
+
   if [ "x$node_headers_need_rebuild" != 'xno' ]; then
     ninja -C "${build_dir}" third_party/electron_node:headers
     # Install the test modules with the generated headers
@@ -176,7 +178,7 @@ eltest () {
     touch "${node_headers_dir}"
   fi
 
-  electron=$(elfindexec "${config}")
+  local -r electron=$(elfindexec "${config}")
   eltestrun "${electron}" "${electron_spec_dir}" ${@:2}
 }
 
@@ -184,11 +186,11 @@ eltest () {
 # You probably want to use eltest() instead.
 # This is useful iff you want to plug in arbitrary builds or specs.
 eltestrun () {
-  local electron="$1"
-  local electron_spec_dir="$2"
+  local -r electron="$1"
+  local -r electron_spec_dir="$2"
 
   # if dbusmock is installed, start a mock dbus session for it
-  dbusenv=''
+  local dbusenv=''
   python -c 'import dbusmock'
   if [ "$?" -eq '0' ]; then
     dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
@@ -215,12 +217,13 @@ eltestrun () {
 # find the Electron executable for a given configuration.
 # First optional arg is the build config, e.g. 'debug', 'release', or 'testing'
 elfindexec () {
-  local config="${1-debug}"
+  local -r config="${1-debug}"
 
-  local top="${ELECTRON_GN_PATH}/src/out/${config}"
-  local dirs=("${top}/Electron.app/Contents/MacOS/Electron" \
-              "${top}/electron.exe" \
-              "${top}/electron")
+  local -r top="${ELECTRON_GN_PATH}/src/out/${config}"
+  local -r dirs=("${top}/Electron.app/Contents/MacOS/Electron" \
+                       "${top}/electron.exe" \
+                       "${top}/electron")
+  local dir
   for dir in "${dirs[@]}"
   do
     if [ -x "${dir}" ]; then
@@ -243,7 +246,7 @@ elrgall () {
 # use: `elsrc` to cd to electron src directory
 # use: `elsrc $dir` to cd to electron src sibling directory e.g. `elsrc base`
 elsrc () {
-  local dir=${1-electron}
+  local -r dir=${1-electron}
 
   cd "${ELECTRON_GN_PATH}/src/${dir}"
 }
@@ -252,10 +255,10 @@ elsrc () {
 # @param config (default:debug)
 # @param path (default:.)
 elrun () {
-  local config="${1-debug}"
-  local dir="${2-.}"
+  local -r config="${1-debug}"
+  local -r dir="${2-.}"
 
-  local electron=$(elfindexec "${config}")
+  local -r electron=$(elfindexec "${config}")
 
   local is_asan
   nm -an "${electron}" | grep --quiet '__asan_init$'
@@ -266,7 +269,7 @@ elrun () {
   fi
 
   if [ "x$is_asan" = 'xyes' ]; then
-    local symbolize="${ELECTRON_GN_PATH}/src/tools/valgrind/asan/asan_symbolize.py"
+    local -r symbolize="${ELECTRON_GN_PATH}/src/tools/valgrind/asan/asan_symbolize.py"
     echo "piping output to ${symbolize}"
     "${electron}" "${dir}" 2>&1 | "${symbolize}" --executable-path="${electron}"
   else
@@ -278,10 +281,10 @@ elrun () {
 # @param config (default:debug)
 # @param path (default:.)
 eldebug () {
-  local config="${1-debug}"
-  local dir="${2-.}"
+  local -r config="${1-debug}"
+  local -r dir="${2-.}"
 
-  local electron=$(elfindexec "${config}")
+  local -r electron=$(elfindexec "${config}")
   gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
                     -ex "r '${dir}'"
 }
@@ -291,10 +294,10 @@ eldebug () {
 # @param config (default:debug)
 # @param path (default:.)
 eldebugmain () {
-  local config="${1-debug}"
-  local dir="${2-.}"
+  local -r config="${1-debug}"
+  local -r dir="${2-.}"
 
-  local electron=$(elfindexec "${config}")
+  local -r electron=$(elfindexec "${config}")
   gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
                     -ex 'set breakpoint pending on' \
                     -ex 'break main' \
@@ -305,8 +308,8 @@ eldebugmain () {
 # @param config (default:debug)
 # @param path (default:.)
 elmakerun () {
-  local config="${1-debug}"
-  local dir="${2-.}"
+  local -r config="${1-debug}"
+  local -r dir="${2-.}"
 
   elmake "${config}" && elrun "${config}" "${dir}"
 }
@@ -315,8 +318,8 @@ elmakerun () {
 # @param config (default:debug)
 # @param path (default:.)
 elmakedebug () {
-  local config="${1-debug}"
-  local dir="${2-.}"
+  local -r config="${1-debug}"
+  local -r dir="${2-.}"
 
   elmake "${config}" && eldebug "${config}" "${dir}"
 }
@@ -326,15 +329,15 @@ elmakedebug () {
 # @param config (default:debug)
 # @param path (default:.)
 elmakedebugmain () {
-  local config="${1-debug}"
-  local dir="${2-.}"
+  local -r config="${1-debug}"
+  local -r dir="${2-.}"
 
   elmake "${config}" && eldebugmain "${config}" "${dir}"
 }
 
 # shortcut to get a clone of `electron-quick-start`
 elquick () {
-  local target=${1-electron-quick-start}
+  local -r target=${1-electron-quick-start}
 
   git clone git@github.com:electron/electron-quick-start.git "${target}" && cd "${target}" && npm install
 }
