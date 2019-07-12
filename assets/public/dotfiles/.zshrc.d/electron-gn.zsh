@@ -49,18 +49,19 @@ fi
 ##  Directory setup
 ##
 
-whence gmkdir > /dev/null
-if [ $? -eq 0 ]; then
-  gmkdir=gmkdir
-else
-  gmkdir=mkdir
-fi
+function() {
+  whence gmkdir > /dev/null
+  if [ $? -eq 0 ]; then
+    local -r gmkdir='gmkdir'
+  else
+    local -r gmkdir='mkdir'
+  fi
 
-## ensure the directories exist
-"${gmkdir}" -p "${GIT_CACHE_PATH}"
-"${gmkdir}" -p "${SCCACHE_DIR}"
-"${gmkdir}" -p "${ELECTRON_GN_PATH}"
-
+  ## ensure the directories exist
+  "${gmkdir}" -p "${GIT_CACHE_PATH}"
+  "${gmkdir}" -p "${SCCACHE_DIR}"
+  "${gmkdir}" -p "${ELECTRON_GN_PATH}"
+}
 
 ##
 ##  Utilities
@@ -108,12 +109,11 @@ elmake () {
   local -r build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
   local -r sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
 
-  local is_asan
   if [ "x${config}" = 'xasan' ]; then
     config='testing' # asan builds must use testing config
-    is_asan=yes
+    local -r is_asan='yes'
   else
-    is_asan=no
+    local -r is_asan='no'
   fi
 
   # if the build dir hasn't been generated already, generate it now
@@ -164,11 +164,12 @@ eltest () {
   local -r node_headers_dir="${build_dir}/gen/node_headers"
   local -r electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
 
-  local node_headers_need_rebuild='no'
   if [ ! -d "${node_headers_dir}" ]; then
-    node_headers_need_rebuild='yes'
+    local -r node_headers_need_rebuild='yes'
   elif [ "${electron_spec_dir}/package.json" -nt "${node_headers_dir}" ]; then
-    node_headers_need_rebuild='yes'
+    local -r node_headers_need_rebuild='yes'
+  else
+    local -r node_headers_need_rebuild='no'
   fi
 
   if [ "x$node_headers_need_rebuild" != 'xno' ]; then
@@ -190,16 +191,17 @@ eltestrun () {
   local -r electron_spec_dir="$2"
 
   # if dbusmock is installed, start a mock dbus session for it
-  local dbusenv=''
   python -c 'import dbusmock'
   if [ "$?" -eq '0' ]; then
-    dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
+    local -r dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
     echo "starting dbus @ ${dbusenv}"
     dbus-launch --sh-syntax > "${dbusenv}"
     cat "${dbusenv}" | sed 's/SESSION/SYSTEM/' >> "${dbusenv}"
     source "${dbusenv}"
     (python -m dbusmock --template logind &)
     (python -m dbusmock --template notification_daemon &)
+  else
+    local -r dbusenv=''
   fi
 
   echo "starting ${electron}"
@@ -221,8 +223,8 @@ elfindexec () {
 
   local -r top="${ELECTRON_GN_PATH}/src/out/${config}"
   local -r dirs=("${top}/Electron.app/Contents/MacOS/Electron" \
-                       "${top}/electron.exe" \
-                       "${top}/electron")
+                 "${top}/electron.exe" \
+                 "${top}/electron")
   local dir
   for dir in "${dirs[@]}"
   do
@@ -260,12 +262,11 @@ elrun () {
 
   local -r electron=$(elfindexec "${config}")
 
-  local is_asan
   nm -an "${electron}" | grep --quiet '__asan_init$'
   if [ $? -eq 0 ]; then
-    is_asan=yes
+    local -r is_asan='yes'
   else
-    is_asan=no
+    local -r is_asan='no'
   fi
 
   if [ "x$is_asan" = 'xyes' ]; then
