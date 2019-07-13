@@ -16,8 +16,8 @@
 
 # arbitrary locations; can be wherever you like
 export ELECTRON_GN_PATH="${HOME}/electron/electron-gn"
-export ELECTRON_CACHE_PATH="${HOME}/.electron-cache"
-export DEPOT_TOOLS_PATH="${HOME}/src/depot_tools"
+declare ELECTRON_CACHE_PATH="${HOME}/.electron-cache"
+declare DEPOT_TOOLS_PATH="${HOME}/src/depot_tools"
 
 # used by depot_tools/gclient
 export GIT_CACHE_PATH="${ELECTRON_CACHE_PATH}/git-cache"
@@ -26,8 +26,6 @@ export SCCACHE_DIR="${ELECTRON_CACHE_PATH}/sccache"
 # used by electron's branch of sccache to share with CI
 export SCCACHE_BUCKET='electronjs-sccache'
 export SCCACHE_TWO_TIER=true
-# used by chromium buildtools e.g. gn
-export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}/src/buildtools"
 
 if [[ "${OSTYPE}" = *linux* ]]; then
   # the specs won't run on Linux without this
@@ -44,6 +42,8 @@ elif [[ ":$PATH:" != *":${DEPOT_TOOLS_PATH}:"* ]]; then
   fpath=("${DEPOT_TOOLS_PATH}/zsh-goodies" ${fpath})
 fi
 
+unset -v ELECTRON_CACHE_PATH
+unset -v DEPOT_TOOLS_PATH
 
 ##
 ##  Directory setup
@@ -132,7 +132,7 @@ elmake () {
       gn_args+='is_asan=true '
     fi
     echo "${gn_args}"
-    (cd "${ELECTRON_GN_PATH}/src" && gn gen "${build_dir}" --args="${gn_args}")
+    (cd "${ELECTRON_GN_PATH}/src" && CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}"/src/buildtools gn gen "${build_dir}" --args="${gn_args}")
   fi
 
   # if there's nothing to do, exit without showing sccache stats
