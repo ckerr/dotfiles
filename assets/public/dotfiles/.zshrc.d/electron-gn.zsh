@@ -68,29 +68,40 @@ function() {
 # Gets the source and submodules.
 # Use this to boostrap the first time and also after changing branches
 elsync () {
+  # ensure ELECTRON_GN_PATH exists
+  if [ ! -d "${ELECTRON_GN_PATH}" ]; then
+    mkdir -p "${ELECTRON_GN_PATH}"
+  fi
+
+  # gclient uses cwd
   pushd "${ELECTRON_GN_PATH}"
 
-  # if the .gclient file doesn't exist, then create it
+  # ensure .gclient file exists
+  local -r ELECTRON_SUBPATH='src/electron'
   if [ ! -f "${ELECTRON_GN_PATH}/.gclient" ]; then
-    gclient config --name 'src/electron' --unmanaged https://github.com/electron/electron
+    gclient config --name "${ELECTRON_SUBPATH}" --unmanaged https://github.com/electron/electron
   fi
 
   # Get the code.
   # More reading:
   # https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
-
-  gclient sync --with_branch_heads --with_tags --delete_unversioned_trees -vvvv --break_repo_locks --lock_timeout=300
+  gclient sync \
+    --break_repo_locks \
+    --delete_unversioned_trees \
+    --lock_timeout=300 \
+    --with_branch_heads \
+    --with_tags \
+    -vvvv
 
   # ensure maintainer repos point to github instead of git-cache
-  repo=electron
-  dir="${ELECTRON_GN_PATH}/src/${repo}"
-  url=$(git -C "${dir}" remote get-url origin)
-  if [[ $url = *"${GIT_CACHE_PATH}"* ]]; then
-    local -r origin_url="git@github.com:electron/${repo}"
-    echo "setting ${repo} origin to ${origin_url}"
-    git -C "${dir}" remote set-url        origin "${origin_url}"
-    git -C "${dir}" remote set-url --push origin "${origin_url}"
+  local -r desired_origin="git@github.com:electron/electron"
+  local -r repo_dir="${ELECTRON_GN_PATH}/${ELECTRON_SUBPATH}"
+  local -r old_origin=$(git -C "${repo_dir}" remote get-url origin)
+  if [ "x${old_origin}" != "x${desired_origin}" ]; then
+    git -C "${repo_dir}" remote set-url        origin "${desired_origin}"
+    git -C "${repo_dir}" remote set-url --push origin "${desired_origin}"
   fi
+  git -C "${repo_dir}" remote -v
 
   popd
 }
