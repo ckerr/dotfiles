@@ -29,8 +29,8 @@ export SCCACHE_TWO_TIER=true
 # used by chromium buildtools e.g. gn
 export CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}/src/buildtools"
 
-# this is needed to run the specs on Linux
-if [ x`uname -s` = 'xLinux' ]; then
+if [[ "${OSTYPE}" = *linux* ]]; then
+  # the specs won't run on Linux without this
   export ELECTRON_DISABLE_SECURITY_WARNINGS=1
 fi
 

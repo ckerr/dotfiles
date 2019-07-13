@@ -43,7 +43,7 @@ CASK_APPS=(
 ##
 
 # we only need this file on mac
-if [ "Darwin" != "$(uname -s)" ]; then
+if [[ "${OSTYPE}" != *darwin* ]]; then
   exit 0
 fi
 
