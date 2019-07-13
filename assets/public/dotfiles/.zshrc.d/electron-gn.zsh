@@ -94,13 +94,10 @@ elsync () {
     -vvvv
 
   # ensure maintainer repos point to github instead of git-cache
-  local -r desired_origin="git@github.com:electron/electron"
   local -r repo_dir="${ELECTRON_GN_PATH}/${ELECTRON_SUBPATH}"
-  local -r old_origin=$(git -C "${repo_dir}" remote get-url origin)
-  if [ "x${old_origin}" != "x${desired_origin}" ]; then
-    git -C "${repo_dir}" remote set-url        origin "${desired_origin}"
-    git -C "${repo_dir}" remote set-url --push origin "${desired_origin}"
-  fi
+  git -C "${repo_dir}" remote remove origin
+  git -C "${repo_dir}" remote add origin git@github.com:electron/electron
+  git -C "${repo_dir}" branch --set-upstream-to=origin/master
   git -C "${repo_dir}" remote -v
 
   popd
