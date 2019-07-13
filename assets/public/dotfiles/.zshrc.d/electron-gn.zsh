@@ -86,8 +86,10 @@ elsync () {
   dir="${ELECTRON_GN_PATH}/src/${repo}"
   url=$(git -C "${dir}" remote get-url origin)
   if [[ $url = *"${GIT_CACHE_PATH}"* ]]; then
-    echo "setting github as origin for ${repo}"
-    git -C "${dir}" remote set-url origin "git@github.com:electron/${repo}"
+    local -r origin_url="git@github.com:electron/${repo}"
+    echo "setting ${repo} origin to ${origin_url}"
+    git -C "${dir}" remote set-url        origin "${origin_url}"
+    git -C "${dir}" remote set-url --push origin "${origin_url}"
   fi
 
   popd
