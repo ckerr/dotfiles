@@ -49,15 +49,13 @@ fi
 ##  Directory setup
 ##
 
+# IIFE to ensure the directories exist
 function() {
-  whence gmkdir > /dev/null
-  if [ $? -eq 0 ]; then
+  if [ 'x' != "x$(command -v gmkdir)" ]; then
     local -r gmkdir='gmkdir'
   else
     local -r gmkdir='mkdir'
   fi
-
-  ## ensure the directories exist
   "${gmkdir}" -p "${GIT_CACHE_PATH}"
   "${gmkdir}" -p "${SCCACHE_DIR}"
   "${gmkdir}" -p "${ELECTRON_GN_PATH}"
