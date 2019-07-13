@@ -182,16 +182,23 @@ eltest () {
 
   if [ "x$node_headers_need_rebuild" != 'xno' ]; then
     ninja -C "${build_dir}" third_party/electron_node:headers
-    # Install the test modules with the generated headers
+    # install the test modules with the generated headers
     (cd "${electron_spec_dir}" && npm i --nodedir="${node_headers_dir}")
     touch "${node_headers_dir}"
   fi
 
-  local -r electron=$(elfindexec "${config}")
-  eltestrun "${electron}" "${electron_spec_dir}" ${@:2}
+  local -r spec_runner="${ELECTRON_GN_PATH}/src/electron/script/spec-runner.js"
+  if [ -f "${spec_runner}" ]; then
+    echo "${spec_runner}"
+    ELECTRON_OUT_DIR="${config}" "${spec_runner}" ${@:2}
+  else
+    local -r electron=$(elfindexec "${config}")
+    eltestrun "${electron}" "${electron_spec_dir}" ${@:2}
+  fi
 }
 
-# Test runner utility.
+# homebrew test scaffolding since spec-runner doesn't exist before 4-0-x
+# only needed if
 # You probably want to use eltest() instead.
 # This is useful iff you want to plug in arbitrary builds or specs.
 eltestrun () {
