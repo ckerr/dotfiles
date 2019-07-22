@@ -1,4 +1,4 @@
-function duh {
+function dush {
   if [ $# -ne 0 ]; then
     du -sh $@ | sort -h
   else
