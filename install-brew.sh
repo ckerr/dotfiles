@@ -98,8 +98,9 @@ fi
 # update brew
 echo 'updating brew'
 brew prune
-brew doctor
 brew update
+brew upgrade
+brew cask upgrade
 
 # install brew apps
 for item in "${BREW_APPS[@]}"
@@ -122,3 +123,12 @@ for item in "${CASK_APPS[@]}"
 do
   cask_install $item
 done
+
+# clean up after ourselves
+brew cleanup -s
+brew cask cleanup
+
+# show some diagnostics
+brew doctor
+brew cask doctor
+brew missing
