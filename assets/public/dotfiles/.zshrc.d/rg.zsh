@@ -1,9 +1,9 @@
 
 if [[ -x "/snap/bin/ripgrep.rg" ]]
 then
-  export RG_PATH=/snap/bin/ripgrep.rg
+  declare -r RG_PATH=/snap/bin/ripgrep.rg
 else
-  export RG_PATH=(whence -c rg)
+  declare -r RG_PATH=(whence -c rg)
 fi
 
 function rg() {
@@ -11,7 +11,7 @@ function rg() {
 }
 
 function rgup() {
-  rg -uu --pretty "$@" | less -RFX
+  rg -uu --pretty $@ | less -RFX
 }
 
 # rgup matching most of the electron source types
