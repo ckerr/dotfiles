@@ -18,6 +18,7 @@ BREW_APPS=(
   wget
   xz
   yarn
+  zsh
 )
   #valgrind
 
@@ -97,7 +98,6 @@ fi
 
 # update brew
 echo 'updating brew'
-brew prune
 brew update
 brew upgrade
 brew cask upgrade
@@ -112,7 +112,7 @@ done
 for item in "${BREW_SERVICES[@]}"
 do
   brew_install $item
-  brew services start $item
+  brew services restart $item
 done
 
 # install cask
