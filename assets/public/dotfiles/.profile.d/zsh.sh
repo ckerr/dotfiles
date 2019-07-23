@@ -1,7 +1,7 @@
 # history
-export HISTFILE=~/.zsh_history
-export HISTSIZE=10000
-export SAVEHIST=${HISTSIZE}
+declare HISTFILE="${HOME}/.zsh_history"
+declare HISTSIZE=10000
+declare SAVEHIST="${HISTSIZE}"
 
 # WARNING! Your terminal appears to support fewer than 256 colors!
 # If your terminal supports 256 colors, please export the appropriate environment variable
