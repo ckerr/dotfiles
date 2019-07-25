@@ -61,19 +61,28 @@ function set_variable_in_shell_script {
 }
 
 function get_repo {
-  local -r name="${1}"
+  local -r parent_dir="${1}"
   local -r repo_url="${2}"
-  local -r destination="${3}"
+
+  if (( $# > 2 )); then
+    local -r name="${3}"
+  else
+    local tmp="${repo_url}"
+    tmp="${tmp##*/}" # basename
+    local -r name="${tmp%%.*}" # strip suffix
+    unset tmp
+  fi
+
+  local -r destination="${parent_dir}/${name}"
 
   if [ -d "${destination}" ]; then
     echo "updating ${name}"
     env git -C "${destination}" pull --quiet --rebase --prune && git submodule update --quiet --init --recursive
   else
     # ensure the parent directory exists
-    local -r parent=$(dirname "${destination}")
-    if [ ! -d "${parent}" ]; then
-      "${gmkdir}" -p "${parent}"
-      chmod 750 "${parent}"
+    if [ ! -d "${parent_dir}" ]; then
+      "${gmkdir}" -p "${parent_dir}"
+      chmod 750 "${parent_dir}"
     fi
 
     echo "installing ${name}"

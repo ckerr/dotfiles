@@ -31,28 +31,11 @@ zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
 
 ## Install new versions
 
-user='robbyrussell'
-name='oh-my-zsh'
-get_repo "${name}" "https://github.com/${user}/${name}.git" "${zshdir}"
-
-user='lukechilds'
-name='zsh-better-npm-completion'
-get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
-
-user='lukechilds'
-name='zsh-nvm'
-get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
-
-user='zsh-users'
-name='zsh-autosuggestions'
-get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
-
-user='aperezdc'
-name='zsh-fzy'
-get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/plugins/${name}"
-
-user='bhilburn'
-name='powerlevel9k'
-get_repo "${name}" "https://github.com/${user}/${name}" "${zshcustom}/themes/${name}"
+get_repo "${HOME}" 'https://github.com/robbyrussell/oh-my-zsh.git' '.oh-my-zsh'
+get_repo "${zshcustom}/plugins" 'https://github.com/zsh-users/zsh-autosuggestions.git'
+get_repo "${zshcustom}/plugins" 'https://github.com/lukechilds/zsh-better-npm-completion.git'
+get_repo "${zshcustom}/plugins" 'https://github.com/aperezdc/zsh-fzy.git'
+get_repo "${zshcustom}/plugins" 'https://github.com/lukechilds/zsh-nvm.git'
+get_repo "${zshcustom}/themes"  'https://github.com/bhilburn/powerlevel9k.git'
 
 echo $0 done

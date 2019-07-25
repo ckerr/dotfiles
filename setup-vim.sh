@@ -6,28 +6,12 @@ declare -r vimplugindir="${vimruntime}/pack/plugins/start"
 
 "${gmkdir}" -vp "${vimplugindir}"
 
-user='rafi'
-name='awesome-vim-colorschemes'
-get_repo "${name}" "https://github.com/${user}/${name}.git" "${vimplugindir}/${name}"
+get_repo "${vimplugindir}" 'https://github.com/rafi/awesome-vim-colorschemes.git'
+get_repo "${vimplugindir}" 'https://github.com/leafgarland/typescript-vim.git'
+get_repo "${vimplugindir}" 'https://github.com/octol/vim-cpp-enhanced-highlight.git'
+get_repo "${vimplugindir}" 'https://github.com/pangloss/vim-javascript.git'
 
-user='octol'
-name='vim-cpp-enhanced-highlight'
-get_repo "${name}" "https://github.com/${user}/${name}.git" "${vimplugindir}/${name}"
-
-user='pangloss'
-name='vim-javascript'
-get_repo "${name}" "https://github.com/${user}/${name}.git" "${vimplugindir}/${name}"
-
-user='leafgarland'
-name='typescript-vim'
-get_repo "${name}" "https://github.com/${user}/${name}.git" "${vimplugindir}/${name}"
-
-user='Valloric'
-name='YouCompleteMe'
-get_repo "${name}" "https://github.com/${user}/${name}.git" "${vimplugindir}/${name}"
-pushd "${vimplugindir}/${name}"
-git submodule update --init --recursive
-./install.py
-popd
+get_repo "${vimplugindir}" 'https://github.com/Valloric/YouCompleteMe.git'
+(cd "${vimplugindir}/YouCompleteMe" && ./install.py)
 
 echo $0 done
