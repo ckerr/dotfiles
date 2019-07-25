@@ -1,5 +1,3 @@
-:set shiftwidth=2
-:set expandtab
 :syntax on
 :let g:javascript_plugin_jsdoc=1
 
