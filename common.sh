@@ -60,10 +60,24 @@ function set_variable_in_shell_script {
   set_variable_in_file "${filename}" "${key}=" "${key}=\"${val}\""
 }
 
-function get_repo {
-  local -r parent_dir="${1}"
+# https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
+function is_repo_current() {
+  local -r path="${1}"
   local -r repo_url="${2}"
 
+  env git -C "${path}" remote update &> /dev/null
+  if [ ! -d "${path}" ]; then
+    return 1
+  fi
+
+  local -r LOCAL=$(env git -C "${path}" rev-parse @)
+  local -r REMOTE=$(env git -C "${path}" rev-parse @{u})
+  [ "x${LOCAL}" = "x${REMOTE}" ]
+}
+
+function get_repo() {
+  local -r parent_dir="${1}"
+  local -r repo_url="${2}"
   if (( $# > 2 )); then
     local -r name="${3}"
   else
@@ -73,21 +87,24 @@ function get_repo {
     unset tmp
   fi
 
-  local -r destination="${parent_dir}/${name}"
+  echo getting $repo_url
 
-  if [ -d "${destination}" ]; then
-    echo "updating ${name}"
-    env git -C "${destination}" pull --quiet --rebase --prune && git submodule update --quiet --init --recursive
+  local -r path="${parent_dir}/${name}"
+  if is_repo_current "${path}" "${repo_url}"; then
+    return 0
+  fi
+
+  if [ -d "${path}" ]; then
+    env git -C "${path}" pull --stat --rebase --prune
   else
-    # ensure the parent directory exists
+    # ensure parent directory exists
     if [ ! -d "${parent_dir}" ]; then
       "${gmkdir}" -p "${parent_dir}"
       chmod 750 "${parent_dir}"
     fi
-
-    echo "installing ${name}"
-    env git clone -q "${repo_url}" "${destination}"
-    chmod 750 "${destination}"
+    env git clone -q "${repo_url}" "${path}"
+    chmod 750 "${path}"
   fi
+  env git -C "${path}" submodule update --init --recursive
 }
 
