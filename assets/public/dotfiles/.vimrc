@@ -1,8 +1,10 @@
 :set shiftwidth=2
 :set expandtab
 :syntax on
-:colorscheme afterglow
 :let g:javascript_plugin_jsdoc=1
+
+:set background=dark
+:colorscheme gruvbox
 
 :set number
 :set relativenumber
