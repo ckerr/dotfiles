@@ -4,8 +4,8 @@
 :set background=dark
 :colorscheme gruvbox
 
-:set number
-:set relativenumber
+" :set number
+" :set relativenumber
 " https://stackoverflow.com/questions/5728259/how-to-clear-the-line-number-in-vim-when-copying
 " :se mouse+=a
 
