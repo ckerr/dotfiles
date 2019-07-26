@@ -6,10 +6,14 @@ declare -r vimplugindir="${vimruntime}/pack/plugins/start"
 
 "${gmkdir}" -vp "${vimplugindir}"
 
+# collection of awesome color schemes for Neo/vim, merged for quick use.
 get_repo "${vimplugindir}" 'https://github.com/rafi/awesome-vim-colorschemes.git'
-get_repo "${vimplugindir}" 'https://github.com/leafgarland/typescript-vim.git'
-get_repo "${vimplugindir}" 'https://github.com/octol/vim-cpp-enhanced-highlight.git'
-get_repo "${vimplugindir}" 'https://github.com/pangloss/vim-javascript.git'
+
+# a collection of language packs for Vim.
+get_repo "${vimplugindir}" 'https://github.com/sheerun/vim-polyglot.git'
+
+# automatically adjusts 'shiftwidth' and 'expandtab' based on the current file,
+# or other files of the same type in the current and parent directories
 get_repo "${vimplugindir}" 'https://github.com/tpope/vim-sleuth.git'
 
 declare path="${vimplugindir}/YouCompleteMe"
