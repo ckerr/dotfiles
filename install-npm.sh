@@ -10,6 +10,7 @@ declare -r NODE_PACKAGES=(
   json
   npmrc
   vmd
+  yarn
 )
 #npm_install http-server
 #npm_install speed-test
