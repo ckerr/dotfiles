@@ -16,6 +16,10 @@ get_repo "${vimplugindir}" 'https://github.com/sheerun/vim-polyglot.git'
 # or other files of the same type in the current and parent directories
 get_repo "${vimplugindir}" 'https://github.com/tpope/vim-sleuth.git'
 
+# check syntax in Vim asynchronously and fix files, with Language Server Protocol (LSP) support
+get_repo "${vimplugindir}" 'https://github.com/w0rp/ale.git'
+
+# a code-completion engine for Vim
 declare path="${vimplugindir}/YouCompleteMe"
 declare repo_url='https://github.com/Valloric/YouCompleteMe.git'
 if ! is_repo_current "${path}" "${repo_url}"; then
