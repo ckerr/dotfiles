@@ -12,6 +12,7 @@ BREW_APPS=(
   macvim
   mpv
   openssl
+  pandoc
   python3
   ripgrep
   vim

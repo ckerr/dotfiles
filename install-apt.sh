@@ -37,6 +37,7 @@ declare -r UBUNTU_APPS=(
   ninja-build
   openssl
   opus-tools
+  pandoc
   pngcrush
   pngquant
   powerstat
