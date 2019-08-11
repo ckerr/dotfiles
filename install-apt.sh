@@ -43,6 +43,7 @@ declare -r UBUNTU_APPS=(
   powerstat
   powertop
   python-dbusmock
+  python3-chardet
   python3-dbusmock
   python3-dev
   python3-pip
