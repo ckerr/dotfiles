@@ -1,5 +1,5 @@
 function playalbum {
-  declare -r albumdir="`xdg-user-dir MUSIC`/Albums"
-  declare -r choice=`ls -1 "$albumdir" | sort --random-sort | tail -n1`
-  mpv "$albumdir/$choice"
+  declare -r albums_dir="`xdg-user-dir MUSIC`/Albums"
+  declare -r album=`ls -1 "$albums_dir" | sort --random-sort | head --lines=1`
+  mpv --quiet "$albums_dir/$album"
 }
