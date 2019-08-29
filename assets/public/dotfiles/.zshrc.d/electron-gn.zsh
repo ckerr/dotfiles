@@ -143,7 +143,7 @@ elmake () {
   fi
 
   # if the build fails, return the error
-  ninja -C "${build_dir}" "${target}"
+  ninja ${@:2} -C "${build_dir}" "${target}"
   local -r code=$?
   if [[ $code -ne 0 ]]; then
     return $code
