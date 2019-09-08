@@ -260,6 +260,10 @@ elrgall () {
   rg -t cpp -t js -t c -t objcpp -t md -uu --pretty $@ "${ELECTRON_GN_PATH}/src" | less -RFX
 }
 
+elroot () {
+  cd "${ELECTRON_GN_PATH}"
+}
+
 # use: `elsrc` to cd to electron src directory
 # use: `elsrc $dir` to cd to electron src sibling directory e.g. `elsrc base`
 elsrc () {
