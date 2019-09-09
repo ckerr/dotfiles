@@ -77,13 +77,14 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  dircycle
   command-not-found
-  zsh-fzy
-  zsh-autosuggestions
-  zsh-nvm
-  zsh-better-npm-completion
+  dircycle
   git
+  vi-mode
+  zsh-autosuggestions
+  zsh-better-npm-completion
+  zsh-fzy
+  zsh-nvm
 )
 
 source $ZSH/oh-my-zsh.sh
