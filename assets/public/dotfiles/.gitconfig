@@ -47,6 +47,9 @@
         uncommit-unpushed = reset HEAD~1 --soft
         unstage = reset
         unlock = !git checkout HEAD -- "`git rev-parse --show-toplevel`/package-lock.json"
+        can = commit --amend --no-edit
+        au = add --update
+        aucan = !git au && git can
 
         # haacked aliases from
         # https://haacked.com/archive/2014/07/28/github-flow-aliases/
