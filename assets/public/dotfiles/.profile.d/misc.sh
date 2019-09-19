@@ -56,8 +56,8 @@ fi
 for manpathdir in "${manpathdirs[@]}"
 do
   if [[ ":$MANPATH:" != *":$manpathdir:"* ]]; then
-    if [ -d "${manpathdir}" ]; then
-      export MANPATH="${manpathdir}:${PATH}"
+    if [[ -d "${manpathdir}" ]]; then
+      export MANPATH="${manpathdir}:${MANPATH}"
     fi
   fi
 done
