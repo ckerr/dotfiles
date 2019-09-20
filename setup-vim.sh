@@ -19,6 +19,9 @@ get_repo "${vimplugindir}" 'https://github.com/tpope/vim-sleuth.git'
 # check syntax in Vim asynchronously and fix files, with Language Server Protocol (LSP) support
 get_repo "${vimplugindir}" 'https://github.com/w0rp/ale.git'
 
+# GN syntax highlighting
+get_repo "${vimplugindir}" 'https://github.com/ngg/vim-gn.git'
+
 # a code-completion engine for Vim
 declare path="${vimplugindir}/YouCompleteMe"
 declare repo_url='https://github.com/Valloric/YouCompleteMe.git'
