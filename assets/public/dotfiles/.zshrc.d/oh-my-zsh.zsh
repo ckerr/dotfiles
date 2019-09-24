@@ -5,7 +5,6 @@ export ZSH=${ZDOTDIR:-$HOME}/.oh-my-zsh
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 declare ZSH_THEME="powerlevel9k/powerlevel9k"
 declare DEFAULT_USER=charles
-declare POWERLEVEL9K_COLOR_SCHEME="light"
 declare POWERLEVEL9K_TIME_FORMAT="%D{%F %R %Z wk%V}"
 declare POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
 declare POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
