@@ -4,7 +4,7 @@
 declare -r vimruntime="${VIMRUNTIME:-${HOME}/.vim}"
 declare -r vimplugindir="${vimruntime}/pack/plugins/start"
 
-"${gmkdir}" -vp "${vimplugindir}"
+mkdir -vp "${vimplugindir}"
 
 # collection of awesome color schemes for Neo/vim, merged for quick use.
 get_repo "${vimplugindir}" 'https://github.com/rafi/awesome-vim-colorschemes.git'

@@ -6,12 +6,6 @@ else
   declare -r gsed='sed'
 fi
 
-if [ 'x' != "x$(command -v gmkdir)" ]; then
-  declare -r gmkdir='gmkdir'
-else
-  declare -r gmkdir='mkdir'
-fi
-
 if [ 'x' != "x$(command -v gfind)" ]; then
   declare -r gfind='gfind'
 else
@@ -99,7 +93,7 @@ function get_repo() {
   else
     # ensure parent directory exists
     if [ ! -d "${parent_dir}" ]; then
-      "${gmkdir}" -p "${parent_dir}"
+      mkdir -p "${parent_dir}"
       chmod 750 "${parent_dir}"
     fi
     env git clone -q "${repo_url}" "${path}"
