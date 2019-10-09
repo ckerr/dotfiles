@@ -151,6 +151,7 @@ elrgall () {
 
 elroot () {
   cd $(e show src '.')
+  elcwd
 }
 
 # use: `elsrc` to cd to electron src directory
@@ -159,13 +160,14 @@ elsrc () {
   local -r dir="${1-electron}"
 
   cd $(e show src "${dir}")
+  elcwd
 }
 
 # run electron
 # @param config (default:debug)
 # @param path (default:.)
 elrun () {
-  e run
+  e run "$@"
 
   # FIXME move this to build-tools
   #nm -an "${electron}" | grep --quiet '__asan_init$'
@@ -235,6 +237,46 @@ elquick () {
 
   git clone git@github.com:electron/electron-quick-start.git "${target}" && cd "${target}" && npm install
 }
+
+# find the name of the config matching this directory
+__el_config_for_dir () {
+  local -r test_dir="${1-$PWD}"
+
+  # get config dir
+  local evmdir="$EVM_CONFIG"
+  if [[ -z "$evmdir" ]]; then
+    evmdir=$(which e)
+    evmdir=$(dirname "${evmdir}")
+    evmdir=$(git -C "$evmdir" rev-parse --show-toplevel)
+  fi
+
+  # check configs for a root that matches the test dir
+  for file in $evmdir/evm\.*\.json; do
+    local root=$(json root -f "$file")
+    if [[ "${test_dir##$root}" != "$test_dir" ]]; then
+      local -r name=$(echo "$file" | sed 's/.*\/evm\.//' | sed 's/\.json$//')
+      echo "$name"
+      return
+    fi
+  done
+}
+
+# show the build config status for the current directory
+elcwd () {
+  local -r dir="${1-$PWD}"
+  local -r dir_cfg=$(__el_config_for_dir "$dir")
+  if [[ ! -z "$dir_cfg" ]]; then
+    local -r cur_cfg=$(e show current)
+    if [[ "$cur_cfg" == "$dir_cfg" ]]; then
+      e show current -g
+    else
+      e use "$dir_cfg" &>/dev/null
+      e show current -g
+      e use "$cur_cfg" &>/dev/null
+    fi
+  fi
+}
+
 
 alias eld=eldebug
 alias eldma=eldebugmain
