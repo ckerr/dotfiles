@@ -81,6 +81,7 @@ plugins=(
   zsh-autosuggestions
   zsh-fzy
   zsh-nvm
+  zsh-z
 )
 
 source $ZSH/oh-my-zsh.sh
