@@ -32,10 +32,9 @@ zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
 ## Install new versions
 
 get_repo "${HOME}" 'https://github.com/robbyrussell/oh-my-zsh.git' '.oh-my-zsh'
-get_repo "${zshcustom}/plugins" 'https://github.com/zsh-users/zsh-autosuggestions.git'
-get_repo "${zshcustom}/plugins" 'https://github.com/lukechilds/zsh-better-npm-completion.git'
 get_repo "${zshcustom}/plugins" 'https://github.com/aperezdc/zsh-fzy.git'
 get_repo "${zshcustom}/plugins" 'https://github.com/lukechilds/zsh-nvm.git'
+get_repo "${zshcustom}/plugins" 'https://github.com/zsh-users/zsh-autosuggestions.git'
 get_repo "${zshcustom}/themes"  'https://github.com/bhilburn/powerlevel9k.git'
 
 echo $0 done

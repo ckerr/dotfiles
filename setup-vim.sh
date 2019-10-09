@@ -22,6 +22,11 @@ get_repo "${vimplugindir}" 'https://github.com/w0rp/ale.git'
 # GN syntax highlighting
 get_repo "${vimplugindir}" 'https://github.com/ngg/vim-gn.git'
 
+# required by vim-shell
+get_repo "${vimplugindir}" 'https://github.com/xolox/vim-misc'
+# :fullscreen mode
+get_repo "${vimplugindir}" 'https://github.com/xolox/vim-shell'
+
 # a code-completion engine for Vim
 declare path="${vimplugindir}/YouCompleteMe"
 declare repo_url='https://github.com/Valloric/YouCompleteMe.git'

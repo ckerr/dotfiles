@@ -10,97 +10,48 @@
 
  
 ##
-##  Environment varibles
+##  build-tools setup
 ##
 
+# ensure build-tools is installed
+BUILD_TOOLS_ROOT="${HOME}/electron/build-tools"
+if [[ ! -d "${BUILD_TOOLS_ROOT}" ]]; then
+  git clone 'git@github.com:electron/build-tools.git' "${BUILD_TOOLS_ROOT}"
+fi
+# ensure build-tools is in PATH
+if [[ ":$PATH:" != *":${BUILD_TOOLS_ROOT}/src:"* ]]; then
+  export PATH="${PATH}:${BUILD_TOOLS_ROOT}/src"
+fi
+unset BUILD_TOOLS_ROOT
 
-# arbitrary locations; can be wherever you like
-export ELECTRON_GN_PATH="${HOME}/electron/electron-gn"
-declare ELECTRON_CACHE_PATH="${HOME}/.electron-cache"
-declare DEPOT_TOOLS_PATH="${HOME}/src/depot_tools"
-
-# used by depot_tools/gclient
-export GIT_CACHE_PATH="${ELECTRON_CACHE_PATH}/git-cache"
-# used by sccache
-export SCCACHE_DIR="${ELECTRON_CACHE_PATH}/sccache"
-# used by electron's branch of sccache to share with CI
-export SCCACHE_BUCKET='electronjs-sccache'
-export SCCACHE_TWO_TIER=true
-
-if [[ "${OSTYPE}" = *linux* ]]; then
-  # the specs won't run on Linux without this
-  export ELECTRON_DISABLE_SECURITY_WARNINGS=1
+# ensure build-tools' config dir is in XDG_CONFIG_HOME
+if [[ -z "${EVM_CONFIG}" ]]; then
+  export EVM_CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/evm-config"
 fi
 
-# depot tools needs to be in the path
-if [ ! -d "${DEPOT_TOOLS_PATH}" ]; then
-  echo 'depot tools not found!'
-  echo 'how to install: http://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up'
-elif [[ ":$PATH:" != *":${DEPOT_TOOLS_PATH}:"* ]]; then
-  export PATH="${PATH}:${DEPOT_TOOLS_PATH}"
-  # see depot_tools/zsh-goodies/README
-  fpath=("${DEPOT_TOOLS_PATH}/zsh-goodies" ${fpath})
+#ensure build-tools' config dir exists
+if [[ ! -d "${EVM_CONFIG}" ]]; then
+  mkdir -p "${EVM_CONFIG}"
 fi
 
-unset -v ELECTRON_CACHE_PATH
-unset -v DEPOT_TOOLS_PATH
 
 ##
-##  Directory setup
-##
-
-# IIFE to ensure the directories exist
-function() {
-  if [ 'x' != "x$(command -v gmkdir)" ]; then
-    local -r gmkdir='gmkdir'
-  else
-    local -r gmkdir='mkdir'
-  fi
-  "${gmkdir}" -p "${GIT_CACHE_PATH}"
-  "${gmkdir}" -p "${SCCACHE_DIR}"
-  "${gmkdir}" -p "${ELECTRON_GN_PATH}"
-}
-
-##
-##  Utilities
+##  utilities
 ##
 
 # Gets the source and submodules.
 # Use this to boostrap the first time and also after changing branches
 elsync () {
-  # ensure ELECTRON_GN_PATH exists
-  if [ ! -d "${ELECTRON_GN_PATH}" ]; then
-    mkdir -p "${ELECTRON_GN_PATH}"
-  fi
-
-  # gclient uses cwd
-  pushd "${ELECTRON_GN_PATH}"
-
-  # ensure .gclient file exists
-  local -r ELECTRON_SUBPATH='src/electron'
-  if [ ! -f "${ELECTRON_GN_PATH}/.gclient" ]; then
-    gclient config --name "${ELECTRON_SUBPATH}" --unmanaged https://github.com/electron/electron
-  fi
-
   # Get the code.
   # More reading:
   # https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
-  gclient sync \
+  e sync \
     --break_repo_locks \
     --delete_unversioned_trees \
     --lock_timeout=300 \
     --with_branch_heads \
     --with_tags \
     -vvvv
-
-  # ensure maintainer repos point to github instead of git-cache
-  local -r repo_dir="${ELECTRON_GN_PATH}/${ELECTRON_SUBPATH}"
-  git -C "${repo_dir}" remote remove origin
-  git -C "${repo_dir}" remote add origin git@github.com:electron/electron
-  git -C "${repo_dir}" branch --set-upstream-to=origin/master
-  git -C "${repo_dir}" remote -v
-
-  popd
 }
 
 # Builds Electron.
@@ -152,207 +103,130 @@ elmake () {
   "${sccache}" --show-stats
 }
 
-# Runs the tests.
-# First optional arg is the build config, e.g. 'debug', 'release', or 'testing'.
-# See https://github.com/electron/electron/tree/master/build/args for full list.
-# Remaining args are passed to the spec.
+# FIXME: should any of this be ported to build-tools or e/e's scripts dir?
+# spec-runner already kicks off a dbusmock
+#eltestrun () {
+#  local -r electron="$1"
+#  local -r electron_spec_dir="$2"
 #
-# Examples:
-#  eltest
-#  eltest testing
-#  eltest debug
-#  eltest debug --ci -g powerMonitor
-eltest () {
-  local -r config="${1-debug}"
-
-  # to run the tests, you'll first need to build the test modules
-  # against the same version of Node.js that was built as part of
-  # the build process.
-  local -r build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
-  local -r node_headers_dir="${build_dir}/gen/node_headers"
-  local -r electron_spec_dir="${ELECTRON_GN_PATH}/src/electron/spec"
-
-  if [ ! -d "${node_headers_dir}" ]; then
-    local -r node_headers_need_rebuild='yes'
-  elif [ "${electron_spec_dir}/package.json" -nt "${node_headers_dir}" ]; then
-    local -r node_headers_need_rebuild='yes'
-  else
-    local -r node_headers_need_rebuild='no'
-  fi
-
-  if [ "x$node_headers_need_rebuild" != 'xno' ]; then
-    ninja -C "${build_dir}" third_party/electron_node:headers
-    # install the test modules with the generated headers
-    (cd "${electron_spec_dir}" && npm i --nodedir="${node_headers_dir}")
-    touch "${node_headers_dir}"
-  fi
-
-  local -r spec_runner="${ELECTRON_GN_PATH}/src/electron/script/spec-runner.js"
-  if [ -f "${spec_runner}" ]; then
-    echo "${spec_runner}"
-    ELECTRON_OUT_DIR="${config}" "${spec_runner}" ${@:2}
-  else
-    local -r electron=$(elfindexec "${config}")
-    eltestrun "${electron}" "${electron_spec_dir}" ${@:2}
-  fi
-}
-
-# homebrew test scaffolding since spec-runner doesn't exist before 4-0-x
-# only needed if
-# You probably want to use eltest() instead.
-# This is useful iff you want to plug in arbitrary builds or specs.
-eltestrun () {
-  local -r electron="$1"
-  local -r electron_spec_dir="$2"
-
-  # if dbusmock is installed, start a mock dbus session for it
-  python -c 'import dbusmock'
-  if [ "$?" -eq '0' ]; then
-    local -r dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
-    echo "starting dbus @ ${dbusenv}"
-    dbus-launch --sh-syntax > "${dbusenv}"
-    cat "${dbusenv}" | sed 's/SESSION/SYSTEM/' >> "${dbusenv}"
-    source "${dbusenv}"
-    (python -m dbusmock --template logind &)
-    (python -m dbusmock --template notification_daemon &)
-  else
-    local -r dbusenv=''
-  fi
-
-  echo "starting ${electron}"
-  "${electron}" "${electron_spec_dir}" ${@:2}
-
-  # ensure this function cleans up after itself
-  TRAPEXIT() {
-    if [ -f "${dbusenv}" ]; then
-      kill `grep DBUS_SESSION_BUS_PID "${dbusenv}" | sed 's/[^0-9]*//g'`
-      rm "${dbusenv}"
-    fi
-  }
-}
+#  # if dbusmock is installed, start a mock dbus session for it
+#  python -c 'import dbusmock'
+#  if [ "$?" -eq '0' ]; then
+#    local -r dbusenv=`mktemp -t electron.dbusmock.XXXXXXXXXX`
+#    echo "starting dbus @ ${dbusenv}"
+#    dbus-launch --sh-syntax > "${dbusenv}"
+#    cat "${dbusenv}" | sed 's/SESSION/SYSTEM/' >> "${dbusenv}"
+#    source "${dbusenv}"
+#    (python -m dbusmock --template logind &)
+#    (python -m dbusmock --template notification_daemon &)
+#  else
+#    local -r dbusenv=''
+#  fi
+#
+#  echo "starting ${electron}"
+#  "${electron}" "${electron_spec_dir}" ${@:2}
+#
+#  # ensure this function cleans up after itself
+#  TRAPEXIT() {
+#    if [ -f "${dbusenv}" ]; then
+#      kill `grep DBUS_SESSION_BUS_PID "${dbusenv}" | sed 's/[^0-9]*//g'`
+#      rm "${dbusenv}"
+#    fi
+#  }
+#}
 
 # find the Electron executable for a given configuration.
 # First optional arg is the build config, e.g. 'debug', 'release', or 'testing'
 elfindexec () {
-  local -r config="${1-debug}"
-
-  local -r top="${ELECTRON_GN_PATH}/src/out/${config}"
-  local -r dirs=("${top}/Electron.app/Contents/MacOS/Electron" \
-                 "${top}/electron.exe" \
-                 "${top}/electron")
-  local dir
-  for dir in "${dirs[@]}"
-  do
-    if [ -x "${dir}" ]; then
-      echo "${dir}"
-      return 0
-    fi
-  done
-  echo /dev/null
-  return 1
+  e show exe
 }
 
 elrg () {
-  rg -t cpp -t js -t c -t objcpp -t md -uu --pretty $@ | less -RFX
+  rg -t cpp -t js -t c -t objcpp -t md -uu --pretty $@ "$(e show src)" | less -RFX
 }
 
 elrgall () {
-  rg -t cpp -t js -t c -t objcpp -t md -uu --pretty $@ "${ELECTRON_GN_PATH}/src" | less -RFX
+  rg -t cpp -t js -t c -t objcpp -t md -uu --pretty $@ "$(e show src '.')" | less -RFX
 }
 
 elroot () {
-  cd "${ELECTRON_GN_PATH}"
+  cd $(e show src '.')
 }
 
 # use: `elsrc` to cd to electron src directory
 # use: `elsrc $dir` to cd to electron src sibling directory e.g. `elsrc base`
 elsrc () {
-  local -r dir=${1-electron}
+  local -r dir="${1-electron}"
 
-  cd "${ELECTRON_GN_PATH}/src/${dir}"
+  cd $(e show src "${dir}")
 }
 
 # run electron
 # @param config (default:debug)
 # @param path (default:.)
 elrun () {
-  local -r config="${1-debug}"
-  local -r dir="${2-.}"
+  e run
 
-  local -r electron=$(elfindexec "${config}")
-
-  nm -an "${electron}" | grep --quiet '__asan_init$'
-  if [ $? -eq 0 ]; then
-    local -r is_asan='yes'
-  else
-    local -r is_asan='no'
-  fi
-
-  if [ "x$is_asan" = 'xyes' ]; then
-    local -r symbolize="${ELECTRON_GN_PATH}/src/tools/valgrind/asan/asan_symbolize.py"
-    echo "piping output to ${symbolize}"
-    "${electron}" "${dir}" 2>&1 | "${symbolize}" --executable-path="${electron}"
-  else
-    "${electron}" "${dir}"
-  fi
+  # FIXME move this to build-tools
+  #nm -an "${electron}" | grep --quiet '__asan_init$'
+  #if [ $? -eq 0 ]; then
+  #  local -r is_asan='yes'
+  #else
+  #  local -r is_asan='no'
+  #fi
+  #
+  #if [ "x$is_asan" = 'xyes' ]; then
+  #  local -r symbolize="${ELECTRON_GN_PATH}/src/tools/valgrind/asan/asan_symbolize.py"
+  #  echo "piping output to ${symbolize}"
+  #  "${electron}" "${dir}" 2>&1 | "${symbolize}" --executable-path="${electron}"
+  #else
+  #  "${electron}" "${dir}"
+  #fi
 }
 
 # run electron inside a debugger in the specified directory
-# @param config (default:debug)
 # @param path (default:.)
 eldebug () {
-  local -r config="${1-debug}"
-  local -r dir="${2-.}"
+  local -r dir="${1-.}"
 
-  local -r electron=$(elfindexec "${config}")
-  gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
-                    -ex "r '${dir}'"
+  # FIXME: consider porting to build-tools? Is there an lldb equivalent?
+  e debug -ex "r '${dir}'"
 }
 
 # run electron inside a debugger in the specified directory
 # with a breakpoint set to `main()`
-# @param config (default:debug)
 # @param path (default:.)
 eldebugmain () {
-  local -r config="${1-debug}"
-  local -r dir="${2-.}"
+  local -r dir="${1-.}"
 
-  local -r electron=$(elfindexec "${config}")
-  gdb "${electron}" -ex "source ${ELECTRON_GN_PATH}/src/tools/gdb/gdbinit" \
-                    -ex 'set breakpoint pending on' \
-                    -ex 'break main' \
-                    -ex "r '${dir}'"
+  e debug -ex 'set breakpoint pending on' \
+          -ex 'break main' \
+          -ex "r '${dir}'"
 }
  
 # make a fresh build, then run it in the specified directory
-# @param config (default:debug)
 # @param path (default:.)
 elmakerun () {
-  local -r config="${1-debug}"
-  local -r dir="${2-.}"
+  local -r dir="${1-.}"
 
-  elmake "${config}" && elrun "${config}" "${dir}"
+  e make && e run "${dir}"
 }
 
 # make a fresh build, then run it inside a debugger in the specified directory
-# @param config (default:debug)
 # @param path (default:.)
 elmakedebug () {
-  local -r config="${1-debug}"
-  local -r dir="${2-.}"
+  local -r dir="${1-.}"
 
-  elmake "${config}" && eldebug "${config}" "${dir}"
+  e make && eldebug "${dir}"
 }
 
 # make a fresh build, then run it inside a debugger in the specified directory
 # with a breakpoint set for `main()`
-# @param config (default:debug)
 # @param path (default:.)
 elmakedebugmain () {
-  local -r config="${1-debug}"
-  local -r dir="${2-.}"
+  local -r dir="${1-.}"
 
-  elmake "${config}" && eldebugmain "${config}" "${dir}"
+  e make && eldebugmain "${dir}"
 }
 
 # shortcut to get a clone of `electron-quick-start`
@@ -369,5 +243,3 @@ alias elmd=elmakedebug
 alias elmdma=elmakedebugmain
 alias elmr=elmakerun
 alias elr=elrun
-
-

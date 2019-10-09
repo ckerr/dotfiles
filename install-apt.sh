@@ -54,6 +54,7 @@ declare -r UBUNTU_APPS=(
   transmission-cli
   transmission-daemon
   unrar
+  wmctrl # required by vim-shell
   valgrind
   vim
   vim-gtk3
@@ -128,6 +129,12 @@ add_repo 'https://packages.microsoft.com/keys/microsoft.asc' \
          'https://packages.microsoft.com/repos/vscode' \
          '/etc/apt/sources.list.d/vscode.list' \
          'stable' 'main'
+
+# source: https://www.ubuntuupdates.org/ppa/virtualbox.org_contrib
+add_repo 'http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc' \
+         'http://download.virtualbox.org/virtualbox/debian' \
+         '/etc/apt/sources.list.d/virtualbox.org.list' \
+         "$(lsb_release --short --codename)" "non-free contrib"
 
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc

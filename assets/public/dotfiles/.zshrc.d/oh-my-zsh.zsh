@@ -77,11 +77,8 @@ HIST_STAMPS="yyyy-mm-dd"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   command-not-found
-  dircycle
   git
-  vi-mode
   zsh-autosuggestions
-  zsh-better-npm-completion
   zsh-fzy
   zsh-nvm
 )
