@@ -277,6 +277,14 @@ elcwd () {
   fi
 }
 
+elopen () {
+  local -r num="${1}"
+  if [[ -z "$num" ]]; then
+    echo 'Usage: elopen [issue-or-pull-number]'
+    exit 1
+  fi
+  google-chrome --new-window "https://github.com/electron/electron/issues/${num}"
+}
 
 alias eld=eldebug
 alias eldma=eldebugmain
