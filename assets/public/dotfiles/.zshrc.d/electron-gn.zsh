@@ -8,6 +8,8 @@
 # elrg       : prettified grep in current directory
 # elrgall    : prettified grep in all repos
 
+# `e init` will pick up this value
+export SCCACHE_CACHE_SIZE='40G'
  
 ##
 ##  build-tools setup
@@ -278,12 +280,20 @@ elcwd () {
 }
 
 elopen () {
-  local -r num="${1}"
-  if [[ -z "$num" ]]; then
-    echo 'Usage: elopen [issue-or-pull-number]'
-    exit 1
+  local -r arg="${1}"
+  local -r srcdir="$(e show src)"
+
+  # look for a commit subject ending in ' (#12345)'
+  local prnum=$(git -C "$srcdir" log --format=%s -n1 "$arg" 2>/dev/null | sed -r 's/^.* \(#([0-9]+)\)$/\1/')
+  if [[ -z "$prnum" && $arg =~ ^[0-9]+$ ]]; then
+    prnum="$arg"
   fi
-  google-chrome --new-window "https://github.com/electron/electron/issues/${num}"
+
+  if [[ -z "$prnum" ]]; then
+    echo 'Usage: elopen [pull-number-or-commit-hash]'
+  else
+    google-chrome "https://github.com/electron/electron/issues/${prnum}"
+  fi
 }
 
 alias eld=eldebug
