@@ -53,11 +53,12 @@ elsync () {
     --lock_timeout=300 \
     --with_branch_heads \
     --with_tags \
-    -vvvv
+    -vvvv \
+    "$@"
 }
 
 elmake () {
-  e make
+  e make "$@"
 }
 
 # FIXME: should any of this be ported to build-tools or e/e's scripts dir?
