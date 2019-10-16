@@ -56,53 +56,8 @@ elsync () {
     -vvvv
 }
 
-# Builds Electron.
-# First optional arg is the build config, e.g. 'debug', 'release', or 'testing'.
-# See https://github.com/electron/electron/tree/master/build/args for full list.
-# As a special case, a config of 'asan' will make an asan-enabled testing release
-#
-# Examples:
-#  elmake
-#  elmake testing
 elmake () {
-  local config="${1-debug}"
-
-  local -r build_dir="${ELECTRON_GN_PATH}/src/out/${config}"
-  local -r sccache="${ELECTRON_GN_PATH}/src/electron/external_binaries/sccache"
-
-  if [ "x${config}" = 'xasan' ]; then
-    config='testing' # asan builds must use testing config
-    local -r is_asan='yes'
-  else
-    local -r is_asan='no'
-  fi
-
-  # if the build dir hasn't been generated already, generate it now
-  if [ ! -d "${build_dir}" ]; then
-    local gn_args="import(\"//electron/build/args/${config}.gn\") "
-    gn_args+="cc_wrapper=\"${sccache}\" "
-    if [ "x${is_asan}" = 'xyes' ]; then
-      gn_args+='is_asan=true '
-    fi
-    echo "${gn_args}"
-    (cd "${ELECTRON_GN_PATH}/src" && CHROMIUM_BUILDTOOLS_PATH="${ELECTRON_GN_PATH}"/src/buildtools gn gen "${build_dir}" --args="${gn_args}")
-  fi
-
-  # if there's nothing to do, exit without showing sccache stats
-  local -r target='electron:electron_app'
-  ninja -C "${build_dir}" -n "${target}" | grep --color=never 'no work to do'
-  if [[ $? -eq 0 ]]; then
-    return 0
-  fi
-
-  # if the build fails, return the error
-  ninja ${@:2} -C "${build_dir}" "${target}"
-  local -r code=$?
-  if [[ $code -ne 0 ]]; then
-    return $code
-  fi
-
-  "${sccache}" --show-stats
+  e make
 }
 
 # FIXME: should any of this be ported to build-tools or e/e's scripts dir?
