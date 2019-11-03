@@ -139,6 +139,21 @@ add_repo 'http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc'
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 
+# https://wiki.ubuntu.com/Debug%20Symbol%20Packages
+function ensure_ddebs_source_exists {
+  local -r filename='/tmp/foo.list'
+  local -r codename="$(lsb_release -cs)"
+  if ! grep -q "$codename" "$filename"; then
+    echo "updating $filename"
+    echo "deb http://ddebs.ubuntu.com $codename main restricted universe multiverse
+deb http://ddebs.ubuntu.com $codename-updates main restricted universe multiverse
+deb http://ddebs.ubuntu.com $codename-proposed main restricted universe multiverse" | \
+    sudo tee "${filename}";
+    sudo apt install ubuntu-dbgsym-keyring
+  fi
+}
+ensure_ddebs_source_exists
+
 # disabling 2019-07-11 because Disco not supported yet
 #sudo add-apt-repository --no-update --yes ppa:transmissionbt/ppa
 
