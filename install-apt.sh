@@ -14,7 +14,6 @@ declare -r UBUNTU_APPS=(
   code
   cowsay
   cppcheck
-  cppreference-doc-en-html
   devhelp
   execstack
   fdupes
@@ -60,7 +59,6 @@ declare -r UBUNTU_APPS=(
   vim-gtk3
   vlc
   xclip
-  yarn
   zeal
   zopfli
   zsh
