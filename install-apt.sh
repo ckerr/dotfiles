@@ -6,7 +6,6 @@ declare -r UBUNTU_APPS=(
   a2ps
   advancecomp
   aptitude
-  atom
   build-essential
   cargo
   clang-format
@@ -140,7 +139,7 @@ sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 # https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 function ensure_ddebs_source_exists {
   local -r filename='/tmp/foo.list'
-  local -r codename="$(lsb_release -cs)"
+  local -r codename="$(lsb_release --short --codename)"
   if ! grep -q "$codename" "$filename"; then
     echo "updating $filename"
     echo "deb http://ddebs.ubuntu.com $codename main restricted universe multiverse
