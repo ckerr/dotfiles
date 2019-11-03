@@ -27,9 +27,11 @@ fi
 unset BUILD_TOOLS_ROOT
 
 # ensure build-tools' config dir is in XDG_CONFIG_HOME
+export EVM_FORMAT='yaml'
 if [[ -z "${EVM_CONFIG}" ]]; then
   export EVM_CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/evm-config"
 fi
+
 
 #ensure build-tools' config dir exists
 if [[ ! -d "${EVM_CONFIG}" ]]; then
