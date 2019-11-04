@@ -211,10 +211,10 @@ __el_config_for_dir () {
   fi
 
   # check configs for a root that matches the test dir
-  for file in $evmdir/evm\.*\.json; do
-    local root=$(json root -f "$file")
+  for file in $evmdir/evm\.*\.(json|yaml|yml); do
+    local root=$(yaml get "$file" root)
     if [[ "${test_dir##$root}" != "$test_dir" ]]; then
-      local -r name=$(echo "$file" | sed 's/.*\/evm\.//' | sed 's/\.json$//')
+      local -r name=$(echo "$file" | sed 's/.*\/evm\.//' | sed 's/\.(yaml|yml|json)$//')
       echo "$name"
       return
     fi
