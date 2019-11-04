@@ -14,6 +14,7 @@ declare -r UBUNTU_APPS=(
   cowsay
   cppcheck
   devhelp
+  debian-goodies # find-dbgsym-packages
   execstack
   fdupes
   flac
@@ -62,6 +63,20 @@ declare -r UBUNTU_APPS=(
   zopfli
   zsh
   zsh-doc
+
+  # transmission-qt build deps & debugging
+  libqt5core5a-dbgsym
+  libqt5dbus5-dbgsym
+  libqt5gui5-dbgsym
+  libqt5network5-dbgsym
+  libqt5qml5-dbgsym
+  libqt5widgets5-dbgsym
+  libqwt-qt5-dev
+  qmake-qt5
+  qt5-default
+  qt5-gtk-platformtheme-dbgsym
+  qt5-style-plugin-gtk2-dbgsym
+  qttools5-dev
 )
 
 ##
