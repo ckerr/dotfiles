@@ -156,7 +156,7 @@ sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 
 # https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 function ensure_ddebs_source_exists {
-  local -r filename='/tmp/foo.list'
+  local -r filename='/etc/apt/sources.list.d/ddebs.list'
   local -r codename="$(lsb_release --short --codename)"
   if ! grep -q "$codename" "$filename"; then
     echo "updating $filename"
