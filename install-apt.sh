@@ -13,8 +13,8 @@ declare -r UBUNTU_APPS=(
   code
   cowsay
   cppcheck
-  devhelp
   debian-goodies # find-dbgsym-packages
+  devhelp
   execstack
   fdupes
   flac
@@ -29,8 +29,11 @@ declare -r UBUNTU_APPS=(
   gnome-tweak-tool
   golang
   google-chrome-stable
+  hotspot
   htop
   keepassxc
+  linux-cloud-tools-generic
+  linux-tools-generic
   meld
   mpv
   ninja-build
@@ -53,11 +56,11 @@ declare -r UBUNTU_APPS=(
   transmission-cli
   transmission-daemon
   unrar
-  wmctrl # required by vim-shell
   valgrind
   vim
   vim-gtk3
   vlc
+  wmctrl # required by vim-shell
   xclip
   zeal
   zopfli
