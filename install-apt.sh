@@ -9,6 +9,7 @@ declare -r UBUNTU_APPS=(
   build-essential
   cargo
   clang-format
+  clonezilla
   cmake
   code
   cowsay
