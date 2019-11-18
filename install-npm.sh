@@ -10,7 +10,7 @@ declare -r NODE_PACKAGES=(
   json
   npmrc
   vmd
-  yaml
+  yaml-cli
   yarn
 )
 #npm_install http-server
