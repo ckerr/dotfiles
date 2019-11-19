@@ -31,10 +31,23 @@ function npm_install() {
   fi
 }
 
+function nvm_uninstall_all_but_current() {
+  local -r current="$(nvm current)"
+  for dir in ${NVM_DIR:-${HOME}/.nvm}/versions/node/*; do
+    local version=$(basename "${dir}");
+    if [[ "$version" != "$current" ]]; then
+      nvm uninstall "$version"
+    fi
+  done
+}
+
 # install node
 zsh -ic 'echo this interactive shell nudges zsh-nvm to bootstrap nvm'
 source "${NVM_DIR:-${HOME}/.nvm}"/nvm.sh
-nvm install node # 'node' is an alias for the latest version
+# 'node' is an alias for the current version
+nvm install node
+# trash the older versions
+nvm_uninstall_all_but_current
 
 # install node packages
 npm --global update
@@ -44,4 +57,5 @@ do
 done
 npm --global cache verify
 
-
+# misc cleanup
+nvm cache clear
