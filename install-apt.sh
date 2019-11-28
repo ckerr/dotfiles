@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # cpplint
+# hotspot
 
 declare -r UBUNTU_APPS=(
   a2ps
@@ -30,7 +31,6 @@ declare -r UBUNTU_APPS=(
   gnome-tweak-tool
   golang
   google-chrome-stable
-  hotspot
   htop
   keepassxc
   linux-cloud-tools-generic
@@ -152,8 +152,17 @@ add_repo 'http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc'
          '/etc/apt/sources.list.d/virtualbox.org.list' \
          "$(lsb_release --short --codename)" "non-free contrib"
 
+# source: https://apt.syncthing.net/
+add_repo 'https://syncthing.net/release-key.txt' \
+         'https://apt.syncthing.net/' \
+         '/etc/apt/sources.list.d/syncthing.list' \
+         'stable' 'main'
+
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
+
+# https://github.com/Neroth/gnome-shell-extension-weather
+sudo add-apt-repository ppa:gnome-shell-extensions
 
 # https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 function ensure_ddebs_source_exists {
@@ -177,10 +186,7 @@ ensure_ddebs_source_exists
 
 sudo apt update
 sudo apt --yes full-upgrade
-for item in "${UBUNTU_APPS[@]}"
-do
-  apt_install $item
-done
+sudo apt install ${UBUNTU_APPS}
 sudo apt autoremove
 sudo apt-get clean
 
