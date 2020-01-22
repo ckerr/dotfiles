@@ -16,6 +16,7 @@ declare -r UBUNTU_APPS=(
   cppcheck
   debian-goodies # find-dbgsym-packages
   devhelp
+  direnv
   execstack
   fdupes
   flac
