@@ -10,7 +10,6 @@ BREW_APPS=(
   golang
   htop
   kpcli
-  macvim
   mpv
   openssl
   pandoc
@@ -61,32 +60,6 @@ function exit_if_error()
   fi
 }
 
-function brew_install()
-{
-  item=$1
-
-  count="$(brew list -1 | grep --count $item)"
-  if [ "0" -eq "${count}" ]; then
-    brew install "${item}"
-    exit_if_error "${item}"
-  else
-    echo "already installed: ${item}"
-  fi
-}
-
-function cask_install()
-{
-  item=$1
-
-  count="$(brew cask list -1 | grep --count $item)"
-  if [ "0" -eq "${count}" ]; then
-    brew cask install "${item}"
-    exit_if_error "${item}"
-  else
-    echo "already installed: ${item}"
-  fi
-}
-
 ##
 ##
 
@@ -104,27 +77,17 @@ brew update
 brew upgrade
 brew cask upgrade
 
-# install brew apps
-for item in "${BREW_APPS[@]}"
-do
-  brew_install $item
-done
+brew install "${BREW_APPS[@]}"
 
 # install brew services
-for item in "${BREW_SERVICES[@]}"
-do
-  brew_install $item
-  brew services restart $item
-done
+brew install "${BREW_SERVICES[@]}"
+brew services restart --all
 
 # install cask
 brew tap caskroom/cask
 
 # install cask apps
-for item in "${CASK_APPS[@]}"
-do
-  cask_install $item
-done
+brew cask install "${CASK_APPS[@]}"
 
 # clean up after ourselves
 brew cleanup -s
