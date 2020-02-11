@@ -10,6 +10,9 @@
 
 # `e init` will pick up this value
 export SCCACHE_CACHE_SIZE='40G'
+
+# used by https://github.com/electron/build-tools
+export EVM_CURRENT_FILE="$(mktemp --tmpdir evm-current.XXXXXXXX.txt)"
  
 ##
 ##  build-tools setup
