@@ -188,6 +188,6 @@ ensure_ddebs_source_exists
 sudo apt update
 sudo apt --yes full-upgrade
 sudo apt install ${UBUNTU_APPS}
-sudo apt autoremove
+sudo apt --yes autoremove
 sudo apt-get clean
 
