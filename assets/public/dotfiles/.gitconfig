@@ -63,7 +63,7 @@
         undo = reset HEAD~1 --mixed
         amend = commit -a --amend
         wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
-        bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs git branch -d; }; f"
+        bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -n1 --no-run-if-empty git branch -d; }; f"
         bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
 
         # codebytere aliases from
@@ -97,7 +97,7 @@
 	cpc = cherry-pick --continue
 	#############
 	d = diff
-	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+	dm = "!git branch --merged | grep -v '\\*' | xargs -n1 --no-run-if-empty git branch -d"
 	#############
 	f = fetch
 	fo = fetch origin
