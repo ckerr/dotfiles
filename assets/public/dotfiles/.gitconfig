@@ -64,7 +64,7 @@
         amend = commit -a --amend
         wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
         bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -n1 --no-run-if-empty git branch -d; }; f"
-        bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
+        bdone = "!f() { git checkout ${1} && git up && git bclean ${1}; }; f"
 
         # codebytere aliases from
         # https://github.com/codebytere/dotfiles/blob/master/config_files/.gitconfig
