@@ -32,6 +32,7 @@ declare -r UBUNTU_APPS=(
   gnome-tweak-tool
   golang
   google-chrome-stable
+  handbrake-gtk
   htop
   keepassxc
   linux-cloud-tools-generic
@@ -158,6 +159,9 @@ add_repo 'https://syncthing.net/release-key.txt' \
          'https://apt.syncthing.net/' \
          '/etc/apt/sources.list.d/syncthing.list' \
          'stable' 'main'
+
+# https://handbrake.fr/downloads.php
+sudo add-apt-repository --no-update --yes ppa:stebbins/handbrake-releases
 
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
