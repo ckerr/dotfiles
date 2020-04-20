@@ -166,8 +166,13 @@ sudo add-apt-repository --no-update --yes ppa:stebbins/handbrake-releases
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 
+# https://launchpad.net/~git-core/+archive/ubuntu/ppa
+sudo add-apt-repository --no-update --yes ppa:git-core/ppa
+
 # https://github.com/Neroth/gnome-shell-extension-weather
-sudo add-apt-repository ppa:gnome-shell-extensions
+sudo add-apt-repository --no-update --yes ppa:gnome-shell-extensions
+
+sudo apt update
 
 # https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 function ensure_ddebs_source_exists {
