@@ -46,6 +46,8 @@ zsh -ic 'echo this interactive shell nudges zsh-nvm to bootstrap nvm'
 source "${NVM_DIR:-${HOME}/.nvm}"/nvm.sh
 # 'node' is an alias for the current version
 nvm install node
+# always default to the latest available node version on a shell
+nvm alias default node
 # trash the older versions
 nvm_uninstall_all_but_current
 
