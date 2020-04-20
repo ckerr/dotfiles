@@ -1,0 +1,16 @@
+#!/bin/sh
+# source: https://stackoverflow.com/questions/7599447/less-style-markdown-viewer-for-unix-systems/20197316#20197316
+
+case "$1" in
+    *.md|*.markdown)
+        extension-handler "$1"
+        # markdown "$*" | lynx -stdin
+        pandoc -s -f markdown -t man "$1" | groff -K utf8 -T utf8 -man -
+        ;;
+    *)
+        # We don't handle this format.
+        exit 1
+esac
+
+# No further processing by lesspipe necessary
+exit 0
