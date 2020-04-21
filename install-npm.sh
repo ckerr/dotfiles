@@ -2,6 +2,7 @@
 
 declare -r NODE_PACKAGES=(
   asar
+  cli-markdown
   dev-time-cli
   empty-trash-cli
   fkill-cli
