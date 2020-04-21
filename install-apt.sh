@@ -196,8 +196,8 @@ ensure_ddebs_source_exists
 
 sudo apt update
 sudo apt --yes full-upgrade
-echo sudo apt install "${UBUNTU_APPS[*]}"
-sudo apt install ${UBUNTU_APPS[*]}
+echo sudo apt --yes install "${UBUNTU_APPS[*]}"
+sudo apt --yes install ${UBUNTU_APPS[*]}
 sudo apt --yes autoremove
 sudo apt-get clean
 
