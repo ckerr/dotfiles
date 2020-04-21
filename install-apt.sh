@@ -25,14 +25,14 @@ declare -r UBUNTU_APPS=(
   fonts-firacode
   fonts-inconsolata
   fonts-powerline
-  fslint
+  # fslint // removed from ubuntu 20.04 because of python2 dependency? Need to find replacement
   fzy
   gconf-editor
   git
   gnome-tweak-tool
   golang
   google-chrome-stable
-  handbrake-gtk
+  handbrake
   htop
   keepassxc
   linux-cloud-tools-generic
@@ -47,7 +47,7 @@ declare -r UBUNTU_APPS=(
   pngquant
   powerstat
   powertop
-  python-dbusmock
+  python3-dbusmock
   python3-chardet
   python3-dbusmock
   python3-dev
@@ -78,10 +78,10 @@ declare -r UBUNTU_APPS=(
   libqt5qml5-dbgsym
   libqt5widgets5-dbgsym
   libqwt-qt5-dev
-  qmake-qt5
   qt5-default
   qt5-gtk-platformtheme-dbgsym
-  qt5-style-plugin-gtk2-dbgsym
+  qt5-gtk2-platformtheme-dbgsym
+  qt5-qmake
   qttools5-dev
 )
 
@@ -196,7 +196,8 @@ ensure_ddebs_source_exists
 
 sudo apt update
 sudo apt --yes full-upgrade
-sudo apt install ${UBUNTU_APPS}
+echo sudo apt install "${UBUNTU_APPS[*]}"
+sudo apt install ${UBUNTU_APPS[*]}
 sudo apt --yes autoremove
 sudo apt-get clean
 
