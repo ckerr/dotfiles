@@ -84,6 +84,12 @@ declare -r UBUNTU_APPS=(
   qt5-qmake
   qttools5-dev
 )
+declare -r UBUNTU_BUILD_DEPS=(
+  pan
+  transmission-daemon
+  transmission-gtk
+  transmission-qt
+)
 
 ##
 ##
@@ -198,6 +204,8 @@ sudo apt update
 sudo apt --yes full-upgrade
 echo sudo apt --yes install "${UBUNTU_APPS[*]}"
 sudo apt --yes install ${UBUNTU_APPS[*]}
+echo sudo apt --yes build-dep "${UBUNTU_BUILD_DEPS[*]}"
+sudo apt --yes build-dep ${UBUNTU_BUILD_DEPS[*]}
 sudo apt --yes autoremove
 sudo apt-get clean
 
