@@ -39,6 +39,7 @@ declare -r UBUNTU_APPS=(
   linux-tools-generic
   meld
   mpv
+  ncdu
   ninja-build
   openssl
   opus-tools
