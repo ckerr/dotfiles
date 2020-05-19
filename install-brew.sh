@@ -16,6 +16,7 @@ BREW_APPS=(
   python3
   ripgrep
   vim
+  vlc
   wget
   xz
   yarn

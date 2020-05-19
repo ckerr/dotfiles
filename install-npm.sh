@@ -13,6 +13,7 @@ declare -r NODE_PACKAGES=(
   vmd
   yaml-cli
   yarn
+  ytdl
 )
 #npm_install http-server
 #npm_install speed-test
