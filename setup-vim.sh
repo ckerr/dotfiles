@@ -16,6 +16,9 @@ get_repo "${vimplugindir}" 'https://github.com/sheerun/vim-polyglot.git'
 # or other files of the same type in the current and parent directories
 get_repo "${vimplugindir}" 'https://github.com/tpope/vim-sleuth.git'
 
+# easily search for, substitute, and abbreviate multiple variants of a word
+get_repo "${vimplugindir}" 'https://github.com/tpope/vim-abolish.git'
+
 # check syntax in Vim asynchronously and fix files, with Language Server Protocol (LSP) support
 get_repo "${vimplugindir}" 'https://github.com/w0rp/ale.git'
 
