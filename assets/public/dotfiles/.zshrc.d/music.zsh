@@ -8,6 +8,8 @@ function lofisleep() {
 
 function lofi() {
   local -r LOFI_PATH="$HOME/Music/chilledcow"
-  mpv --loop --no-audio --really-quiet --fs --fs-screen=1 "$LOFI_PATH/video/[Wallpaper Engine]ChilledCow - Day - Nayoh Collections.mp4" &
-  mpv --loop --no-video --shuffle "$LOFI_PATH/music"
+  local -r WALLPAPER="$LOFI_PATH/video/[Wallpaper Engine]ChilledCow - Day - Nayoh Collections.mp4"
+  local -r PLAYLIST="$LOFI_PATH/music/"
+  mpv --no-audio --loop-file=inf --no-audio --fs --fs-screen=1 --really-quiet "$WALLPAPER" &
+  mpv --no-video --loop-playlist=inf --shuffle "$PLAYLIST"
 }
