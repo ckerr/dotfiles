@@ -13,6 +13,7 @@ BREW_APPS=(
   mpv
   openssl
   pandoc
+  pv
   python3
   ripgrep
   vim

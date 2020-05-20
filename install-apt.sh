@@ -25,7 +25,6 @@ declare -r UBUNTU_APPS=(
   fonts-firacode
   fonts-inconsolata
   fonts-powerline
-  # fslint // removed from ubuntu 20.04 because of python2 dependency? Need to find replacement
   fzy
   gconf-editor
   git
@@ -48,7 +47,7 @@ declare -r UBUNTU_APPS=(
   pngquant
   powerstat
   powertop
-  python3-dbusmock
+  pv
   python3-chardet
   python3-dbusmock
   python3-dev
