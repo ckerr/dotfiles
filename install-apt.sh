@@ -65,6 +65,7 @@ declare -r UBUNTU_APPS=(
   vlc
   wmctrl # required by vim-shell
   xclip
+  xdotool
   zeal
   zopfli
   zsh
