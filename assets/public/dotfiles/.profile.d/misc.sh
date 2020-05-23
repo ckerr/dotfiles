@@ -2,7 +2,7 @@
 
 export EDITOR=/usr/bin/vim
 export PAGER=less
-export LESS="--quit-if-one-screen --no-init $LESS"
+export LESS="--quit-at-eof --quit-if-one-screen --no-init --RAW-CONTROL-CHARS $LESS"
 export TMPDIR=/tmp
 
 # https://doc.qt.io/qt-5/highdpi.html
