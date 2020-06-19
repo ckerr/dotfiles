@@ -1,7 +1,7 @@
 :syntax on
 
 :set background=dark
-:colorscheme molokai
+:colorscheme vividchalk
 
 " :set number
 " :set relativenumber

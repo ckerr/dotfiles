@@ -3,11 +3,21 @@
 . ./common.sh
 declare -r vimruntime="${VIMRUNTIME:-${HOME}/.vim}"
 declare -r vimplugindir="${vimruntime}/pack/plugins/start"
+declare -r vimcolorsdir="${vimruntime}/colors"
+declare -r vimextrasdir="${vimruntime}/extras"
+declare -r vimsyntaxdir="${vimruntime}/syntax"
 
+mkdir -vp "${vimcolorsdir}"
+mkdir -vp "${vimextrasdir}"
 mkdir -vp "${vimplugindir}"
+mkdir -vp "${vimsyntaxdir}"
 
 # collection of awesome color schemes for Neo/vim, merged for quick use.
-get_repo "${vimplugindir}" 'https://github.com/rafi/awesome-vim-colorschemes.git'
+# get_repo "${vimplugindir}" 'https://github.com/rafi/awesome-vim-colorschemes.git'
+
+# vibrant ink -like colorscheme
+get_repo "${vimextrasdir}" 'https://github.com/tpope/vim-vividchalk.git'
+ln -s "${vimextrasdir}/vim-vividchalk/colors/vividchalk.vim" "${vimcolorsdir}"
 
 # a collection of language packs for Vim.
 get_repo "${vimplugindir}" 'https://github.com/sheerun/vim-polyglot.git'
