@@ -19,6 +19,9 @@ mkdir -vp "${vimsyntaxdir}"
 get_repo "${vimextrasdir}" 'https://github.com/tpope/vim-vividchalk.git'
 ln -s "${vimextrasdir}/vim-vividchalk/colors/vividchalk.vim" "${vimcolorsdir}"
 
+# filesystem navigation / management
+get_repo "${vimplugindir}" 'https://github.com/preservim/nerdtree.git'
+
 # a collection of language packs for Vim.
 get_repo "${vimplugindir}" 'https://github.com/sheerun/vim-polyglot.git'
 
