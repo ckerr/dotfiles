@@ -33,6 +33,7 @@ fi
 
 if [[ x`uname` == 'xDarwin' ]]; then
   bindirs+=(/usr/local/opt/findutils/libexec/gnubin)
+  bindirs+=($(brew --prefix llvm)/bin)
 fi
 
 for bindir in "${bindirs[@]}"
