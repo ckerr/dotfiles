@@ -19,6 +19,9 @@ mkdir -vp "${vimsyntaxdir}"
 get_repo "${vimextrasdir}" 'https://github.com/tpope/vim-vividchalk.git'
 ln -s "${vimextrasdir}/vim-vividchalk/colors/vividchalk.vim" "${vimcolorsdir}"
 
+# A Vim text editor plugin to swap delimited items.
+get_repo "${vimplugindir}" 'https://github.com/machakann/vim-swap.git'
+
 # filesystem navigation / management
 get_repo "${vimplugindir}" 'https://github.com/preservim/nerdtree.git'
 
