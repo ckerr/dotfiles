@@ -122,6 +122,9 @@
 	ma = merge --abort
 	mc = merge --continue
 	ms = merge --skip
+        #############
+        meld = difftool --dir-diff -t meld
+        meldmaster = difftool --dir-diff -t meld master
 	#############
 	com = checkout master
 	#############
