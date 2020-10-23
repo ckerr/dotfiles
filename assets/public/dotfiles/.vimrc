@@ -14,3 +14,8 @@ if has("autocmd")
 endif
 
 nmap <C-n> :NERDTreeToggle<CR>
+
+" https://github.com/dense-analysis/ale#faq-disable-linters
+" Enable ESLint only for JavaScript.
+let b:ale_linters = {'javascript': ['eslint']}
+
