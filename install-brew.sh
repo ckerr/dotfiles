@@ -11,6 +11,7 @@ BREW_APPS=(
   htop
   kpcli
   mpv
+  ninja
   openssl
   pandoc
   pv
