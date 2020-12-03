@@ -2,6 +2,7 @@
 
 BREW_APPS=(
   a2ps
+  cmake
   coreutils
   direnv
   findutils
@@ -10,6 +11,7 @@ BREW_APPS=(
   golang
   htop
   kpcli
+  lesspipe
   mpv
   ninja
   openssl
