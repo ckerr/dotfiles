@@ -165,7 +165,7 @@ add_repo 'http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc'
 add_repo 'https://syncthing.net/release-key.txt' \
          'https://apt.syncthing.net/' \
          '/etc/apt/sources.list.d/syncthing.list' \
-         'stable' 'main'
+         'syncthing' 'stable'
 
 # https://handbrake.fr/downloads.php
 sudo add-apt-repository --no-update --yes ppa:stebbins/handbrake-releases
