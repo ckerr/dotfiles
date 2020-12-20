@@ -15,6 +15,7 @@ declare -r UBUNTU_APPS=(
   code
   cowsay
   cppcheck
+  dconf-editor
   debian-goodies # find-dbgsym-packages
   devhelp
   direnv
@@ -53,12 +54,14 @@ declare -r UBUNTU_APPS=(
   python3-dev
   python3-pip
   rename
+  ripgrep
   sox
   tig
   tmux
   transmission-cli
   transmission-daemon
   unrar
+  update
   valgrind
   vim
   vim-gtk3
@@ -72,6 +75,11 @@ declare -r UBUNTU_APPS=(
   zsh-doc
 
   # transmission-qt build deps & debugging
+  automake
+  libtool
+  clang
+  clang-tidy
+  libssl-dev
   libqt5core5a-dbgsym
   libqt5dbus5-dbgsym
   libqt5gui5-dbgsym
@@ -84,6 +92,7 @@ declare -r UBUNTU_APPS=(
   qt5-gtk2-platformtheme-dbgsym
   qt5-qmake
   qttools5-dev
+  libcurl4-openssl-dev
 )
 declare -r UBUNTU_BUILD_DEPS=(
   pan
