@@ -23,13 +23,16 @@ declare -r UBUNTU_APPS=(
   fdupes
   flac
   flake8
+  fonts-cantarell
   fonts-firacode
   fonts-inconsolata
   fonts-powerline
   fzy
   gconf-editor
+  gir1.2-appindicator3-0.1 # required by syncthing-gtk for system tray
   git
   gnome-tweak-tool
+  gnome-tweaks
   golang
   google-chrome-stable
   handbrake
@@ -37,6 +40,7 @@ declare -r UBUNTU_APPS=(
   keepassxc
   linux-cloud-tools-generic
   linux-tools-generic
+  locate
   meld
   mpv
   ncdu
@@ -56,15 +60,20 @@ declare -r UBUNTU_APPS=(
   rename
   ripgrep
   sox
+  telegram-desktop
   tig
   tmux
   transmission-cli
   transmission-daemon
+  typecatcher
   unrar
   update
   valgrind
   vim
   vim-gtk3
+  virtualbox
+  virtualbox-ext-pack
+  virtualbox-guest-additions-iso
   vlc
   wmctrl # required by vim-shell
   xclip
@@ -76,10 +85,10 @@ declare -r UBUNTU_APPS=(
 
   # transmission-qt build deps & debugging
   automake
-  libtool
   clang
   clang-tidy
-  libssl-dev
+  libcurl4-openssl-dev
+  libcurl4-openssl-dev
   libqt5core5a-dbgsym
   libqt5dbus5-dbgsym
   libqt5gui5-dbgsym
@@ -87,12 +96,15 @@ declare -r UBUNTU_APPS=(
   libqt5qml5-dbgsym
   libqt5widgets5-dbgsym
   libqwt-qt5-dev
+  libssl-dev
+  libssl-dev
+  libtool
   qt5-default
   qt5-gtk-platformtheme-dbgsym
   qt5-gtk2-platformtheme-dbgsym
   qt5-qmake
   qttools5-dev
-  libcurl4-openssl-dev
+  uncrustify
 )
 declare -r UBUNTU_BUILD_DEPS=(
   pan
