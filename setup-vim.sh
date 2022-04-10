@@ -46,6 +46,9 @@ get_repo "${vimplugindir}" 'https://github.com/xolox/vim-misc'
 # :fullscreen mode
 get_repo "${vimplugindir}" 'https://github.com/xolox/vim-shell'
 
+# Set of operators and textobjects to search/select/edit sandwiched texts.
+get_repo "${vimplugindir}" 'https://github.com/machakann/vim-sandwich.git'
+
 # a code-completion engine for Vim
 declare path="${vimplugindir}/YouCompleteMe"
 declare repo_url='https://github.com/Valloric/YouCompleteMe.git'

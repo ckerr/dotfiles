@@ -7,6 +7,7 @@ declare -r UBUNTU_APPS=(
   a2ps
   advancecomp
   aptitude
+  atomicparsley # used by youtube-dlc in install-pip.sh
   build-essential
   cargo
   clang-format
@@ -35,17 +36,22 @@ declare -r UBUNTU_APPS=(
   gnome-tweaks
   golang
   google-chrome-stable
+  gperf
   handbrake
   htop
   keepassxc
+  lame
+  libreoffice-calc
   linux-cloud-tools-generic
   linux-tools-generic
   locate
+  mediainfo
   meld
   mpv
   ncdu
   ninja-build
   openssl
+  optipng
   opus-tools
   pandoc
   pngcrush
@@ -72,9 +78,12 @@ declare -r UBUNTU_APPS=(
   vim
   vim-gtk3
   virtualbox
+  virtualbox-qt
   virtualbox-ext-pack
   virtualbox-guest-additions-iso
   vlc
+  vorbis-tools
+  wajig
   wmctrl # required by vim-shell
   xclip
   xdotool

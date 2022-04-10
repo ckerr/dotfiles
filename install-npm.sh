@@ -13,6 +13,7 @@ declare -r NODE_PACKAGES=(
   vmd
   yaml-cli
   yarn
+  youtube-playlist
   ytdl
 )
 #npm_install http-server
