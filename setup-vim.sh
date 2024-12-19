@@ -35,6 +35,11 @@ get_repo "${vimplugindir}" 'https://github.com/tpope/vim-sleuth.git'
 # easily search for, substitute, and abbreviate multiple variants of a word
 get_repo "${vimplugindir}" 'https://github.com/tpope/vim-abolish.git'
 
+# Surround.vim is all about "surroundings": parentheses, brackets, quotes,
+# XML tags, and more. The plugin provides mappings to easily delete, change
+# and add such surroundings in pairs.
+get_repo "${vimplugindir}" 'https://github.com/tpope/vim-surround.git'
+
 # check syntax in Vim asynchronously and fix files, with Language Server Protocol (LSP) support
 get_repo "${vimplugindir}" 'https://github.com/w0rp/ale.git'
 
