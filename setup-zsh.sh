@@ -36,6 +36,6 @@ get_repo "${zshcustom}/plugins" 'https://github.com/agkozak/zsh-z'
 get_repo "${zshcustom}/plugins" 'https://github.com/aperezdc/zsh-fzy.git'
 get_repo "${zshcustom}/plugins" 'https://github.com/lukechilds/zsh-nvm.git'
 get_repo "${zshcustom}/plugins" 'https://github.com/zsh-users/zsh-autosuggestions.git'
-get_repo "${zshcustom}/themes"  'https://github.com/bhilburn/powerlevel9k.git'
+get_repo "${zshcustom}/themes"  'https://github.com/romkatv/powerlevel10k.git'
 
 echo $0 done

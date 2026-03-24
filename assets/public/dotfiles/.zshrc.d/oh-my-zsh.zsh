@@ -3,14 +3,14 @@ export ZSH=${ZDOTDIR:-$HOME}/.oh-my-zsh
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-declare ZSH_THEME="powerlevel9k/powerlevel9k"
+declare ZSH_THEME="powerlevel10k/powerlevel10k"
 declare DEFAULT_USER=charles
 declare POWERLEVEL9K_TIME_FORMAT="%D{%F %R %Z wk%V}"
 declare POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
 declare POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 # POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time battery load root_indicator background_jobs time)
 declare POWERLEVEL9K_BATTERY_STAGES=($'\u2581 ' $'\u2582 ' $'\u2583 ' $'\u2584 ' $'\u2585 ' $'\u2586 ' $'\u2587 ' $'\u2588 ')
-declare POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-aheadbehind git-stash git-tagname)
+# POWERLEVEL9K_VCS_GIT_HOOKS is not used by powerlevel10k (VCS is handled natively)
 
 declare POWERLEVEL9K_CONTEXT_REMOTE_BACKGROUND=232
 declare POWERLEVEL9K_CONTEXT_REMOTE_FOREGROUND=208
@@ -86,6 +86,8 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+
+nvm use node
 
 # User configuration
 
