@@ -63,10 +63,3 @@ do
 done
 sudo apt autoremove
 sudo apt-get clean
-
-# config:ddclient
-
-staging_dir="${PWD}/assets/private"
-sudo install -m 0600 -o root "${staging_dir}/ddclient.conf" "/etc"
-# https://askubuntu.com/questions/940283/run-ddclient-as-a-service-in-16-04
-sudo update-rc.d ddclient enable
