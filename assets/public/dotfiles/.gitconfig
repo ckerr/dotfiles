@@ -7,7 +7,8 @@
 #
 #[url "git+ssh://charlek@git.launchpad.net/~charlesk/+git/"]
 #	insteadof = lpme:
-
+[commit]
+        gpgsign = true
 [push]
 	default = simple
 
