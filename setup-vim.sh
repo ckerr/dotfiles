@@ -55,11 +55,11 @@ get_repo "${vimplugindir}" 'https://github.com/xolox/vim-shell'
 get_repo "${vimplugindir}" 'https://github.com/machakann/vim-sandwich.git'
 
 # a code-completion engine for Vim
-declare path="${vimplugindir}/YouCompleteMe"
-declare repo_url='https://github.com/Valloric/YouCompleteMe.git'
-if ! is_repo_current "${path}" "${repo_url}"; then
-  get_repo "${vimplugindir}" "${repo_url}"
-  (cd "${path}" && ./install.py)
-fi
+#declare path="${vimplugindir}/YouCompleteMe"
+#declare repo_url='https://github.com/Valloric/YouCompleteMe.git'
+#if ! is_repo_current "${path}" "${repo_url}"; then
+#  get_repo "${vimplugindir}" "${repo_url}"
+#  (cd "${path}" && ./install.py)
+#fi
 
 echo $0 done
