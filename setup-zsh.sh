@@ -22,14 +22,13 @@ if [[ "$SHELL" != *zsh ]]; then
   chsh -s $(which zsh)
 fi
 
-# Install OMZ and plugins
+# Install OMZ and plugins.
+#
+# get_repo rebases an existing checkout rather than replacing it, so
+# there is no old version to clear out first.
 
-## Remove the old versions
-
-zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
-zshcustom="${ZSH_CUSTOM:-${zshdir}/custom/}"
-
-## Install new versions
+declare -r zshdir="${ZSH:-${HOME}/.oh-my-zsh}"
+declare -r zshcustom="${ZSH_CUSTOM:-${zshdir}/custom}"
 
 get_repo "${HOME}" 'https://github.com/robbyrussell/oh-my-zsh.git' '.oh-my-zsh'
 get_repo "${zshcustom}/plugins" 'https://github.com/agkozak/zsh-z'
