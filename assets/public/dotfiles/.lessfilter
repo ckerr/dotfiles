@@ -3,8 +3,10 @@
 
 case "$1" in
     *.md|*.markdown)
-        source "$HOME/.oh-my-zsh/plugins/nvm/nvm.plugin.zsh"
-        nvm exec --silent current md "$1"
+        # lesspipe already pipes us into less, so no -p: less does the paging.
+        # --style is what keeps the ANSI colour when stdout is a pipe, and
+        # less renders it because of --RAW-CONTROL-CHARS in $LESS.
+        glow --style=dark "$1"
         ;;
     *)
         # We don't handle this format.

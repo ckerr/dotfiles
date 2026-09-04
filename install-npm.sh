@@ -2,7 +2,6 @@
 
 declare -r NODE_PACKAGES=(
   asar
-  cli-markdown
   empty-trash-cli
   fkill-cli
   http-echo-server

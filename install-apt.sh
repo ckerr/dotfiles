@@ -31,6 +31,7 @@ declare -r UBUNTU_APPS=(
   gconf-editor
   gir1.2-appindicator3-0.1 # required by syncthing-gtk for system tray
   git
+  glow # markdown renderer used by ~/.lessfilter
   gnome-tweak-tool
   gnome-tweaks
   golang
