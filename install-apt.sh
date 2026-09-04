@@ -132,6 +132,51 @@ fi
 ##
 ##
 
+# Register a third-party apt repo and its signing key.
+#
+# apt-key is gone as of Ubuntu 22.04, so the key is dearmored into
+# /etc/apt/keyrings and the sources line points at it with signed-by.
+function add_repo()
+{
+  local -r key_url="${1}"
+  local -r repo_url="${2}"
+  local -r name="${3}"
+  local -r suite="${4-stable}"
+  local -r component="${5-main}"
+
+  local -r keyring="/etc/apt/keyrings/${name}.gpg"
+  local -r sources_file="/etc/apt/sources.list.d/${name}.sources"
+  local -r legacy_list="/etc/apt/sources.list.d/${name}.list"
+  local -r arch="$(dpkg --print-architecture)"
+
+  echo "adding apt repo ${name}"
+
+  # Fetch to a temp file first: this pipeline's exit status would
+  # otherwise be tee's, and a failed download would go unnoticed.
+  local -r tmpkey="$(mktemp)"
+  if ! wget --quiet --output-document="${tmpkey}" "${key_url}"; then
+    echo "warning: could not fetch signing key for ${name}; skipping repo" >&2
+    rm --force "${tmpkey}"
+    return 0
+  fi
+
+  sudo install --directory --mode=0755 /etc/apt/keyrings
+  gpg --dearmor < "${tmpkey}" | sudo tee "${keyring}" > /dev/null
+  rm --force "${tmpkey}"
+  sudo chmod 0644 "${keyring}"
+
+  printf 'Types: deb\nURIs: %s\nSuites: %s\nComponents: %s\nArchitectures: %s\nSigned-By: %s\n' \
+    "${repo_url}" "${suite}" "${component}" "${arch}" "${keyring}" \
+    | sudo tee "${sources_file}" > /dev/null
+
+  # Drop the .list this script wrote before it emitted deb822, so apt
+  # does not end up with the same repo defined twice.
+  if [ -f "${legacy_list}" ]; then
+    echo "removing superseded ${legacy_list}"
+    sudo rm --force "${legacy_list}"
+  fi
+}
+
 ## Add some repos
 
 # google-chrome-stable is not in the Ubuntu archive, so this repo is what
