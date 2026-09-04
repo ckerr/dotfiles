@@ -151,10 +151,13 @@ function add_repo()
   local component="${5-main}"
   local arch=$(dpkg --print-architecture)
 
-  if [ ! -f "${list_file}" ]; then
-    wget -q -O - "${key_url}" | sudo apt-key add -
-    echo "deb [arch=${arch}] ${repo_url} ${suite} ${component}" | sudo tee "${list_file}"
-  fi
+  # Write every run rather than only when the file is missing. Skipping
+  # an existing file meant a machine kept whatever definition it was
+  # first provisioned with, so any later correction here -- a changed
+  # component, a new signing key -- never reached an installed system.
+  wget -q -O - "${key_url}" | sudo apt-key add -
+  echo "deb [arch=${arch}] ${repo_url} ${suite} ${component}" \
+    | sudo tee "${list_file}" > /dev/null
 }
 
 function apt_install()
