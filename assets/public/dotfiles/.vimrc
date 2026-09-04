@@ -1,7 +1,9 @@
 :syntax on
 
 :set background=dark
-:colorscheme vividchalk
+" silent! so a machine that has not run setup-vim.sh yet does not
+" print E185 on every startup
+:silent! colorscheme vividchalk
 
 " :set number
 " :set relativenumber
@@ -17,5 +19,7 @@ nmap <C-n> :NERDTreeToggle<CR>
 
 " https://github.com/dense-analysis/ale#faq-disable-linters
 " Enable ESLint only for JavaScript.
-let b:ale_linters = {'javascript': ['eslint']}
+" g: not b: -- a buffer-local set here only ever applied to the buffer
+" that happened to exist while .vimrc was sourced
+let g:ale_linters = {'javascript': ['eslint']}
 
