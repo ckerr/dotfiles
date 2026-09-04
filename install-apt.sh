@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -uo pipefail
+
 # cpplint
 # hotspot
 
@@ -7,7 +9,7 @@ declare -r UBUNTU_APPS=(
   a2ps
   advancecomp
   aptitude
-  atomicparsley # used by youtube-dlc in install-pip.sh
+  atomicparsley # used by yt-dlp in install-pip.sh
   build-essential
   cargo
   clang-format
@@ -19,7 +21,6 @@ declare -r UBUNTU_APPS=(
   debian-goodies # find-dbgsym-packages
   devhelp
   direnv
-  execstack
   fdupes
   flac
   flake8
@@ -28,11 +29,9 @@ declare -r UBUNTU_APPS=(
   fonts-inconsolata
   fonts-powerline
   fzy
-  gconf-editor
   gir1.2-appindicator3-0.1 # required by syncthing-gtk for system tray
   git
   glow # markdown renderer used by ~/.lessfilter
-  gnome-tweak-tool
   gnome-tweaks
   golang
   google-chrome-stable
@@ -44,6 +43,7 @@ declare -r UBUNTU_APPS=(
   libreoffice-calc
   linux-cloud-tools-generic
   linux-tools-generic
+  lsof # required by ~/.zshrc.d/openports.zsh
   mediainfo
   meld
   mpv
@@ -53,6 +53,7 @@ declare -r UBUNTU_APPS=(
   optipng
   opus-tools
   pandoc
+  pipx # used by install-pip.sh
   plocate
   pngcrush
   pngquant
@@ -73,7 +74,6 @@ declare -r UBUNTU_APPS=(
   transmission-daemon
   typecatcher
   unrar
-  update
   valgrind
   vim
   vim-gtk3
@@ -97,7 +97,6 @@ declare -r UBUNTU_APPS=(
   clang
   clang-tidy
   libcurl4-openssl-dev
-  libcurl4-openssl-dev
   libqt5core5a-dbgsym
   libqt5dbus5-dbgsym
   libqt5gui5-dbgsym
@@ -106,12 +105,11 @@ declare -r UBUNTU_APPS=(
   libqt5widgets5-dbgsym
   libqwt-qt5-dev
   libssl-dev
-  libssl-dev
   libtool
-  qt5-default
   qt5-gtk-platformtheme-dbgsym
   qt5-gtk2-platformtheme-dbgsym
   qt5-qmake
+  qtbase5-dev # replaces qt5-default, dropped after Ubuntu 20.04
   qttools5-dev
   uncrustify
 )
@@ -133,70 +131,6 @@ fi
 
 ##
 ##
-
-function exit_if_error()
-{
-  if [[ $? != 0 ]]; then
-    echo "$1 failed! aborting..."
-    exit 1
-  fi
-}
-
-function add_repo()
-{
-  local -r key_url="${1}"
-  local -r repo_url="${2}"
-  local -r name="${3}"
-  local -r suite="${4-stable}"
-  local -r component="${5-main}"
-
-  local -r keyring="/etc/apt/keyrings/${name}.gpg"
-  local -r sources_file="/etc/apt/sources.list.d/${name}.sources"
-  local -r legacy_list="/etc/apt/sources.list.d/${name}.list"
-  local -r arch="$(dpkg --print-architecture)"
-
-  echo "adding apt repo ${name}"
-
-  # Fetch to a temp file first: this pipeline's exit status would
-  # otherwise be tee's, and a failed download would go unnoticed.
-  local -r tmpkey="$(mktemp)"
-  if ! wget --quiet --output-document="${tmpkey}" "${key_url}"; then
-    echo "warning: could not fetch signing key for ${name}; skipping repo" >&2
-    rm --force "${tmpkey}"
-    return 0
-  fi
-
-  sudo install --directory --mode=0755 /etc/apt/keyrings
-  gpg --dearmor < "${tmpkey}" | sudo tee "${keyring}" > /dev/null
-  rm --force "${tmpkey}"
-  sudo chmod 0644 "${keyring}"
-
-  printf 'Types: deb\nURIs: %s\nSuites: %s\nComponents: %s\nArchitectures: %s\nSigned-By: %s\n' \
-    "${repo_url}" "${suite}" "${component}" "${arch}" "${keyring}" \
-    | sudo tee "${sources_file}" > /dev/null
-
-  # Drop the .list this script wrote before it emitted deb822, so apt
-  # does not end up with the same repo defined twice.
-  if [ -f "${legacy_list}" ]; then
-    echo "removing superseded ${legacy_list}"
-    sudo rm --force "${legacy_list}"
-  fi
-}
-
-function apt_install()
-{
-  local item="${1}"
-  #echo $item
-
-  dpkg -s "${item}" > /dev/null 2>&1
-  if [[ $? == 0 ]]; then
-    echo "already installed: ${item}"
-  else
-    echo "installing ${item}"
-    sudo apt-get --yes install --install-suggests "${item}"
-    exit_if_error "${item}"
-  fi
-}
 
 ## Add some repos
 
@@ -237,8 +171,6 @@ sudo add-apt-repository --no-update --yes ppa:git-core/ppa
 # https://github.com/Neroth/gnome-shell-extension-weather
 sudo add-apt-repository --no-update --yes ppa:gnome-shell-extensions
 
-sudo apt update
-
 # https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 function ensure_ddebs_source_exists {
   local -r sources_file='/etc/apt/sources.list.d/ddebs.sources'
@@ -266,17 +198,44 @@ function ensure_ddebs_source_exists {
 }
 ensure_ddebs_source_exists
 
+# One refresh, after every source above is in place: the availability
+# probe below needs the third-party and ddebs indices to be present or
+# it will write those packages off as unavailable.
+sudo apt update
+
 # disabling 2019-07-11 because Disco not supported yet
 #sudo add-apt-repository --no-update --yes ppa:transmissionbt/ppa
 
 ## Install some packages
 
-sudo apt update
+# `apt install` aborts the entire transaction if even one name is
+# unknown, so split the list into what this release actually has and
+# what it does not.
+declare -a available=()
+declare -a unavailable=()
+for item in "${UBUNTU_APPS[@]}"; do
+  if apt-cache policy "${item}" 2>/dev/null | grep --quiet '^  Candidate: [^(]'; then
+    available+=("${item}")
+  else
+    unavailable+=("${item}")
+  fi
+done
+
+if (( ${#unavailable[@]} > 0 )); then
+  echo "not available on this release, skipping: ${unavailable[*]}" >&2
+fi
+
 sudo apt --yes full-upgrade
-echo sudo apt --yes install "${UBUNTU_APPS[*]}"
-sudo apt --yes install ${UBUNTU_APPS[*]}
-echo sudo apt --yes build-dep "${UBUNTU_BUILD_DEPS[*]}"
-sudo apt --yes build-dep ${UBUNTU_BUILD_DEPS[*]}
+sudo apt --yes install "${available[@]}"
+
+# build-dep needs deb-src entries, which are off by default on newer
+# releases, so do not let a missing source list fail the whole run.
+if ! sudo apt --yes build-dep "${UBUNTU_BUILD_DEPS[@]}"; then
+  echo "warning: build-dep failed; enable deb-src entries to use it" >&2
+fi
+
 sudo apt --yes autoremove
 sudo apt-get clean
+
+echo "$0 done"
 
