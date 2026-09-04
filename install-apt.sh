@@ -200,8 +200,13 @@ function apt_install()
 
 ## Add some repos
 
+# google-chrome-stable is not in the Ubuntu archive, so this repo is what
+# bootstraps it. Once installed, the package rewrites this same
+# google-chrome.sources itself; match the URI its postinst uses so our
+# run and its run do not keep flipping the file between two spellings of
+# the same repo.
 add_repo 'https://dl-ssl.google.com/linux/linux_signing_key.pub' \
-         'http://dl.google.com/linux/chrome/deb/' \
+         'https://dl.google.com/linux/chrome-stable/deb/' \
          'google-chrome' \
          'stable' 'main'
 
