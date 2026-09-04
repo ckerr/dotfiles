@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 
+set -uo pipefail
+
 . ./common.sh
-declare -r vimruntime="${VIMRUNTIME:-${HOME}/.vim}"
-declare -r vimplugindir="${vimruntime}/pack/plugins/start"
-declare -r vimcolorsdir="${vimruntime}/colors"
-declare -r vimextrasdir="${vimruntime}/extras"
-declare -r vimsyntaxdir="${vimruntime}/syntax"
+
+# Not ${VIMRUNTIME}: that is vim's own variable for its *system* runtime
+# (/usr/share/vim/vim91), so honouring it here would scatter personal
+# plugins across a root-owned directory. The user runtime is ~/.vim.
+declare -r vimdir="${HOME}/.vim"
+declare -r vimplugindir="${vimdir}/pack/plugins/start"
+declare -r vimcolorsdir="${vimdir}/colors"
+declare -r vimextrasdir="${vimdir}/extras"
+declare -r vimsyntaxdir="${vimdir}/syntax"
 
 mkdir -vp "${vimcolorsdir}"
 mkdir -vp "${vimextrasdir}"
@@ -17,7 +23,8 @@ mkdir -vp "${vimsyntaxdir}"
 
 # vibrant ink -like colorscheme
 get_repo "${vimextrasdir}" 'https://github.com/tpope/vim-vividchalk.git'
-ln -s "${vimextrasdir}/vim-vividchalk/colors/vividchalk.vim" "${vimcolorsdir}"
+# -f so re-running the script does not fail on an existing symlink
+ln -sf "${vimextrasdir}/vim-vividchalk/colors/vividchalk.vim" "${vimcolorsdir}/"
 
 # A Vim text editor plugin to swap delimited items.
 get_repo "${vimplugindir}" 'https://github.com/machakann/vim-swap.git'
@@ -62,4 +69,4 @@ get_repo "${vimplugindir}" 'https://github.com/machakann/vim-sandwich.git'
 #  (cd "${path}" && ./install.py)
 #fi
 
-echo $0 done
+echo "$0 done"
