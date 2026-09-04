@@ -14,7 +14,6 @@ declare -r UBUNTU_APPS=(
   clonezilla
   cmake
   code
-  cowsay
   cppcheck
   dconf-editor
   debian-goodies # find-dbgsym-packages
@@ -44,7 +43,6 @@ declare -r UBUNTU_APPS=(
   libreoffice-calc
   linux-cloud-tools-generic
   linux-tools-generic
-  locate
   mediainfo
   meld
   mpv
@@ -54,6 +52,7 @@ declare -r UBUNTU_APPS=(
   optipng
   opus-tools
   pandoc
+  plocate
   pngcrush
   pngquant
   powerstat
