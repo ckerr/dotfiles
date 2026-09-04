@@ -122,7 +122,6 @@
 	m = merge
 	ma = merge --abort
 	mc = merge --continue
-	ms = merge --skip
         #############
         meld = difftool --dir-diff -t meld
         meldmaster = difftool --dir-diff -t meld master
@@ -145,7 +144,6 @@
 	psuom = push -u origin master
 	#############
 	pl = pull
-	plu = pull -u
 	plo = pull origin
 	plp = pull upstream
 	plom = pull origin master
@@ -172,7 +170,6 @@
 	ra = remote add
 	rr = remote rm
 	rv = remote -v
-	rm = remote rename
 	rs = remote show
 	rao = remote add origin
 	rso = remote show origin
