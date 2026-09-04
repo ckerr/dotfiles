@@ -194,7 +194,7 @@ add_repo 'http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc'
 add_repo 'https://syncthing.net/release-key.txt' \
          'https://apt.syncthing.net/' \
          '/etc/apt/sources.list.d/syncthing.list' \
-         'syncthing' 'stable'
+         'syncthing' 'stable-v2'
 
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
