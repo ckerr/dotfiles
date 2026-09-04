@@ -6,7 +6,6 @@
 ./install-pip3.sh
 
 # need to install oh-my-zsh for nvm before installing npm packages
-./decrypt.sh
 ./setup-zsh.sh
 ./install-memories.sh
 ./install-npm.sh
