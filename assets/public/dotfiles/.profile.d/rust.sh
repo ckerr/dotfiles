@@ -1,6 +1,11 @@
 # rust's cargo
 cargo_bin="${CARGO_HOME:-${HOME}/.cargo}/bin"
-if [[ ":$PATH:" != *":${cargo_bin}:"* ]]; then
-  export PATH="${PATH}:${cargo_bin}"
-fi
+case ":${PATH}:" in
+  *":${cargo_bin}:"*)
+    ;;
+  *)
+    PATH="${PATH}:${cargo_bin}"
+    export PATH
+    ;;
+esac
 unset cargo_bin

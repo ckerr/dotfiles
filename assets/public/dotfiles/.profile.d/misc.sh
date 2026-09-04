@@ -12,47 +12,50 @@ export TMPDIR=/tmp
 
 # PATH building
 
-bindirs=(
-  "${HOME}"/opt/bin
-  "${HOME}"/.local/bin
-  "${HOME}"/bin
-)
+prepend_to_path() {
+  [ -d "${1}" ] || return 0
+  case ":${PATH}:" in
+    *":${1}:"*) return 0 ;;
+  esac
+  PATH="${1}:${PATH}"
+  export PATH
+}
 
-if [[ x`uname` == 'xLinux' ]]; then
-  bindirs+=(/snap/bin)
-fi
+prepend_to_path "${HOME}/opt/bin"
+prepend_to_path "${HOME}/.local/bin"
+prepend_to_path "${HOME}/bin"
 
-if [[ x`uname` == 'xDarwin' ]]; then
-  bindirs+=(/usr/local/opt/findutils/libexec/gnubin)
-  bindirs+=($(brew --prefix llvm)/bin)
-fi
-
-for bindir in "${bindirs[@]}"
-do
-  if [[ ":$PATH:" != *":$bindir:"* ]]; then
-    if [ -d "${bindir}" ]; then
-      export PATH="${bindir}:${PATH}"
+case "$(uname)" in
+  Linux)
+    prepend_to_path /snap/bin
+    ;;
+  Darwin)
+    prepend_to_path /usr/local/opt/findutils/libexec/gnubin
+    # guard the subshell: without brew this used to run unconditionally
+    # and spew an error on every login
+    if command -v brew > /dev/null 2>&1; then
+      prepend_to_path "$(brew --prefix llvm)/bin"
     fi
-  fi
-done
+    ;;
+esac
 
 
 # MANPATH building
 
-manpathdirs=(
-)
+prepend_to_manpath() {
+  [ -d "${1}" ] || return 0
+  case ":${MANPATH:-}:" in
+    *":${1}:"*) return 0 ;;
+  esac
+  MANPATH="${1}:${MANPATH:-}"
+  export MANPATH
+}
 
-if [[ x`uname` == 'xDarwin' ]]; then
-  manpathdirs+=(/usr/local/opt/findutils/libexec/gnuman)
-fi
+case "$(uname)" in
+  Darwin)
+    prepend_to_manpath /usr/local/opt/findutils/libexec/gnuman
+    ;;
+esac
 
-for manpathdir in "${manpathdirs[@]}"
-do
-  if [[ ":$MANPATH:" != *":$manpathdir:"* ]]; then
-    if [[ -d "${manpathdir}" ]]; then
-      export MANPATH="${manpathdir}:${MANPATH}"
-    fi
-  fi
-done
-
-
+unset -f prepend_to_path
+unset -f prepend_to_manpath
