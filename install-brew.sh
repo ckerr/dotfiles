@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -uo pipefail
+
 BREW_APPS=(
   a2ps
   cmake
@@ -33,9 +35,7 @@ BREW_SERVICES=(
 )
 
 CASK_APPS=(
-  atom
   beyond-compare
-  font-awesome-terminal-fonts
   font-fira-code
   font-fira-mono-for-powerline
   keepassxc
@@ -57,30 +57,19 @@ fi
 ##
 ##
 
-function exit_if_error()
-{
-  if [[ $? != 0 ]]; then
-    echo "$1 failed! aborting..."
-    exit 1
-  fi
-}
-
-##
-##
-
 # ensure brew is installed
-item='brew'
-if [ "" == "$(command -v ${item})" ]; then
-  echo "installing $item"
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  exit_if_error $item
+if ! command -v brew > /dev/null 2>&1; then
+  echo 'installing brew'
+  /bin/bash -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
+    || { echo 'brew install failed! aborting...'; exit 1; }
 fi
 
 # update brew
 echo 'updating brew'
 brew update
 brew upgrade
-brew cask upgrade
+brew upgrade --cask
 
 brew install "${BREW_APPS[@]}"
 
@@ -88,17 +77,15 @@ brew install "${BREW_APPS[@]}"
 brew install "${BREW_SERVICES[@]}"
 brew services restart --all
 
-# install cask
-brew tap caskroom/cask
-
-# install cask apps
-brew cask install "${CASK_APPS[@]}"
+# install cask apps. caskroom/cask was renamed homebrew/cask in 2018 and
+# is auto-tapped by brew now, so there is nothing left to tap by hand.
+brew install --cask "${CASK_APPS[@]}"
 
 # clean up after ourselves
 brew cleanup -s
-brew cask cleanup
 
 # show some diagnostics
 brew doctor
-brew cask doctor
 brew missing
+
+echo "$0 done"
