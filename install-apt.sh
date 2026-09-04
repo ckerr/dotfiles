@@ -168,8 +168,6 @@ sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 # https://launchpad.net/~git-core/+archive/ubuntu/ppa
 sudo add-apt-repository --no-update --yes ppa:git-core/ppa
 
-# https://github.com/Neroth/gnome-shell-extension-weather
-sudo add-apt-repository --no-update --yes ppa:gnome-shell-extensions
 
 # https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 function ensure_ddebs_source_exists {
