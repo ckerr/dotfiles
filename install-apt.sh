@@ -196,9 +196,6 @@ add_repo 'https://syncthing.net/release-key.txt' \
          '/etc/apt/sources.list.d/syncthing.list' \
          'syncthing' 'stable'
 
-# https://handbrake.fr/downloads.php
-sudo add-apt-repository --no-update --yes ppa:stebbins/handbrake-releases
-
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
 sudo add-apt-repository --no-update --yes ppa:phoerious/keepassxc
 
