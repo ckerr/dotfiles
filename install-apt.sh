@@ -144,20 +144,43 @@ function exit_if_error()
 
 function add_repo()
 {
-  local key_url="${1}"
-  local repo_url="${2}"
-  local list_file="${3}"
-  local suite="${4-stable}"
-  local component="${5-main}"
-  local arch=$(dpkg --print-architecture)
+  local -r key_url="${1}"
+  local -r repo_url="${2}"
+  local -r name="${3}"
+  local -r suite="${4-stable}"
+  local -r component="${5-main}"
 
-  # Write every run rather than only when the file is missing. Skipping
-  # an existing file meant a machine kept whatever definition it was
-  # first provisioned with, so any later correction here -- a changed
-  # component, a new signing key -- never reached an installed system.
-  wget -q -O - "${key_url}" | sudo apt-key add -
-  echo "deb [arch=${arch}] ${repo_url} ${suite} ${component}" \
-    | sudo tee "${list_file}" > /dev/null
+  local -r keyring="/etc/apt/keyrings/${name}.gpg"
+  local -r sources_file="/etc/apt/sources.list.d/${name}.sources"
+  local -r legacy_list="/etc/apt/sources.list.d/${name}.list"
+  local -r arch="$(dpkg --print-architecture)"
+
+  echo "adding apt repo ${name}"
+
+  # Fetch to a temp file first: this pipeline's exit status would
+  # otherwise be tee's, and a failed download would go unnoticed.
+  local -r tmpkey="$(mktemp)"
+  if ! wget --quiet --output-document="${tmpkey}" "${key_url}"; then
+    echo "warning: could not fetch signing key for ${name}; skipping repo" >&2
+    rm --force "${tmpkey}"
+    return 0
+  fi
+
+  sudo install --directory --mode=0755 /etc/apt/keyrings
+  gpg --dearmor < "${tmpkey}" | sudo tee "${keyring}" > /dev/null
+  rm --force "${tmpkey}"
+  sudo chmod 0644 "${keyring}"
+
+  printf 'Types: deb\nURIs: %s\nSuites: %s\nComponents: %s\nArchitectures: %s\nSigned-By: %s\n' \
+    "${repo_url}" "${suite}" "${component}" "${arch}" "${keyring}" \
+    | sudo tee "${sources_file}" > /dev/null
+
+  # Drop the .list this script wrote before it emitted deb822, so apt
+  # does not end up with the same repo defined twice.
+  if [ -f "${legacy_list}" ]; then
+    echo "removing superseded ${legacy_list}"
+    sudo rm --force "${legacy_list}"
+  fi
 }
 
 function apt_install()
@@ -179,25 +202,25 @@ function apt_install()
 
 add_repo 'https://dl-ssl.google.com/linux/linux_signing_key.pub' \
          'http://dl.google.com/linux/chrome/deb/' \
-         '/etc/apt/sources.list.d/google-chrome.list' \
+         'google-chrome' \
          'stable' 'main'
 
 # source: https://github.com/microsoft/vscode/issues/2973#issuecomment-280575841
 add_repo 'https://packages.microsoft.com/keys/microsoft.asc' \
          'https://packages.microsoft.com/repos/vscode' \
-         '/etc/apt/sources.list.d/vscode.list' \
+         'vscode' \
          'stable' 'main'
 
 # source: https://www.ubuntuupdates.org/ppa/virtualbox.org_contrib
 add_repo 'http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc' \
          'http://download.virtualbox.org/virtualbox/debian' \
-         '/etc/apt/sources.list.d/virtualbox.org.list' \
+         'virtualbox.org' \
          "$(lsb_release --short --codename)" "non-free contrib"
 
 # source: https://apt.syncthing.net/
 add_repo 'https://syncthing.net/release-key.txt' \
          'https://apt.syncthing.net/' \
-         '/etc/apt/sources.list.d/syncthing.list' \
+         'syncthing' \
          'syncthing' 'stable-v2'
 
 # https://keepassxc.org/blog/2017-10-25-ubuntu-ppa/
