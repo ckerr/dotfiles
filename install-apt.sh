@@ -241,16 +241,28 @@ sudo apt update
 
 # https://wiki.ubuntu.com/Debug%20Symbol%20Packages
 function ensure_ddebs_source_exists {
-  local -r filename='/etc/apt/sources.list.d/ddebs.list'
+  local -r sources_file='/etc/apt/sources.list.d/ddebs.sources'
+  local -r legacy_list='/etc/apt/sources.list.d/ddebs.list'
+  local -r keyring='/usr/share/keyrings/ubuntu-dbgsym-keyring.gpg'
   local -r codename="$(lsb_release --short --codename)"
-  if ! grep -q "$codename" "$filename"; then
-    echo "updating $filename"
-    echo "deb http://ddebs.ubuntu.com $codename main restricted universe multiverse
-deb http://ddebs.ubuntu.com $codename-updates main restricted universe multiverse
-deb http://ddebs.ubuntu.com $codename-proposed main restricted universe multiverse" | \
-    sudo tee "${filename}";
-    sudo apt install ubuntu-dbgsym-keyring
+
+  if [ ! -f "${keyring}" ]; then
+    sudo apt-get --yes install ubuntu-dbgsym-keyring
   fi
+
+  # The old .list and this .sources describe the same repo, so leaving
+  # both in place makes apt report every target as configured twice --
+  # roughly 150 warnings per update. A release upgrade migrating sources
+  # to deb822 is one way to end up with the pair.
+  if [ -f "${legacy_list}" ]; then
+    echo "removing superseded ${legacy_list}"
+    sudo rm --force "${legacy_list}"
+  fi
+
+  echo "updating ${sources_file}"
+  printf 'Types: deb\nURIs: http://ddebs.ubuntu.com\nSuites: %s %s-updates\nComponents: main restricted universe multiverse\nSigned-By: %s\n' \
+    "${codename}" "${codename}" "${keyring}" \
+    | sudo tee "${sources_file}" > /dev/null
 }
 ensure_ddebs_source_exists
 
