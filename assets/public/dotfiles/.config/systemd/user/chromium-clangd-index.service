@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh compile_commands.json and clangd index for Chromium checkouts
+
+[Service]
+Type=oneshot
+ExecStart=%h/bin/chromium-clangd-index
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Nice=19
+IOSchedulingClass=idle
+TimeoutStartSec=8h

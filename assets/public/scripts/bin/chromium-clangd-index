@@ -1,0 +1,228 @@
+#!/usr/bin/env python3
+"""Refresh compile_commands.json and clangd's background index for every
+Chromium checkout under ~/electron/gn, so clangd in the editor sees current
+compile flags and a warm index. Meant to run overnight from a systemd timer;
+safe to run by hand with --no-index for a quick compile_commands.json refresh.
+
+Per checkout:
+  1. gn gen <out>          brings build.ninja up to date with the synced tree
+  2. generate_compdb.py    writes <src>/compile_commands.json from build.ninja
+  3. clangd                opens one file so clangd loads the compdb and
+                           background-indexes every TU; shards land in
+                           <src>/.cache/clangd/index, keyed by file digest,
+                           so later runs and editor sessions only index what
+                           changed since.
+"""
+
+import argparse
+import json
+import os
+import queue
+import re
+import subprocess
+import sys
+import threading
+import time
+from pathlib import Path
+
+GN_ROOT = Path.home() / 'electron' / 'gn'
+CLANGD_REL = 'third_party/llvm-build/Release+Asserts/bin/clangd'
+PROGRESS_TOKEN = 'backgroundIndexProgress'
+
+
+def log(msg):
+    print(time.strftime('%H:%M:%S'), msg, flush=True)
+
+
+def checkouts():
+    """Yield (src, out) for each checkout; the newest build.ninja picks the out dir."""
+    for src in sorted(GN_ROOT.glob('*/src')):
+        outs = [p.parent for p in src.glob('out/*/args.gn')]
+        if not outs:
+            continue
+        outs.sort(key=lambda o: (o / 'build.ninja').stat().st_mtime
+                  if (o / 'build.ninja').exists() else 0, reverse=True)
+        yield src, outs[0]
+
+
+def refresh_compdb(src, out):
+    rel_out = out.relative_to(src)
+    log(f'{src.parent.name}: gn gen {rel_out}')
+    subprocess.run([str(src / 'buildtools/linux64/gn'), '-q', 'gen', str(rel_out)],
+                   cwd=src, check=True)
+    tmp = src / 'compile_commands.json.tmp'
+    log(f'{src.parent.name}: generate_compdb.py -p {rel_out}')
+    subprocess.run([sys.executable, 'tools/clang/scripts/generate_compdb.py',
+                    '-p', str(rel_out), '-o', str(tmp)], cwd=src, check=True)
+    os.replace(tmp, src / 'compile_commands.json')
+    log(f'{src.parent.name}: compile_commands.json is {(src / "compile_commands.json").stat().st_size >> 20} MiB')
+
+
+def sample_source(src):
+    """A translation unit from the compdb to open, which makes clangd load it.
+    Entries' "file" paths are relative to their "directory" (the out dir)."""
+    pattern = re.compile(r'"(directory|file)":\s*"([^"]+)"')
+    with open(src / 'compile_commands.json') as f:
+        chunk = f.read(1 << 20)
+    directory = src
+    for key, value in pattern.findall(chunk):
+        if key == 'directory':
+            directory = Path(value)
+        elif value.endswith(('.cc', '.cpp', '.cxx', '.c')):
+            p = (directory / value).resolve()
+            if p.exists():
+                return p
+    raise RuntimeError('no existing source entry in the first MiB of compile_commands.json')
+
+
+class Clangd:
+    def __init__(self, src, jobs, stderr):
+        exe = src / CLANGD_REL
+        self.proc = subprocess.Popen(
+            [str(exe), '--background-index', '--background-index-priority=background',
+             '-j', str(jobs), f'--compile-commands-dir={src}', '--log=error'],
+            cwd=src, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=stderr)
+        self.inbox = queue.Queue()
+        self.next_id = 1
+        threading.Thread(target=self._reader, daemon=True).start()
+
+    def _reader(self):
+        out = self.proc.stdout
+        while True:
+            length = None
+            while True:
+                line = out.readline()
+                if not line:
+                    self.inbox.put(None)
+                    return
+                if line in (b'\r\n', b'\n'):
+                    break
+                key, _, value = line.decode().partition(':')
+                if key.strip().lower() == 'content-length':
+                    length = int(value)
+            self.inbox.put(json.loads(out.read(length)))
+
+    def send(self, msg):
+        data = json.dumps(msg).encode()
+        self.proc.stdin.write(b'Content-Length: %d\r\n\r\n' % len(data) + data)
+        self.proc.stdin.flush()
+
+    def request(self, method, params):
+        rid = self.next_id
+        self.next_id += 1
+        self.send({'jsonrpc': '2.0', 'id': rid, 'method': method, 'params': params})
+        return rid
+
+    def notify(self, method, params):
+        self.send({'jsonrpc': '2.0', 'method': method, 'params': params})
+
+    def recv(self, timeout):
+        """Next server message, or None on timeout; server exit raises."""
+        try:
+            msg = self.inbox.get(timeout=timeout)
+        except queue.Empty:
+            return None
+        if msg is None:
+            raise RuntimeError(f'clangd exited with status {self.proc.wait()}')
+        if 'id' in msg and 'method' in msg:  # server-to-client request: acknowledge
+            self.send({'jsonrpc': '2.0', 'id': msg['id'], 'result': None})
+        return msg
+
+    def wait_response(self, rid, timeout):
+        deadline = time.monotonic() + timeout
+        while (left := deadline - time.monotonic()) > 0:
+            msg = self.recv(left)
+            if msg and msg.get('id') == rid and 'method' not in msg:
+                return msg
+        raise TimeoutError(f'no response to request {rid}')
+
+    def stop(self):
+        try:
+            self.wait_response(self.request('shutdown', None), 60)
+            self.notify('exit', None)
+            self.proc.wait(30)
+        except Exception:
+            self.proc.kill()
+
+
+def run_index(src, jobs, max_seconds, startup_grace):
+    sample = sample_source(src)
+    log_dir = Path.home() / '.cache' / 'chromium-clangd-index'
+    log_dir.mkdir(parents=True, exist_ok=True)
+    with open(log_dir / f'{src.parent.name}.clangd.log', 'w') as errlog:
+        cd = Clangd(src, jobs, errlog)
+        started = time.monotonic()
+        deadline = started + max_seconds if max_seconds else None
+        try:
+            cd.wait_response(cd.request('initialize', {
+                'processId': os.getpid(),
+                'rootUri': src.as_uri(),
+                'capabilities': {'window': {'workDoneProgress': True}},
+            }), 120)
+            cd.notify('initialized', {})
+            cd.notify('textDocument/didOpen', {'textDocument': {
+                'uri': sample.as_uri(), 'languageId': 'cpp', 'version': 1,
+                'text': sample.read_text(errors='replace')}})
+            log(f'{src.parent.name}: opened {sample.relative_to(src)}; waiting for indexing')
+            indexing = False
+            last_report = 0.0
+            quiet_since = time.monotonic()
+            while True:
+                msg = cd.recv(30)
+                now = time.monotonic()
+                if deadline and now > deadline:
+                    log(f'{src.parent.name}: time limit reached; stopping (progress is kept)')
+                    break
+                if msg is None:
+                    if not indexing and now - quiet_since > startup_grace:
+                        log(f'{src.parent.name}: no indexing started within '
+                            f'{startup_grace:.0f}s; nothing to do')
+                        break
+                    continue
+                if msg.get('method') != '$/progress' or msg['params'].get('token') != PROGRESS_TOKEN:
+                    continue
+                value = msg['params']['value']
+                kind = value.get('kind')
+                if kind == 'begin':
+                    indexing = True
+                    log(f'{src.parent.name}: indexing started')
+                elif kind == 'report' and now - last_report > 300:
+                    last_report = now
+                    log(f'{src.parent.name}: {value.get("percentage", "?")}% {value.get("message", "")}')
+                elif kind == 'end':
+                    log(f'{src.parent.name}: indexing finished in {(now - started) / 60:.0f} min')
+                    break
+        finally:
+            cd.stop()
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--no-compdb', action='store_true', help='skip gn gen and compile_commands.json')
+    ap.add_argument('--no-index', action='store_true', help='skip the clangd indexing pass')
+    ap.add_argument('--jobs', type=int, default=max(1, (os.cpu_count() or 2) - 2),
+                    help='clangd worker threads (default: cores - 2)')
+    ap.add_argument('--max-seconds', type=float, default=0,
+                    help='stop indexing after this long; 0 = until done')
+    ap.add_argument('--startup-grace', type=float, default=900,
+                    help='seconds to wait for indexing to begin before concluding there is nothing to do')
+    ap.add_argument('--checkout', type=Path, help='only this src dir (default: every ~/electron/gn/*/src)')
+    args = ap.parse_args()
+
+    failures = 0
+    for src, out in checkouts():
+        if args.checkout and src.resolve() != args.checkout.resolve():
+            continue
+        try:
+            if not args.no_compdb:
+                refresh_compdb(src, out)
+            if not args.no_index:
+                run_index(src, args.jobs, args.max_seconds, args.startup_grace)
+        except Exception as e:
+            failures += 1
+            log(f'{src.parent.name}: FAILED: {e}')
+    return 1 if failures else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

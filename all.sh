@@ -15,6 +15,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # setup-zsh.sh's oh-my-zsh install is meant to satisfy is already in place.
 ./install-files.sh
 
+# Unit files are in place now; enable the timers among them.
+./setup-systemd.sh
+
 ./setup-zsh.sh
 ./setup-vim.sh
 

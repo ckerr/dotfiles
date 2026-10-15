@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly clangd index refresh for Chromium checkouts
+
+[Timer]
+OnCalendar=*-*-* 01:00:00
+RandomizedDelaySec=15min
+Persistent=false
+
+[Install]
+WantedBy=timers.target
